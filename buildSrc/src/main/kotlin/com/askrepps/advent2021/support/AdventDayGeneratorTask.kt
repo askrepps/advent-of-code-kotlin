@@ -39,9 +39,15 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
     @TaskAction
     fun generateDay() {
-        requireNotNull(day) { "Generated day must be provided" }
-        require(dayNumber > 0) { "Generated day must be positive (provided $dayNumber)" }
-        require(!mainSourceFile.exists() && !testSourceFile.exists()) { "Day $dayNumber files already exist" }
+        requireNotNull(day) {
+            "Generated day must be provided"
+        }
+        require(dayNumber > 0) {
+            "Generated day must be positive (provided $dayNumber)"
+        }
+        require(!mainSourceFile.exists() && !testSourceFile.exists() && !inputFile.exists()) {
+            "Day $dayNumber files already exist"
+        }
 
         val substitutionMap = mutableMapOf<String, String?>(
             "advent_year" to "2021",
@@ -53,6 +59,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
         mainSourceFile.writeFileFromTemplate(mainTemplate, substitutionMap)
         testSourceFile.writeFileFromTemplate(testTemplate, substitutionMap)
+        inputFile.createNewFile()
     }
 
     private val dayNumber by lazy {
@@ -73,6 +80,10 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
     private val testSourceFile by lazy {
         File(project.rootDir, "src/test/kotlin/${packagePath}/Day${paddedDay}Test.kt")
+    }
+
+    private val inputFile by lazy {
+        File(project.rootDir, "src/main/resources/day${paddedDay}.txt")
     }
 
     private val licenseTemplate by lazy {
