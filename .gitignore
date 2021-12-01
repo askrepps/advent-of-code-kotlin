@@ -161,4 +161,4 @@ gradle-app.setting
 
 .idea/artifacts/
 
-src/main/resources/
+src/main/resources/day*.txt
