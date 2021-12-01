@@ -45,9 +45,9 @@ class Day01Test {
 
     @Test
     fun testDay01() {
-        val lines = testData.getInputLines()
+        val depths = testData.getInputLines().map { it.toInt() }
 
-        assertEquals(7, getPart1Answer(lines))
-        assertEquals(5, getPart2Answer(lines))
+        assertEquals(7, getPart1Answer(depths))
+        assertEquals(5, getPart2Answer(depths))
     }
 }

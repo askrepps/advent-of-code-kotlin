@@ -27,34 +27,22 @@ package com.askrepps.advent2021.day01
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
 
-fun getPart1Answer(lines: List<String>): Int {
-    var increasingCount = 0
-    val depths = lines.map { it.toInt() }
-    for (i in 1 until depths.size) {
-        if (depths[i] > depths[i - 1]) {
-            increasingCount++
-        }
-    }
-    return increasingCount
-}
+fun List<Int>.countIncreases() =
+    (1 until size).count { this[it] > this[it - 1] }
 
-fun getPart2Answer(lines: List<String>): Int {
-    var increasingCount = 0
-    var lastSum = Int.MAX_VALUE
-    val depths = lines.map { it.toInt() }
-    for (i in 2 until depths.size) {
-        val sum = depths[i] + depths[i - 1] + depths[i - 2]
-        if (sum > lastSum) {
-            increasingCount++
-        }
-        lastSum = sum
-    }
-    return increasingCount
-}
+fun List<Int>.getWindowSums(windowSize: Int) =
+    (windowSize..size).map { subList(it - windowSize, it).sum() }
+
+fun getPart1Answer(depths: List<Int>) =
+    depths.countIncreases()
+
+fun getPart2Answer(depths: List<Int>) =
+    depths.getWindowSums(windowSize = 3).countIncreases()
 
 fun main() {
-    val lines = File("src/main/resources/day01.txt").getInputLines()
+    val depths = File("src/main/resources/day01.txt")
+        .getInputLines().map { it.toInt() }
 
-    println("The answer to part 1 is ${getPart1Answer(lines)}")
-    println("The answer to part 2 is ${getPart2Answer(lines)}")
+    println("The answer to part 1 is ${getPart1Answer(depths)}")
+    println("The answer to part 2 is ${getPart2Answer(depths)}")
 }
