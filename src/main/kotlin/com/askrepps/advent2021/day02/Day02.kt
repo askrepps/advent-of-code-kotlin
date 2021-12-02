@@ -32,7 +32,6 @@ enum class Direction { Forward, Up, Down }
 data class Position(val x: Int, val depth: Int, val aim: Int = 0)
 
 data class MovementCommand(val direction: Direction, val amount: Int) {
-
     val deltaX: Int
         get() = if (direction == Direction.Forward) {
             amount
