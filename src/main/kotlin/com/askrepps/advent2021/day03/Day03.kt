@@ -68,15 +68,9 @@ fun getGammaRate(bitCounts: BitCounts): Int {
     return gammaRate
 }
 
-fun getEpsilonRate(gammaRate: Int, numBits: Int): Int {
-    var mask = 0
-    var bit = 1
-    repeat(numBits) {
-        mask = mask.or(bit)
-        bit = bit.shl(1)
-    }
-    return gammaRate.xor(mask)
-}
+// flip each bit of the gamma rate (ensure mask is left-padded with 0s)
+fun getEpsilonRate(gammaRate: Int, numBits: Int) =
+    gammaRate.xor((-1).ushr(Int.SIZE_BITS - numBits))
 
 fun List<String>.getFilteredValue(bitCounts: BitCounts, mostCommonBitStays: Boolean): Int {
     val zeroCounts = bitCounts.zeroCounts.toMutableList()
