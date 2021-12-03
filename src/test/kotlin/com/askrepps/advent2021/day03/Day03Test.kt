@@ -48,9 +48,9 @@ class Day03Test {
     @Test
     fun testDay03() {
         val bitStrings = testData.getInputLines()
-        val numBits = bitStrings.first().length
+        val bitCounts = bitStrings.getBitCounts()
 
-        assertEquals(198, getPart1Answer(bitStrings, numBits))
-        assertEquals(230, getPart2Answer(bitStrings, numBits))
+        assertEquals(198, getPart1Answer(bitCounts))
+        assertEquals(230, getPart2Answer(bitStrings, bitCounts))
     }
 }
