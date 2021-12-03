@@ -27,24 +27,23 @@ package com.askrepps.advent2021.day03
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
 
-fun getBitCounts(bitStrings: List<String>, numBits: Int): Pair<List<Int>, List<Int>> {
-    val oneCounts = MutableList(numBits) { 0 }
+fun List<String>.getBitCounts(numBits: Int): Pair<List<Int>, List<Int>> {
     val zeroCounts = MutableList(numBits) { 0 }
-    for (bitString in bitStrings) {
+    for (bitString in this) {
         bitString.forEachIndexed { index, c ->
             if (c == '0') {
                 zeroCounts[index]++
-            } else {
-                oneCounts[index]++
             }
         }
     }
 
+    val numStrings = size
+    val oneCounts = zeroCounts.map { numStrings - it }
     return Pair(zeroCounts, oneCounts)
 }
 
-fun getGammaRate(bitStrings: List<String>, numBits: Int): Int {
-    val (zeroCounts, oneCounts) = getBitCounts(bitStrings, numBits)
+fun List<String>.getGammaRate(numBits: Int): Int {
+    val (zeroCounts, oneCounts) = getBitCounts(numBits)
     var gammaRate = 0
     var bit = 1
     repeat(numBits) {
@@ -68,44 +67,49 @@ fun getEpsilonRate(gammaRate: Int, numBits: Int): Int {
     return gammaRate.xor(mask)
 }
 
+fun List<String>.getFilteredValue(numBits: Int, mostCommonBitStays: Boolean): Int {
+    val (zeroCounts, oneCounts) = getBitCounts(numBits).let {
+        Pair(it.first.toMutableList(), it.second.toMutableList())
+    }
+    val remainingBitStrings = toMutableList()
+    var filterBitIndex = 0
+    while (remainingBitStrings.size > 1 && filterBitIndex < numBits) {
+        val mostCommonBit =
+            if (zeroCounts[filterBitIndex] > oneCounts[filterBitIndex]) {
+                '0'
+            } else {
+                '1'
+            }
+        remainingBitStrings.removeAll { bitString ->
+            val isRemoved = (bitString[filterBitIndex] == mostCommonBit).xor(mostCommonBitStays)
+            if (isRemoved) {
+                bitString.forEachIndexed { index, c ->
+                    if (c == '0') {
+                        zeroCounts[index]--
+                    } else {
+                        oneCounts[index]--
+                    }
+                }
+            }
+            return@removeAll isRemoved
+        }
+        filterBitIndex++
+    }
+
+    check(remainingBitStrings.size == 1) { "Filtering process did not result in one value" }
+    return remainingBitStrings.first().toInt(radix = 2)
+}
+
 fun getPart1Answer(bitStrings: List<String>, numBits: Int): Int {
-    val gammaRate = getGammaRate(bitStrings, numBits)
+    val gammaRate = bitStrings.getGammaRate(numBits)
     val epsilonRate = getEpsilonRate(gammaRate, numBits)
     return gammaRate * epsilonRate
 }
 
 fun getPart2Answer(bitStrings: List<String>, numBits: Int): Int {
-    var bitIndex = 0
-    val oxygenBitStrings = bitStrings.toMutableList()
-    while (oxygenBitStrings.size > 1 && bitIndex < numBits) {
-        val (zeroCounts, oneCounts) = getBitCounts(oxygenBitStrings, numBits)
-        if (zeroCounts[bitIndex] > oneCounts[bitIndex]) {
-            oxygenBitStrings.removeAll { it[bitIndex] != '0' }
-        } else {
-            oxygenBitStrings.removeAll { it[bitIndex] != '1' }
-        }
-        bitIndex++
-    }
-
-    check(oxygenBitStrings.size == 1)
-    val oxygenValue = oxygenBitStrings.first().toInt(2)
-
-    bitIndex = 0
-    val carbonBitStrings = bitStrings.toMutableList()
-    while (carbonBitStrings.size > 1 && bitIndex < numBits) {
-        val (zeroCounts, oneCounts) = getBitCounts(carbonBitStrings, numBits)
-        if (zeroCounts[bitIndex] > oneCounts[bitIndex]) {
-            carbonBitStrings.removeAll { it[bitIndex] == '0' }
-        } else {
-            carbonBitStrings.removeAll { it[bitIndex] == '1' }
-        }
-        bitIndex++
-    }
-
-    check(carbonBitStrings.size == 1)
-    val carbonValue = carbonBitStrings.first().toInt(2)
-
-    return oxygenValue * carbonValue
+    val oxygenGeneratorRating = bitStrings.getFilteredValue(numBits, mostCommonBitStays = true)
+    val carbonDioxideScrubberRating = bitStrings.getFilteredValue(numBits, mostCommonBitStays = false)
+    return oxygenGeneratorRating * carbonDioxideScrubberRating
 }
 
 fun main() {
