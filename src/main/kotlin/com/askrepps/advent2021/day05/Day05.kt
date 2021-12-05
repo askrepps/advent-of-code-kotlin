@@ -28,27 +28,40 @@ import com.askrepps.advent2021.util.getInputLines
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.max
-import kotlin.math.min
 
 data class GraphCoordinates(val x: Int, val y: Int)
 
+enum class Orientation { Horizontal, Vertical, Diagonal }
+
 data class VentLine(val start: GraphCoordinates, val end: GraphCoordinates) {
-    fun getPoints(includeDiagonals: Boolean): List<GraphCoordinates> =
-        if (start.x == end.x) {
-            (min(start.y, end.y)..max(start.y, end.y)).map { GraphCoordinates(start.x, it) }
-        } else if (start.y == end.y) {
-            (min(start.x, end.x)..max(start.x, end.x)).map { GraphCoordinates(it, start.y) }
-        } else if (includeDiagonals) {
-            val distance = abs(start.x - end.x)
-            check (distance == abs(start.y - end.y)) { "Vent line must be at a 45 degree diagonal" }
+    val orientation: Orientation
+        get() = when {
+            start.x == end.x -> Orientation.Vertical
+            start.y == end.y -> Orientation.Horizontal
+            else -> Orientation.Diagonal
+        }
 
-            val length = distance + 1  // include endpoints
-            val deltaX = if (start.x < end.x) 1 else -1
-            val deltaY = if (start.y < end.y) 1 else -1
+    val points: List<GraphCoordinates>
+        get() {
+            val xDistance = abs(start.x - end.x)
+            val yDistance = abs(start.y - end.y)
+            check (xDistance == 0 || yDistance == 0 || xDistance == yDistance) {
+                "Vent lines must be horizontal, vertical, or diagonal at 45 degrees"
+            }
 
-            (0 until length).map { GraphCoordinates(start.x + it*deltaX, start.y + it*deltaY) }
-        } else {
-            emptyList()
+            val length = max(xDistance, yDistance) + 1
+            val deltaX = getSlope(start.x, end.x)
+            val deltaY = getSlope(start.y, end.y)
+            return (0 until length).map {
+                GraphCoordinates(start.x + it*deltaX, start.y + it*deltaY)
+            }
+        }
+
+    private fun getSlope(startValue: Int, endValue: Int) =
+        when {
+            startValue < endValue -> 1
+            startValue > endValue -> -1
+            else -> 0
         }
 }
 
@@ -64,10 +77,13 @@ fun String.toVentLine(): VentLine {
 
 fun List<VentLine>.countOverlappingPoints(includeDiagonals: Boolean): Int {
     val pointCounts = mutableMapOf<GraphCoordinates, Int>()
-    val allPoints = flatMap { it.getPoints(includeDiagonals) }
+    val allPoints = this.filter { includeDiagonals || it.orientation != Orientation.Diagonal }
+        .flatMap { it.points }
+
     for (point in allPoints) {
         pointCounts[point] = (pointCounts[point] ?: 0) + 1
     }
+
     return pointCounts.values.count { it >= 2 }
 }
 
