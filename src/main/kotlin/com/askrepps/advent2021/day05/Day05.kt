@@ -25,6 +25,7 @@
 package com.askrepps.advent2021.day05
 
 import com.askrepps.advent2021.util.getInputLines
+import com.askrepps.advent2021.util.splitOnce
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.max
@@ -68,16 +69,16 @@ data class VentLine(val start: GraphCoordinates, val end: GraphCoordinates) {
 }
 
 fun String.toCoordinates() =
-    split(",").let { GraphCoordinates(it[0].toInt(), it[1].toInt()) }
+    splitOnce(",").let { (x, y) -> GraphCoordinates(x.toInt(), y.toInt()) }
 
 fun String.toVentLine() =
-    split(" -> ").let { VentLine(it[0].toCoordinates(), it[1].toCoordinates()) }
+    splitOnce(" -> ").let { (start, end) -> VentLine(start.toCoordinates(), end.toCoordinates()) }
 
 fun List<VentLine>.countOverlappingPoints(includeDiagonals: Boolean) =
     filter { includeDiagonals || it.orientation != Orientation.Diagonal }
         .flatMap { it.points }
         .groupBy { it }
-        .count { it.value.size >= 2 }
+        .count { (_, overlappingPoints) -> overlappingPoints.size >= 2 }
 
 fun getPart1Answer(ventLines: List<VentLine>) =
     ventLines.countOverlappingPoints(includeDiagonals = false)

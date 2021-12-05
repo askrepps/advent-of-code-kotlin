@@ -25,6 +25,7 @@
 package com.askrepps.advent2021.day02
 
 import com.askrepps.advent2021.util.getInputLines
+import com.askrepps.advent2021.util.splitOnce
 import java.io.File
 
 enum class Direction { Forward, Up, Down }
@@ -48,15 +49,14 @@ data class MovementCommand(val direction: Direction, val amount: Int) {
 }
 
 fun String.toMovementCommand(): MovementCommand {
-    val tokens = split(" ")
-    val direction = when (val directionString = tokens[0]) {
+    val (directionString, amountString) = splitOnce(" ")
+    val direction = when (directionString) {
         "forward" -> Direction.Forward
         "up" -> Direction.Up
         "down" -> Direction.Down
         else -> throw IllegalArgumentException("Unrecognized direction: $directionString")
     }
-    val amount = tokens[1].toInt()
-    return MovementCommand(direction, amount)
+    return MovementCommand(direction, amountString.toInt())
 }
 
 fun plotCourse(commands: List<MovementCommand>, makeMove: (Position, MovementCommand) -> Position) =
