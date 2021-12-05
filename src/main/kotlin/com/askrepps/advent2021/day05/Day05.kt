@@ -41,21 +41,23 @@ data class VentLine(val start: GraphCoordinates, val end: GraphCoordinates) {
             else -> Orientation.Diagonal
         }
 
-    val points: List<GraphCoordinates>
-        get() {
-            val xDistance = abs(start.x - end.x)
-            val yDistance = abs(start.y - end.y)
-            check (xDistance == 0 || yDistance == 0 || xDistance == yDistance) {
-                "Vent lines must be horizontal, vertical, or diagonal at 45 degrees"
-            }
+    val points: List<GraphCoordinates> by lazy { generatePoints() }
 
-            val length = max(xDistance, yDistance) + 1
-            val deltaX = getSlope(start.x, end.x)
-            val deltaY = getSlope(start.y, end.y)
-            return (0 until length).map {
-                GraphCoordinates(start.x + it*deltaX, start.y + it*deltaY)
-            }
+    private fun generatePoints(): List<GraphCoordinates> {
+        val xDistance = abs(start.x - end.x)
+        val yDistance = abs(start.y - end.y)
+        check (xDistance == 0 || yDistance == 0 || xDistance == yDistance) {
+            "Vent lines must be horizontal, vertical, or diagonal at 45 degrees"
         }
+
+        val length = max(xDistance, yDistance) + 1
+        val deltaX = getSlope(start.x, end.x)
+        val deltaY = getSlope(start.y, end.y)
+
+        return (0 until length).map {
+            GraphCoordinates(start.x + it*deltaX, start.y + it*deltaY)
+        }
+    }
 
     private fun getSlope(startValue: Int, endValue: Int) =
         when {
@@ -65,27 +67,17 @@ data class VentLine(val start: GraphCoordinates, val end: GraphCoordinates) {
         }
 }
 
-fun String.toCoordinates(): GraphCoordinates {
-    val tokens = split(",")
-    return GraphCoordinates(tokens[0].toInt(), tokens[1].toInt())
-}
+fun String.toCoordinates() =
+    split(",").let { GraphCoordinates(it[0].toInt(), it[1].toInt()) }
 
-fun String.toVentLine(): VentLine {
-    val coordinateStrings = split(" -> ")
-    return VentLine(coordinateStrings[0].toCoordinates(), coordinateStrings[1].toCoordinates())
-}
+fun String.toVentLine() =
+    split(" -> ").let { VentLine(it[0].toCoordinates(), it[1].toCoordinates()) }
 
-fun List<VentLine>.countOverlappingPoints(includeDiagonals: Boolean): Int {
-    val pointCounts = mutableMapOf<GraphCoordinates, Int>()
-    val allPoints = this.filter { includeDiagonals || it.orientation != Orientation.Diagonal }
+fun List<VentLine>.countOverlappingPoints(includeDiagonals: Boolean) =
+    filter { includeDiagonals || it.orientation != Orientation.Diagonal }
         .flatMap { it.points }
-
-    for (point in allPoints) {
-        pointCounts[point] = (pointCounts[point] ?: 0) + 1
-    }
-
-    return pointCounts.values.count { it >= 2 }
-}
+        .groupBy { it }
+        .count { it.value.size >= 2 }
 
 fun getPart1Answer(ventLines: List<VentLine>) =
     ventLines.countOverlappingPoints(includeDiagonals = false)
