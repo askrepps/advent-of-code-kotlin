@@ -1,0 +1,65 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2021 Andrew Krepps
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.askrepps.advent2021.day06
+
+import java.io.File
+
+private const val NORMAL_TIMER_VALUE = 6
+private const val FIRST_TIMER_VALUE = NORMAL_TIMER_VALUE + 2
+
+fun countFish(initialState: List<Int>, numDays: Int): Long {
+    var timerCounts = mutableMapOf<Int, Long>()
+    for (timerValue in initialState) {
+        timerCounts[timerValue] = (timerCounts[timerValue] ?: 0L) + 1L
+    }
+
+    repeat(numDays) {
+        val nextTimerCounts = mutableMapOf<Int, Long>()
+        for (timerValue in 0..FIRST_TIMER_VALUE) {
+            if (timerValue > 0) {
+                nextTimerCounts[timerValue - 1] = (nextTimerCounts[timerValue - 1] ?: 0L) + (timerCounts[timerValue] ?: 0L)
+            } else {
+                nextTimerCounts[FIRST_TIMER_VALUE] = (nextTimerCounts[FIRST_TIMER_VALUE] ?: 0L) + (timerCounts[0] ?: 0L)
+                nextTimerCounts[NORMAL_TIMER_VALUE] = (nextTimerCounts[NORMAL_TIMER_VALUE] ?: 0L) + (timerCounts[0] ?: 0L)
+            }
+        }
+        timerCounts = nextTimerCounts
+    }
+    return timerCounts.values.sum()
+}
+
+fun getPart1Answer(initialState: List<Int>) =
+    countFish(initialState, numDays = 80)
+
+fun getPart2Answer(initialState: List<Int>) =
+    countFish(initialState, numDays = 256)
+
+fun main() {
+    val initialState = File("src/main/resources/day06.txt")
+        .readText().split(",").map { it.toInt() }
+
+    println("The answer to part 1 is ${getPart1Answer(initialState)}")
+    println("The answer to part 2 is ${getPart2Answer(initialState)}")
+}
