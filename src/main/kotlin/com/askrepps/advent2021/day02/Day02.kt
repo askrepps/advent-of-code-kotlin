@@ -25,7 +25,6 @@
 package com.askrepps.advent2021.day02
 
 import com.askrepps.advent2021.util.getInputLines
-import com.askrepps.advent2021.util.splitOnce
 import java.io.File
 
 enum class Direction { Forward, Up, Down }
@@ -49,7 +48,7 @@ data class MovementCommand(val direction: Direction, val amount: Int) {
 }
 
 fun String.toMovementCommand(): MovementCommand {
-    val (directionString, amountString) = splitOnce(" ")
+    val (directionString, amountString) = split(" ")
     val direction = when (directionString) {
         "forward" -> Direction.Forward
         "up" -> Direction.Up
