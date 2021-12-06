@@ -39,7 +39,7 @@ fun countFish(initialState: List<Int>, numDays: Int): Long {
     }
     repeat(numDays) {
         val nextTimerCounts = mutableMapOf<Int, Long>()
-        for (timerValue in 0..FIRST_TIMER_VALUE) {
+        for (timerValue in timerCounts.keys) {
             if (timerValue > 0) {
                 nextTimerCounts.incrementAtKeyBy(timerValue - 1, timerCounts[timerValue])
             } else {
