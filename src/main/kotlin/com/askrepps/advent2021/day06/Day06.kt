@@ -29,20 +29,22 @@ import java.io.File
 private const val NORMAL_TIMER_VALUE = 6
 private const val FIRST_TIMER_VALUE = NORMAL_TIMER_VALUE + 2
 
+fun <K> MutableMap<K, Long>.incrementAtKeyBy(key: K, value: Long?) =
+    put(key, (get(key) ?: 0L) + (value ?: 0L))
+
 fun countFish(initialState: List<Int>, numDays: Int): Long {
     var timerCounts = mutableMapOf<Int, Long>()
     for (timerValue in initialState) {
-        timerCounts[timerValue] = (timerCounts[timerValue] ?: 0L) + 1L
+        timerCounts.incrementAtKeyBy(timerValue, 1L)
     }
-
     repeat(numDays) {
         val nextTimerCounts = mutableMapOf<Int, Long>()
         for (timerValue in 0..FIRST_TIMER_VALUE) {
             if (timerValue > 0) {
-                nextTimerCounts[timerValue - 1] = (nextTimerCounts[timerValue - 1] ?: 0L) + (timerCounts[timerValue] ?: 0L)
+                nextTimerCounts.incrementAtKeyBy(timerValue - 1, timerCounts[timerValue])
             } else {
-                nextTimerCounts[FIRST_TIMER_VALUE] = (nextTimerCounts[FIRST_TIMER_VALUE] ?: 0L) + (timerCounts[0] ?: 0L)
-                nextTimerCounts[NORMAL_TIMER_VALUE] = (nextTimerCounts[NORMAL_TIMER_VALUE] ?: 0L) + (timerCounts[0] ?: 0L)
+                nextTimerCounts.incrementAtKeyBy(FIRST_TIMER_VALUE, timerCounts[0])
+                nextTimerCounts.incrementAtKeyBy(NORMAL_TIMER_VALUE, timerCounts[0])
             }
         }
         timerCounts = nextTimerCounts
