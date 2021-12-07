@@ -26,20 +26,14 @@ package com.askrepps.advent2021.day07
 
 import java.io.File
 import kotlin.math.abs
+import kotlin.math.min
 
 fun findOptimalAlignmentCost(startingPositions: List<Int>, calcFuelCost: (Int, Int) -> Int): Int {
     val minPosition = startingPositions.minOrNull() ?: throw RuntimeException("Can't find min")
     val maxPosition = startingPositions.maxOrNull() ?: throw RuntimeException("Can't find max")
-
-    var optimalFuel = Int.MAX_VALUE
-    for (alignment in minPosition..maxPosition) {
-        val fuelCost = startingPositions.sumOf { calcFuelCost(it, alignment) }
-        if (fuelCost < optimalFuel) {
-            optimalFuel = fuelCost
-        }
+    return (minPosition..maxPosition).fold(Int.MAX_VALUE) { optimalFuel, toPosition ->
+        min(optimalFuel, startingPositions.sumOf { fromPosition -> calcFuelCost(fromPosition, toPosition) })
     }
-
-    return optimalFuel
 }
 
 fun getPart1Answer(startingPositions: List<Int>) =
