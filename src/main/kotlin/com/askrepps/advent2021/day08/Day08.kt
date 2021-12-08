@@ -94,7 +94,7 @@ fun getWireMapping(entry: NoteEntry): Map<Char, Char> {
         entry.signalPatterns.sumOf { pattern -> pattern.count { it == inputWire } }
     }
 
-    // disambiguate b and (b appears in 6 patterns, d in 7)
+    // disambiguate b and d (b appears in 6 patterns, d in 7)
     possibleInputWiresBySegment['b']?.retainAll(inputWiresByCount[6].orEmpty().toSet())
     possibleInputWiresBySegment['d']?.retainAll(inputWiresByCount[7].orEmpty().toSet())
 
@@ -106,7 +106,7 @@ fun getWireMapping(entry: NoteEntry): Map<Char, Char> {
     possibleInputWiresBySegment['e']?.retainAll(inputWiresByCount[4].orEmpty().toSet())
     possibleInputWiresBySegment['g']?.retainAll(inputWiresByCount[7].orEmpty().toSet())
 
-    // reverse mapping from input to output for direct lookup during decoding
+    // reverse mapping from input wires to output segments for direct lookup during decoding
     return possibleInputWiresBySegment.map { (outputSegment, inputWires) ->
         check(inputWires.size == 1) { "Could not determine input wire for segment $outputSegment" }
         inputWires.first() to outputSegment
