@@ -54,7 +54,7 @@ fun getWireMapping(entry: NoteEntry): Map<Char, Char> {
     val allSegments = 'a'..'g'
     val possibleInputWiresBySegment = allSegments.associateWith { allSegments.toMutableSet() }
 
-    // match input patterns to their value using a value's unique numbers of segments
+    // attempt to match input patterns to their value using some values' unique numbers of segments
     val uniqueLengthValuesByLength = mutableMapOf(
         SEGMENTS_BY_NUMBER[1].size to 1,
         SEGMENTS_BY_NUMBER[4].size to 4,
@@ -71,20 +71,20 @@ fun getWireMapping(entry: NoteEntry): Map<Char, Char> {
         }
     }
 
-    // wire that maps to top of 7 can't be any input that maps to the right two segments in 1
+    // wire that maps to top of 7 can't be any input wire that maps to the right two segments in a 1
     possibleInputWiresBySegment['a']?.removeAll(patternsByValue[1].orEmpty())
 
-    // single remaining wire that maps to a can't map to any other wires
+    // single remaining wire that maps to a can't map to any other segments
     for (outputWire in 'b'..'g') {
         possibleInputWiresBySegment[outputWire]?.removeAll(possibleInputWiresBySegment['a'].orEmpty())
     }
 
-    // identical pairs of wires that map to c and f can't map to other wires
+    // identical pairs of wires that map to c and f can't map to other segments
     for (outputWire in allSegments - setOf('c', 'f')) {
         possibleInputWiresBySegment[outputWire]?.removeAll(possibleInputWiresBySegment['c'].orEmpty())
     }
 
-    // identical pairs of wires that map to b and d can't map to other wires
+    // identical pairs of wires that map to b and d can't map to other segments
     for (outputWire in allSegments - setOf('b', 'd')) {
         possibleInputWiresBySegment[outputWire]?.removeAll(possibleInputWiresBySegment['b'].orEmpty())
     }
