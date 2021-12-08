@@ -43,11 +43,11 @@ private val SEGMENTS_BY_NUMBER = listOf(
 private val NUMBER_BY_SEGMENTS =
     SEGMENTS_BY_NUMBER.mapIndexed { value, segments -> segments to value }.toMap()
 
-data class NoteEntry(val signalPatterns: List<String>, val outputValues: List<String>)
+data class NoteEntry(val signalPatterns: List<String>, val outputDisplays: List<String>)
 
 fun String.toNoteEntry() =
-    split(" | ").let { (patterns, output) ->
-        NoteEntry(patterns.split(" "), output.split(" "))
+    split(" | ").let { (signalPatterns, outputDisplays) ->
+        NoteEntry(signalPatterns.split(" "), outputDisplays.split(" "))
     }
 
 fun getWireMapping(entry: NoteEntry): Map<Char, Char> {
@@ -113,30 +113,15 @@ fun getWireMapping(entry: NoteEntry): Map<Char, Char> {
     }.toMap()
 }
 
-fun decodeOutputValue(entry: NoteEntry, wireMap: Map<Char, Char>): Int {
-    var result = 0
-    for (value in entry.outputValues) {
-        result *= 10
-        val correctedSegments = value.map { wireMap[it] }.toSet()
-        result += NUMBER_BY_SEGMENTS[correctedSegments]
-            ?: throw RuntimeException("No value found for segments $correctedSegments")
+fun decodeOutputValue(entry: NoteEntry, wireMap: Map<Char, Char>) =
+    entry.outputDisplays.fold(0) { result, digitDisplay ->
+        result * 10 +
+            checkNotNull(NUMBER_BY_SEGMENTS[digitDisplay.map { wireMap[it] }.toSet()]) { "Value lookup failed" }
     }
-    return result
-}
 
 fun getPart1Answer(entries: List<NoteEntry>): Int {
-    val uniqueLengthValues = setOf(1, 4, 7, 8)
-
-    var count = 0
-    for (entry in entries) {
-        for (output in entry.outputValues) {
-            if (uniqueLengthValues.any { output.length == SEGMENTS_BY_NUMBER[it].size }) {
-                count++
-            }
-        }
-    }
-
-    return count
+    val uniqueValueLengths = setOf(1, 4, 7, 8).map { SEGMENTS_BY_NUMBER[it].size }.toSet()
+    return entries.sumOf { entry -> entry.outputDisplays.count { it.length in uniqueValueLengths } }
 }
 
 fun getPart2Answer(entries: List<NoteEntry>) =
