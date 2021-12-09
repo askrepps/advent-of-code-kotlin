@@ -27,81 +27,73 @@ package com.askrepps.advent2021.day09
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
 
+private const val MAX_BASIN_HEIGHT = 8
+
 data class Point(val rowIndex: Int, val colIndex: Int, val height: Int)
 
-fun List<String>.toHeightMap() = map { line -> line.map { it.toString().toInt() } }
+class HeightMap(heightData: List<List<Int>>) {
+    private val points: List<List<Point>>
+    private val numRows: Int
+    private val numColumns: Int
 
-fun getNeighbors(rowIndex: Int, colIndex: Int, heightMap: List<List<Int>>, numRows: Int, numColumns: Int): List<Point> {
-    val neighbors = mutableListOf<Point>()
-    if (rowIndex > 0) {
-        neighbors.add(Point(rowIndex - 1, colIndex, heightMap[rowIndex - 1][colIndex]))
-    }
-    if (rowIndex < numRows - 1) {
-        neighbors.add(Point(rowIndex + 1, colIndex, heightMap[rowIndex + 1][colIndex]))
-    }
-    if (colIndex > 0) {
-        neighbors.add(Point(rowIndex, colIndex - 1, heightMap[rowIndex][colIndex - 1]))
-    }
-    if (colIndex < numColumns - 1) {
-        neighbors.add(Point(rowIndex, colIndex + 1, heightMap[rowIndex][colIndex + 1]))
-    }
-    return neighbors
-}
+    init {
+        check(heightData.isNotEmpty()) { "Height map must have data" }
 
-fun getNeighbors(point: Point, heightMap: List<List<Int>>, numRows: Int, numColumns: Int) =
-    getNeighbors(point.rowIndex, point.colIndex, heightMap, numRows, numColumns)
+        numRows = heightData.size
+        numColumns = heightData.first().size
 
-fun getLowPoints(heightMap: List<List<Int>>): List<Point> {
-    val numRows = heightMap.size
-    val numColumns = heightMap.first().size
-    check(heightMap.all { it.size == numColumns }) { "grid is not rectangular "}
+        check(heightData.all { it.size == numColumns }) { "Map grid is not rectangular" }
 
-    val lowPoints = mutableListOf<Point>()
-    for (rowIndex in 0 until numRows) {
-        for (colIndex in 0 until numColumns) {
-            val height = heightMap[rowIndex][colIndex]
-            if (getNeighbors(rowIndex, colIndex, heightMap, numRows, numColumns).all { it.height > height }) {
-                lowPoints.add(Point(rowIndex, colIndex, height))
-            }
+        points = heightData.mapIndexed { rowIndex, rowData ->
+            rowData.mapIndexed { colIndex, height -> Point(rowIndex, colIndex, height) }
         }
     }
-    return lowPoints
-}
 
-fun getBasin(heightMap: List<List<Int>>, lowPoint: Point): Set<Point> {
-    val numRows = heightMap.size
-    val numColumns = heightMap.first().size
-    check(heightMap.all { it.size == numColumns }) { "grid is not rectangular "}
+    val lowPoints: List<Point> by lazy { calcLowPoints() }
 
-    val basin = mutableSetOf(lowPoint)
-    val queue = mutableListOf(lowPoint)
-    while (queue.isNotEmpty()) {
-        val searchPoint = queue.removeFirst()
-        for (neighbor in getNeighbors(searchPoint, heightMap, numRows, numColumns)) {
-            if (neighbor !in basin && neighbor.height > searchPoint.height && neighbor.height < 9) {
-                basin.add(neighbor)
-                queue.add(neighbor)
+    private fun getNeighbors(point: Point) =
+        listOf(Pair(-1, 0), Pair(1, 0), Pair(0, -1), Pair(0, 1))
+            .mapNotNull { (deltaRow, deltaCol) ->
+                points.getOrNull(point.rowIndex + deltaRow)?.getOrNull(point.colIndex + deltaCol)
             }
+
+    private fun calcLowPoints() =
+        points.flatMap { row ->
+            row.filter { point -> getNeighbors(point).all { it.height > point.height } }
         }
+
+    fun getBasinForPoint(lowPoint: Point): Set<Point> {
+        val basin = mutableSetOf(lowPoint)
+        val searchStack = mutableListOf(lowPoint)
+        while (searchStack.isNotEmpty()) {
+            val currentPoint = searchStack.removeLast()
+            getNeighbors(currentPoint)
+                .filter { it !in basin && it.height > currentPoint.height && it.height <= MAX_BASIN_HEIGHT }
+                .forEach {
+                    basin.add(it)
+                    searchStack.add(it)
+                }
+        }
+        return basin
     }
-    return basin
 }
 
-fun getPart1Answer(lowPoints: List<Point>) =
-    lowPoints.sumOf { it.height + 1 }
+fun List<String>.toHeightMap() =
+    HeightMap(heightData = map { line -> line.map { it.code - '0'.code } })
 
-fun getPart2Answer(heightMap: List<List<Int>>, lowPoints: List<Point>) =
-    lowPoints.map { getBasin(heightMap, it).size }
-        .sorted()
-        .reversed()
+fun getPart1Answer(heightMap: HeightMap) =
+    heightMap.lowPoints.sumOf { it.height + 1 }
+
+fun getPart2Answer(heightMap: HeightMap) =
+    heightMap.lowPoints.map { heightMap.getBasinForPoint(it).size }
+        .sortedDescending()
         .take(3)
-        .fold(1) { result, basinSize -> result * basinSize }
+        .fold(1, Int::times)
 
 fun main() {
     val heightMap = File("src/main/resources/day09.txt")
         .getInputLines().toHeightMap()
-    val lowPoints = getLowPoints(heightMap)
 
-    println("The answer to part 1 is ${getPart1Answer(lowPoints)}")
-    println("The answer to part 2 is ${getPart2Answer(heightMap, lowPoints)}")
+    println("The answer to part 1 is ${getPart1Answer(heightMap)}")
+    println("The answer to part 2 is ${getPart2Answer(heightMap)}")
 }

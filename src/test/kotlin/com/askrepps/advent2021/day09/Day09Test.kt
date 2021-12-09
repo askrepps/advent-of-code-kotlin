@@ -41,9 +41,8 @@ class Day09Test {
     @Test
     fun testDay09() {
         val heightMap = testData.getInputLines().toHeightMap()
-        val lowPoints = getLowPoints(heightMap)
 
-        assertEquals(15, getPart1Answer(lowPoints))
-        assertEquals(1134, getPart2Answer(heightMap, lowPoints))
+        assertEquals(15, getPart1Answer(heightMap))
+        assertEquals(1134, getPart2Answer(heightMap))
     }
 }
