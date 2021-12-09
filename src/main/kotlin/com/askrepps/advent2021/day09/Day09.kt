@@ -29,6 +29,8 @@ import java.io.File
 
 private const val MAX_BASIN_HEIGHT = 8
 
+private val NEIGHBOR_DIRECTIONS = listOf(Pair(-1, 0), Pair(1, 0), Pair(0, -1), Pair(0, 1))
+
 data class Point(val rowIndex: Int, val colIndex: Int, val height: Int)
 
 class HeightMap(heightData: List<List<Int>>) {
@@ -52,10 +54,9 @@ class HeightMap(heightData: List<List<Int>>) {
     val lowPoints: List<Point> by lazy { calcLowPoints() }
 
     private fun getNeighbors(point: Point) =
-        listOf(Pair(-1, 0), Pair(1, 0), Pair(0, -1), Pair(0, 1))
-            .mapNotNull { (deltaRow, deltaCol) ->
-                points.getOrNull(point.rowIndex + deltaRow)?.getOrNull(point.colIndex + deltaCol)
-            }
+        NEIGHBOR_DIRECTIONS.mapNotNull { (deltaRow, deltaCol) ->
+            points.getOrNull(point.rowIndex + deltaRow)?.getOrNull(point.colIndex + deltaCol)
+        }
 
     private fun calcLowPoints() =
         points.flatMap { row ->
