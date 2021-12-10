@@ -54,12 +54,9 @@ private val COMPLETION_CHARACTER_SCORES = mapOf(
     '<' to 4L
 )
 
-data class LineResult(val corruptionScore: Long?, val stackState: List<Char>) {
-    val isCorrupt: Boolean
-        get() = corruptionScore != null
-}
+data class LineResult(val score: Long, val isCorrupt: Boolean)
 
-fun String.validateLine(): LineResult {
+fun String.scoreLine(): LineResult {
     val stack = mutableListOf<Char>()
     for (c in this) {
         when (c) {
@@ -68,33 +65,30 @@ fun String.validateLine(): LineResult {
                 if (stack.isEmpty() || stack.removeLast() != MATCHING_CHARACTERS[c]) {
                     val corruptionScore = ILLEGAL_CHARACTER_SCORES[c]
                         ?: throw IllegalStateException("Unexpected char '$c'")
-                    return LineResult(corruptionScore, stack)
+                    return LineResult(corruptionScore, isCorrupt = true)
                 }
             }
         }
     }
 
-    return LineResult(corruptionScore = null, stack)
-}
-
-fun List<String>.partitionResults() =
-    map { it.validateLine() }
-        .partition { it.isCorrupt }
-
-fun LineResult.scoreLineCompletion() =
-    stackState.foldRight(0L) { c, score ->
+    val completionScore = stack.foldRight(0L) { c, score ->
         val value = COMPLETION_CHARACTER_SCORES[c]
             ?: throw IllegalStateException("Unexpected stack char '$c'")
         score * 5L + value
     }
+    return LineResult(completionScore, isCorrupt = false)
+}
+
+fun List<String>.partitionResults() =
+    map { it.scoreLine() }
+        .partition { it.isCorrupt }
 
 fun getPart1Answer(corruptResults: List<LineResult>) =
-    corruptResults.sumOf { it.corruptionScore ?: 0L }
+    corruptResults.sumOf { it.score }
 
 fun getPart2Answer(incompleteResults: List<LineResult>) =
-    incompleteResults.map { it.scoreLineCompletion() }
-        .sorted()
-        .let { it[it.size / 2] }
+    incompleteResults.sortedBy { it.score }
+        .let { it[it.size / 2].score }
 
 fun main() {
     val (corruptResults, incompleteResults) = File("src/main/resources/day10.txt")
