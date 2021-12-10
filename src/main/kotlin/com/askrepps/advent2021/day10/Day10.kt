@@ -26,7 +26,19 @@ package com.askrepps.advent2021.day10
 
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
-import java.util.*
+
+private val OPENING_CHARACTERS = setOf('(', '[', '{', '<')
+
+private val MATCHING_CHARACTERS = mapOf(
+    '(' to ')',
+    '[' to ']',
+    '{' to '}',
+    '<' to '>',
+    ')' to '(',
+    ']' to '[',
+    '}' to '{',
+    '>' to '<'
+)
 
 private val ILLEGAL_CHARACTER_SCORES = mapOf(
     ')' to 3L,
@@ -42,131 +54,53 @@ private val COMPLETION_CHARACTER_SCORES = mapOf(
     '<' to 4L
 )
 
-fun List<String>.scoreCorruptedLines() =
-    sumOf { line ->
-        val stack = Stack<Char>()
-        for (c in line) {
-            when (c) {
-                '(', '[', '{', '<' -> stack.push(c)
-                ')' -> {
-                    if (stack.isEmpty() || stack.peek() != '(') {
-                        return@sumOf ILLEGAL_CHARACTER_SCORES[c] ?: 0L
-                    }
-                    stack.pop()
-                }
-                ']' -> {
-                    if (stack.isEmpty() || stack.peek() != '[') {
-                        return@sumOf ILLEGAL_CHARACTER_SCORES[c] ?: 0L
-                    }
-                    stack.pop()
-                }
-                '}' -> {
-                    if (stack.isEmpty() || stack.peek() != '{') {
-                        return@sumOf ILLEGAL_CHARACTER_SCORES[c] ?: 0L
-                    }
-                    stack.pop()
-                }
-                '>' -> {
-                    if (stack.isEmpty() || stack.peek() != '<') {
-                        return@sumOf ILLEGAL_CHARACTER_SCORES[c] ?: 0L
-                    }
-                    stack.pop()
-                }
-            }
-        }
-
-        return@sumOf 0L
-    }
-
-fun String.isCorrupted(): Boolean {
-    val stack = Stack<Char>()
-    for (c in this) {
-        when (c) {
-            '(', '[', '{', '<' -> stack.push(c)
-            ')' -> {
-                if (stack.isEmpty() || stack.peek() != '(') {
-                    return true
-                }
-                stack.pop()
-            }
-            ']' -> {
-                if (stack.isEmpty() || stack.peek() != '[') {
-                    return true
-                }
-                stack.pop()
-            }
-            '}' -> {
-                if (stack.isEmpty() || stack.peek() != '{') {
-                    return true
-                }
-                stack.pop()
-            }
-            '>' -> {
-                if (stack.isEmpty() || stack.peek() != '<') {
-                    return true
-                }
-                stack.pop()
-            }
-        }
-    }
-
-    return false
+data class LineResult(val corruptionScore: Long?, val stackState: List<Char>) {
+    val isCorrupt: Boolean
+        get() = corruptionScore != null
 }
 
-fun String.scoreLineCompletion(): Long {
-    val stack = Stack<Char>()
+fun String.validateLine(): LineResult {
+    val stack = mutableListOf<Char>()
     for (c in this) {
         when (c) {
-            '(', '[', '{', '<' -> stack.push(c)
-            ')' -> {
-                if (stack.isEmpty() || stack.peek() != '(') {
-                    throw IllegalStateException("Corrupt line")
+            in OPENING_CHARACTERS -> stack.add(c)
+            else -> {
+                if (stack.isEmpty() || stack.removeLast() != MATCHING_CHARACTERS[c]) {
+                    val corruptionScore = ILLEGAL_CHARACTER_SCORES[c]
+                        ?: throw IllegalStateException("Unexpected char $c")
+                    return LineResult(corruptionScore, stack)
                 }
-                stack.pop()
-            }
-            ']' -> {
-                if (stack.isEmpty() || stack.peek() != '[') {
-                    throw IllegalStateException("Corrupt line")
-                }
-                stack.pop()
-            }
-            '}' -> {
-                if (stack.isEmpty() || stack.peek() != '{') {
-                    throw IllegalStateException("Corrupt line")
-                }
-                stack.pop()
-            }
-            '>' -> {
-                if (stack.isEmpty() || stack.peek() != '<') {
-                    throw IllegalStateException("Corrupt line")
-                }
-                stack.pop()
             }
         }
     }
 
-    var score = 0L
-    while (stack.isNotEmpty()) {
-        val c = stack.pop()
-        score = score * 5L +
-                (COMPLETION_CHARACTER_SCORES[c] ?: throw IllegalStateException("Unexpected stack char '$c'"))
-    }
-
-    return score
+    return LineResult(corruptionScore = null, stack)
 }
 
-fun getPart1Answer(lines: List<String>) = lines.scoreCorruptedLines()
+fun List<String>.partitionResults() =
+    map { it.validateLine() }
+        .partition { it.isCorrupt }
 
-fun getPart2Answer(lines: List<String>) =
-    lines.filter { !it.isCorrupted() }
-        .map { it.scoreLineCompletion() }
+fun LineResult.scoreLineCompletion() =
+    stackState.foldRight(0L) { c, score ->
+        val value = COMPLETION_CHARACTER_SCORES[c]
+            ?: throw IllegalStateException("Unexpected stack char '$c'")
+        score * 5L + value
+    }
+
+fun getPart1Answer(corruptResults: List<LineResult>) =
+    corruptResults.sumOf { it.corruptionScore ?: 0L }
+
+fun getPart2Answer(incompleteResults: List<LineResult>) =
+    incompleteResults.map { it.scoreLineCompletion() }
         .sorted()
         .let { it[it.size / 2] }
 
 fun main() {
-    val lines = File("src/main/resources/day10.txt")
+    val (corruptResults, incompleteResults) = File("src/main/resources/day10.txt")
         .getInputLines()
+        .partitionResults()
 
-    println("The answer to part 1 is ${getPart1Answer(lines)}")
-    println("The answer to part 2 is ${getPart2Answer(lines)}")
+    println("The answer to part 1 is ${getPart1Answer(corruptResults)}")
+    println("The answer to part 2 is ${getPart2Answer(incompleteResults)}")
 }

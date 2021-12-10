@@ -45,9 +45,9 @@ class Day10Test {
 
     @Test
     fun testDay10() {
-        val lines = testData.getInputLines()
+        val (corruptResults, incompleteResults) = testData.getInputLines().partitionResults()
 
-        assertEquals(26397, getPart1Answer(lines))
-        assertEquals(288957, getPart2Answer(lines))
+        assertEquals(26397, getPart1Answer(corruptResults))
+        assertEquals(288957, getPart2Answer(incompleteResults))
     }
 }
