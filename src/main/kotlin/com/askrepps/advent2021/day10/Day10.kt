@@ -67,7 +67,7 @@ fun String.validateLine(): LineResult {
             else -> {
                 if (stack.isEmpty() || stack.removeLast() != MATCHING_CHARACTERS[c]) {
                     val corruptionScore = ILLEGAL_CHARACTER_SCORES[c]
-                        ?: throw IllegalStateException("Unexpected char $c")
+                        ?: throw IllegalStateException("Unexpected char '$c'")
                     return LineResult(corruptionScore, stack)
                 }
             }
