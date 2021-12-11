@@ -61,17 +61,17 @@ fun simulateStep(octopi: List<List<Octopus>>): Int {
     val allFlashCoordinates = mutableSetOf<GridCoordinates>()
     val flashQueue: Deque<Octopus> = ArrayDeque()
 
-    fun flashOctopus(octopus: Octopus) {
-        flashQueue.add(octopus)
-        allFlashCoordinates.add(octopus.coordinates)
+    fun Octopus.increaseEnergy() {
+        energy++
+        if (energy > FLASH_THRESHOLD && coordinates !in allFlashCoordinates) {
+            flashQueue.add(this)
+            allFlashCoordinates.add(coordinates)
+        }
     }
 
     for (octoRow in octopi) {
         for (octopus in octoRow) {
-            octopus.energy++
-            if (octopus.energy > FLASH_THRESHOLD) {
-                flashOctopus(octopus)
-            }
+            octopus.increaseEnergy()
         }
     }
 
@@ -82,10 +82,7 @@ fun simulateStep(octopi: List<List<Octopus>>): Int {
             octopi.getOrNull(flashedOctopus.coordinates.row + deltaRow)
                 ?.getOrNull(flashedOctopus.coordinates.col + deltaCol)
         }.forEach { octopus ->
-            octopus.energy++
-            if (octopus.energy > FLASH_THRESHOLD && octopus.coordinates !in allFlashCoordinates) {
-                flashOctopus(octopus)
-            }
+            octopus.increaseEnergy()
         }
     }
 
