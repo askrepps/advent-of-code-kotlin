@@ -44,7 +44,7 @@ private val NEIGHBOR_DIRECTIONS = listOf(
 
 data class GridCoordinates(val row: Int, val col: Int)
 
-data class Octopus(val coordinates: GridCoordinates, var energy: Int, var hasFlashedThisStep: Boolean = false)
+data class Octopus(val coordinates: GridCoordinates, var energy: Int)
 
 fun List<String>.toOctopi() =
     mapIndexed { row, rowData ->
@@ -57,17 +57,20 @@ fun List<List<Octopus>>.deepCopy() =
     map { octoRow -> octoRow.map { it.copy() } }
 
 fun simulateStep(octopi: List<List<Octopus>>): Int {
-    val allFlashes = mutableSetOf<GridCoordinates>()
-
+    // set must store immutable data to behave properly
+    val allFlashCoordinates = mutableSetOf<GridCoordinates>()
     val flashQueue: Deque<Octopus> = ArrayDeque()
+
+    fun flashOctopus(octopus: Octopus) {
+        flashQueue.add(octopus)
+        allFlashCoordinates.add(octopus.coordinates)
+    }
+
     for (octoRow in octopi) {
         for (octopus in octoRow) {
-            octopus.hasFlashedThisStep = false
             octopus.energy++
             if (octopus.energy > FLASH_THRESHOLD) {
-                octopus.hasFlashedThisStep = true
-                flashQueue.add(octopus)
-                allFlashes.add(octopus.coordinates)
+                flashOctopus(octopus)
             }
         }
     }
@@ -80,16 +83,17 @@ fun simulateStep(octopi: List<List<Octopus>>): Int {
                 ?.getOrNull(flashedOctopus.coordinates.col + deltaCol)
         }.forEach { octopus ->
             octopus.energy++
-            if (!octopus.hasFlashedThisStep && octopus.energy > FLASH_THRESHOLD) {
-                octopus.hasFlashedThisStep = true
-                flashQueue.add(octopus)
-                allFlashes.add(octopus.coordinates)
+            if (octopus.energy > FLASH_THRESHOLD && octopus.coordinates !in allFlashCoordinates) {
+                flashOctopus(octopus)
             }
         }
     }
 
-    allFlashes.forEach { (row, col) -> octopi[row][col].energy = 0 }
-    return allFlashes.size
+    for ((row, col) in allFlashCoordinates) {
+        octopi[row][col].energy = 0
+    }
+
+    return allFlashCoordinates.size
 }
 
 fun getPart1Answer(octopi: List<List<Octopus>>): Int {
@@ -103,7 +107,8 @@ fun getPart2Answer(octopi: List<List<Octopus>>): Int {
 
     var step = 1
     while (true) {
-        if (simulateStep(octoCopy) == totalOctopi) {
+        val flashCount = simulateStep(octoCopy)
+        if (flashCount == totalOctopi) {
             return step
         }
         step++
