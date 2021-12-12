@@ -92,8 +92,8 @@ fun countPathsFrom(
                 continue
             }
         }
-        val newVisitedSmallNodeCounts = smallNodeVisitCounts.toMutableMap()
-        count += countPathsFrom(caves, node.label, smallNodeVisitMax, newVisitedSmallNodeCounts)
+        val newSmallNodeVisitCounts = smallNodeVisitCounts.toMutableMap()
+        count += countPathsFrom(caves, node.label, smallNodeVisitMax, newSmallNodeVisitCounts)
     }
     return count
 }
