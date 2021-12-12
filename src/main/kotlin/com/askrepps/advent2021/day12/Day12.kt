@@ -37,6 +37,7 @@ class CaveNode(val label: String) {
             label.all { it.isUpperCase() } -> NodeType.BIG
             else -> NodeType.SMALL
         }
+
     private val _connectedNodes = mutableSetOf<CaveNode>()
     val connectedNodes: Set<CaveNode>
         get() = _connectedNodes
@@ -75,6 +76,7 @@ fun countPathsFrom(
         smallNodeVisitCounts[startLabel] = (smallNodeVisitCounts[startLabel] ?: 0) + 1
     }
 
+    // Note: this assumes no two big caves are directly connected to each other, which would cause infinite recursion
     var count = 0
     for (node in startNode.connectedNodes) {
         if (node.type == NodeType.START) {
@@ -93,7 +95,6 @@ fun countPathsFrom(
         val newVisitedSmallNodeCounts = smallNodeVisitCounts.toMutableMap()
         count += countPathsFrom(caves, node.label, smallNodeVisitMax, newVisitedSmallNodeCounts)
     }
-
     return count
 }
 
