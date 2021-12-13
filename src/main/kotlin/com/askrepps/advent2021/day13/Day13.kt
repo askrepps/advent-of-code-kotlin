@@ -104,7 +104,6 @@ fun Set<GraphCoordinates>.toGraphString(): String {
 fun getPart1Answer(dots: Set<GraphCoordinates>, folds: List<FoldCommand>) =
     foldDots(dots, folds.first()).size
 
-
 fun getPart2Answer(initialDots: Set<GraphCoordinates>, folds: List<FoldCommand>) =
     folds.fold(initialDots) { dots, fold -> foldDots(dots, fold) }.toGraphString()
 
