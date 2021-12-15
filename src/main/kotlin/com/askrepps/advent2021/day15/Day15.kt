@@ -35,26 +35,27 @@ private val NEIGHBOR_DIRECTIONS = listOf(
     Pair(0, 1)
 )
 
-data class GridCoordinates(val row: Int, val col: Int)
+data class GridSearchPoint(val row: Int, val col: Int, val currentTotalRisk: Int)
 
 fun String.toRiskValues() =
     map { it.code - '0'.code }
 
-fun findMinimumPathRisk(individualRiskMap: List<List<Int>>): Int {
-    val totalPathRiskMap = individualRiskMap.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
+fun findMinimumPathRisk(localRiskMap: List<List<Int>>): Int {
+    val totalPathRiskMap = localRiskMap.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
     totalPathRiskMap[0][0] = 0
 
-    val pointQueue = PriorityQueue<Pair<GridCoordinates, Int>>(compareBy { it.second })
-    pointQueue.add(GridCoordinates(0, 0) to 0)
-    while (pointQueue.isNotEmpty()) {
-        val (currentPoint, currentTotalRisk) = pointQueue.remove()
+    val searchQueue = PriorityQueue<GridSearchPoint>(compareBy { it.currentTotalRisk })
+    searchQueue.add(GridSearchPoint(0, 0, 0))
+    while (searchQueue.isNotEmpty()) {
+        val (currentRow, currentCol, currentTotalRisk) = searchQueue.remove()
         for ((deltaRow, deltaCol) in NEIGHBOR_DIRECTIONS) {
-            val neighborPoint = GridCoordinates(currentPoint.row + deltaRow, currentPoint.col + deltaCol)
-            individualRiskMap.getOrNull(neighborPoint.row)?.getOrNull(neighborPoint.col)?.let { neighborLocalRisk ->
-                val possibleRisk = currentTotalRisk + neighborLocalRisk
-                if (possibleRisk < totalPathRiskMap[neighborPoint.row][neighborPoint.col]) {
-                    totalPathRiskMap[neighborPoint.row][neighborPoint.col] = possibleRisk
-                    pointQueue.add(neighborPoint to possibleRisk)
+            val neighborRow = currentRow + deltaRow
+            val neighborCol = currentCol + deltaCol
+            localRiskMap.getOrNull(neighborRow)?.getOrNull(neighborCol)?.let { neighborLocalRisk ->
+                val possibleTotalRisk = currentTotalRisk + neighborLocalRisk
+                if (possibleTotalRisk < totalPathRiskMap[neighborRow][neighborCol]) {
+                    totalPathRiskMap[neighborRow][neighborCol] = possibleTotalRisk
+                    searchQueue.add(GridSearchPoint(neighborRow, neighborCol, possibleTotalRisk))
                 }
             }
         }
