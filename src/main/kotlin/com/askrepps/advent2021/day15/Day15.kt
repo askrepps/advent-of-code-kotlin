@@ -26,7 +26,7 @@ package com.askrepps.advent2021.day15
 
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
-import java.util.*
+import java.util.PriorityQueue
 
 private val NEIGHBOR_DIRECTIONS = listOf(
     Pair(-1, 0),
@@ -44,23 +44,17 @@ fun findMinimumPathRisk(individualRiskMap: List<List<Int>>): Int {
     val totalPathRiskMap = individualRiskMap.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
     totalPathRiskMap[0][0] = 0
 
-    val allPoints = totalPathRiskMap.flatMapIndexed { rowIndex, row ->
-        row.indices.map { colIndex -> GridCoordinates(rowIndex, colIndex) }
-    }
-
-    val pointQueue = PriorityQueue<GridCoordinates>(compareBy { totalPathRiskMap[it.row][it.col] })
-    pointQueue.addAll(allPoints)
+    val pointQueue = PriorityQueue<Pair<GridCoordinates, Int>>(compareBy { it.second })
+    pointQueue.add(GridCoordinates(0, 0) to 0)
     while (pointQueue.isNotEmpty()) {
-        val currentPoint = pointQueue.remove()
+        val (currentPoint, _) = pointQueue.remove()
         for ((deltaRow, deltaCol) in NEIGHBOR_DIRECTIONS) {
             val neighborPoint = GridCoordinates(currentPoint.row + deltaRow, currentPoint.col + deltaCol)
-            if (neighborPoint in pointQueue) {
-                val possibleRisk = totalPathRiskMap[currentPoint.row][currentPoint.col] +
-                        individualRiskMap[neighborPoint.row][neighborPoint.col]
+            individualRiskMap.getOrNull(neighborPoint.row)?.getOrNull(neighborPoint.col)?.let { neighborRisk ->
+                val possibleRisk = totalPathRiskMap[currentPoint.row][currentPoint.col] + neighborRisk
                 if (possibleRisk < totalPathRiskMap[neighborPoint.row][neighborPoint.col]) {
                     totalPathRiskMap[neighborPoint.row][neighborPoint.col] = possibleRisk
-                    pointQueue.remove(neighborPoint)
-                    pointQueue.add(neighborPoint)
+                    pointQueue.add(neighborPoint to possibleRisk)
                 }
             }
         }
