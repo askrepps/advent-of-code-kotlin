@@ -47,11 +47,11 @@ fun findMinimumPathRisk(individualRiskMap: List<List<Int>>): Int {
     val pointQueue = PriorityQueue<Pair<GridCoordinates, Int>>(compareBy { it.second })
     pointQueue.add(GridCoordinates(0, 0) to 0)
     while (pointQueue.isNotEmpty()) {
-        val (currentPoint, _) = pointQueue.remove()
+        val (currentPoint, currentTotalRisk) = pointQueue.remove()
         for ((deltaRow, deltaCol) in NEIGHBOR_DIRECTIONS) {
             val neighborPoint = GridCoordinates(currentPoint.row + deltaRow, currentPoint.col + deltaCol)
-            individualRiskMap.getOrNull(neighborPoint.row)?.getOrNull(neighborPoint.col)?.let { neighborRisk ->
-                val possibleRisk = totalPathRiskMap[currentPoint.row][currentPoint.col] + neighborRisk
+            individualRiskMap.getOrNull(neighborPoint.row)?.getOrNull(neighborPoint.col)?.let { neighborLocalRisk ->
+                val possibleRisk = currentTotalRisk + neighborLocalRisk
                 if (possibleRisk < totalPathRiskMap[neighborPoint.row][neighborPoint.col]) {
                     totalPathRiskMap[neighborPoint.row][neighborPoint.col] = possibleRisk
                     pointQueue.add(neighborPoint to possibleRisk)
