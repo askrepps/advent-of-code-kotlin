@@ -29,7 +29,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class Day16Test {
-
     @Test
     fun testDay16() {
         runPart1Test("8A004A801A8002F478", expectedPart1 = 16L)

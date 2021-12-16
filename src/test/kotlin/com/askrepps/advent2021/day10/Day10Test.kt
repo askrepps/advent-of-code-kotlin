@@ -42,7 +42,6 @@ private const val testData = """
 """
 
 class Day10Test {
-
     @Test
     fun testDay10() {
         val (corruptResults, incompleteResults) = testData.getInputLines().partitionResults()

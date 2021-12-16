@@ -32,7 +32,6 @@ import java.io.File
 import java.time.ZonedDateTime
 
 abstract class AdventDayGeneratorTask : DefaultTask() {
-
     @get:Input
     @set:Option(option = "day", description = "The number of the day to generate")
     var day: String? = null

@@ -30,7 +30,6 @@ import kotlin.test.assertEquals
 private const val testData = "3,4,3,1,2"
 
 class Day06Test {
-
     @Test
     fun testDay06() {
         val initialState = testData.split(",").map { it.toInt() }

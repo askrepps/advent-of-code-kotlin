@@ -73,7 +73,6 @@ start-RW
 """
 
 class Day12Test {
-
     @Test
     fun testDay12() {
         runTest(testData1, expectedPart1 = 10, expectedPart2 = 36)

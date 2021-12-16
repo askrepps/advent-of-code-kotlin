@@ -61,7 +61,6 @@ val expectedPart2 = """
 """.trim()
 
 class Day13Test {
-
     @Test
     fun testDay13() {
         val (dots, folds) = testData.getInputLines().toInstructions()

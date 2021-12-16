@@ -37,7 +37,6 @@ private const val testData = """
 """
 
 class Day09Test {
-
     @Test
     fun testDay09() {
         val heightMap = testData.getInputLines().toHeightMap()

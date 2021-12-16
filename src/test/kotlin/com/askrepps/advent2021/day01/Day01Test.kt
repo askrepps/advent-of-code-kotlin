@@ -42,7 +42,6 @@ private const val testData = """
 """
 
 class Day01Test {
-
     @Test
     fun testDay01() {
         val depths = testData.getInputLines().map { it.toInt() }

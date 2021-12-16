@@ -51,7 +51,6 @@ private const val testData = """
 """
 
 class Day04Test {
-
     @Test
     fun testDay04() {
         val lines = testData.getInputLines(includeBlanks = true)

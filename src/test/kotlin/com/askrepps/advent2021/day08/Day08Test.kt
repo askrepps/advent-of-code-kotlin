@@ -42,7 +42,6 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 """
 
 class Day08Test {
-
     @Test
     fun testDay08() {
         val entries = testData.getInputLines().map { it.toNoteEntry() }

@@ -42,7 +42,6 @@ private const val testData = """
 """
 
 class Day15Test {
-
     @Test
     fun testDay15() {
         val riskMap = testData.getInputLines().map { it.toRiskValues() }

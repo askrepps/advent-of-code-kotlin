@@ -44,7 +44,6 @@ private const val testData = """
 """
 
 class Day03Test {
-
     @Test
     fun testDay03() {
         val bitStrings = testData.getInputLines()

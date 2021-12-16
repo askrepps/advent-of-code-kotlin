@@ -38,7 +38,6 @@ forward 2
 """
 
 class Day02Test {
-
     @Test
     fun testDay02() {
         val commands = testData.getInputLines().map { it.toMovementCommand() }

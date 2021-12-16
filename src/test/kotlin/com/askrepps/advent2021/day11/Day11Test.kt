@@ -42,7 +42,6 @@ private const val testData = """
 """
 
 class Day11Test {
-
     @Test
     fun testDay11() {
         val octopi = testData.getInputLines().toOctopi()

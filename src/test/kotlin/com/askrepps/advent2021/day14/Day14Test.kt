@@ -50,7 +50,6 @@ CN -> C
 """
 
 class Day14Test {
-
     @Test
     fun testDay14() {
         val (initialState, rules) = testData.getInputLines().toPolymerDescription()

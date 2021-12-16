@@ -42,7 +42,6 @@ private const val testData = """
 """
 
 class Day05Test {
-
     @Test
     fun testDay05() {
         val lines = testData.getInputLines().map { it.toVentLine() }
