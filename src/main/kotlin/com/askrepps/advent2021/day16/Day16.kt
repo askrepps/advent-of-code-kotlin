@@ -91,11 +91,9 @@ val Packet.versionSum: Long
         }
 
 fun Packet.evaluate(): Long =
-    if (this is Literal) {
-        value
-    } else {
-        this as Operator
-        when (typeId) {
+    when (this) {
+        is Literal -> value
+        is Operator -> when (typeId) {
             0 -> subPackets.sumOf { it.evaluate() }
             1 -> subPackets.fold(1L) { result, packet -> result * packet.evaluate() }
             2 -> subPackets.minOf { it.evaluate() }
