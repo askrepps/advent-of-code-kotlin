@@ -72,10 +72,13 @@ fun simulateTrajectory(initialVelocityX: Int, initialVelocityY: Int, targetArea:
 
 fun generateValidTrajectories(targetArea: Rectangle): List<List<GraphCoordinates>> {
     // assumes target area is to the right of and below the starting position
-    val xSearch = 1..targetArea.xBounds.last
-    val ySearch = targetArea.yBounds.first..10000
-    return xSearch.flatMap { x -> ySearch.map { y -> x to y } }
-        .mapNotNull { (x, y) -> simulateTrajectory(x, y, targetArea) }
+    //   - search every positive vx0 that doesn't immediately overshoot the target
+    //   - search every vy0 that won't overshoot the target on the way down
+    //     (all trajectories with positive vy0 values will eventually return to y = 0 with a -vy0 velocity)
+    val vxSearch = 1..targetArea.xBounds.last
+    val vySearch = targetArea.yBounds.first..(-targetArea.yBounds.first)
+    return vxSearch.flatMap { vx0 -> vySearch.map { vy0 -> vx0 to vy0 } }
+        .mapNotNull { (vx0, vy0) -> simulateTrajectory(vx0, vy0, targetArea) }
 }
 
 fun getPart1Answer(validTrajectories: List<List<GraphCoordinates>>) =
