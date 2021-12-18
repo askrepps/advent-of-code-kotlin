@@ -86,14 +86,17 @@ fun List<Char>.parseSnailfishNumber(): Pair<SnailfishNode, Int> {
     if (firstChar == '[') {
         val leftNodeIndex = 1
         val (leftNode, leftNodeSize) = subList(leftNodeIndex, size).parseSnailfishNumber()
+
         val rightNodeIndex = leftNodeIndex + leftNodeSize + 1
         check(get(rightNodeIndex - 1) == ',') {
             "Malformed pair node - expected comma separating left and right nodes"
         }
         val (rightNode, rightNodeSize) = subList(rightNodeIndex, size).parseSnailfishNumber()
-        val totalNodeSize = rightNodeIndex + rightNodeSize + 1
-        check(get(totalNodeSize - 1) == ']') { "Malformed pair node - expected closing bracket" }
 
+        val totalNodeSize = rightNodeIndex + rightNodeSize + 1
+        check(get(totalNodeSize - 1) == ']') {
+            "Malformed pair node - expected closing bracket"
+        }
         val node = SnailfishPairNode(leftNode, rightNode)
         return Pair(node, totalNodeSize)
     } else if (firstChar.isDigit()) {
@@ -130,6 +133,12 @@ tailrec fun SnailfishNode.findLeftmostValueNode(): SnailfishValueNode? =
 tailrec fun SnailfishNode.findRightmostValueNode(): SnailfishValueNode? =
     (this as? SnailfishValueNode) ?: right?.findRightmostValueNode()
 
+val SnailfishNode.firstNumberToTheLeft: SnailfishValueNode?
+    get() = findParentWithLeftSubtreeNotIncludingMe()?.left?.findRightmostValueNode()
+
+val SnailfishNode.firstNumberToTheRight: SnailfishValueNode?
+    get() = findParentWithRightSubtreeNotIncludingMe()?.right?.findLeftmostValueNode()
+
 fun SnailfishNode.replaceChild(currentNode: SnailfishNode) {
     val nodeParent = requireNotNull(currentNode.parent) { "Current node has no parent" }
     if (nodeParent.left == currentNode) {
@@ -142,16 +151,11 @@ fun SnailfishNode.replaceChild(currentNode: SnailfishNode) {
     parent = nodeParent
 }
 
-fun SnailfishPairNode.explode() {
-    val leftValueNode = requireNotNull(left as? SnailfishValueNode) { "Exploding node must have left value" }
-    val rightValueNode = requireNotNull(right as? SnailfishValueNode) { "Exploding node must have right value" }
-
-    findParentWithLeftSubtreeNotIncludingMe()?.left?.findRightmostValueNode()?.let {
-        it.value += leftValueNode.value
-    }
-    findParentWithRightSubtreeNotIncludingMe()?.right?.findLeftmostValueNode()?.let {
-        it.value += rightValueNode.value
-    }
+fun SnailfishNode.explode() {
+    val leftShard = requireNotNull(left as? SnailfishValueNode) { "Exploding node must have left value" }
+    val rightShard = requireNotNull(right as? SnailfishValueNode) { "Exploding node must have right value" }
+    firstNumberToTheLeft?.let { it.value += leftShard.value }
+    firstNumberToTheRight?.let { it.value += rightShard.value }
 
     val newValue = SnailfishValueNode(0L)
     newValue.replaceChild(this)
@@ -208,7 +212,11 @@ fun getPart1Answer(numbers: List<SnailfishNode>) =
 fun getPart2Answer(numbers: List<SnailfishNode>) =
     numbers.maxOf { n1 ->
         numbers.maxOf { n2 ->
-            if (n1 == n2) Long.MIN_VALUE else n1.addTo(n2).magnitude
+            if (n1 == n2) {
+                Long.MIN_VALUE
+            } else {
+                n1.addTo(n2).magnitude
+            }
         }
     }
 
