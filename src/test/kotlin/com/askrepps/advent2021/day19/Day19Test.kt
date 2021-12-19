@@ -173,7 +173,7 @@ class Day19Test {
         val scannerReports = testData.getInputLines().toScannerReports()
         val scannerStates = findScannerStates(scannerReports)
 
-        assertEquals(79, getPart1Answer(scannerReports, scannerStates))
+        assertEquals(79, getPart1Answer(scannerStates))
         assertEquals(3621, getPart2Answer(scannerStates))
     }
 }

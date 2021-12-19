@@ -28,9 +28,11 @@ import com.askrepps.advent2021.util.getInputLines
 import java.io.File
 import kotlin.math.abs
 
+typealias Rotation = (GraphCoordinates) -> GraphCoordinates
+
 private const val OVERLAP_THRESHOLD = 12
 
-private val MEASUREMENT_ROTATIONS = listOf<(GraphCoordinates) -> GraphCoordinates>(
+private val MEASUREMENT_ROTATIONS = listOf<Rotation>(
     // scanner +z is facing world +z
     { (x, y, z) -> GraphCoordinates( x,  y,  z) },
     { (x, y, z) -> GraphCoordinates( y, -x,  z) },
@@ -79,12 +81,13 @@ data class GraphCoordinates(val x: Int, val y: Int, val z: Int) {
         abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
 }
 
-data class ScannerReport(val id: Int, val beaconMeasurements: Set<GraphCoordinates>) {
-    fun transformMeasurements(state: ScannerState) =
-        beaconMeasurements.map { measurement -> state.rotation(measurement) + state.position }.toSet()
-}
+data class ScannerReport(val id: Int, val beaconMeasurements: Set<GraphCoordinates>)
 
-data class ScannerState(val position: GraphCoordinates, val rotation: (GraphCoordinates) -> GraphCoordinates)
+data class ScannerState(
+    val position: GraphCoordinates,
+    val rotation: Rotation,
+    val transformedMeasurements: Set<GraphCoordinates>
+)
 
 fun List<String>.toScannerReports(): Map<Int, ScannerReport> {
     val reports = mutableMapOf<Int, ScannerReport>()
@@ -106,17 +109,23 @@ fun List<String>.toScannerReports(): Map<Int, ScannerReport> {
     return reports
 }
 
-fun checkOverlap(baseScanner: ScannerReport, baseScannerState: ScannerState, newScanner: ScannerReport): ScannerState? {
-    val baseMeasurements = baseScanner.transformMeasurements(baseScannerState)
+fun checkOverlap(
+    baseScannerState: ScannerState,
+    newScanner: ScannerReport,
+    rotationCache: MutableMap<Pair<Int, Rotation>, Set<GraphCoordinates>>
+): ScannerState? {
+    val baseMeasurements = baseScannerState.transformedMeasurements
     for (rotation in MEASUREMENT_ROTATIONS) {
-        val rotatedMeasurements = newScanner.beaconMeasurements.map(rotation)
+        val rotatedMeasurements = rotationCache.computeIfAbsent(Pair(newScanner.id, rotation)) {
+            newScanner.beaconMeasurements.map(rotation).toSet()
+        }
         for (newMeasurement in rotatedMeasurements) {
             for (baseMeasurement in baseMeasurements) {
                 val position = baseMeasurement - newMeasurement
-                val candidateState = ScannerState(position, rotation)
-                val overlap = baseMeasurements.intersect(newScanner.transformMeasurements(candidateState))
+                val transformedMeasurements = rotatedMeasurements.map { it + position }.toSet()
+                val overlap = baseMeasurements.intersect(transformedMeasurements)
                 if (overlap.size >= OVERLAP_THRESHOLD) {
-                    return candidateState
+                    return ScannerState(position, rotation, transformedMeasurements)
                 }
             }
         }
@@ -125,11 +134,17 @@ fun checkOverlap(baseScanner: ScannerReport, baseScannerState: ScannerState, new
 }
 
 fun findScannerStates(scannerReports: Map<Int, ScannerReport>): Map<Int, ScannerState> {
-    val scannerStates = mutableMapOf(0 to ScannerState(GraphCoordinates(0, 0, 0), MEASUREMENT_ROTATIONS[0]))
+    val state0 = ScannerState(
+        GraphCoordinates(0, 0, 0),
+        MEASUREMENT_ROTATIONS[0],
+        scannerReports[0]?.beaconMeasurements.orEmpty()
+    )
+    val scannerStates = mutableMapOf(0 to state0)
     val scannersToMatch = scannerReports.keys.associateWith { s1 ->
         scannerReports.keys.filter { s2 -> s1 != s2 }.toMutableList()
     }.toMutableMap()
     scannersToMatch.remove(0)
+    val rotationCache = mutableMapOf<Pair<Int, Rotation>, Set<GraphCoordinates>>()
     while (scannersToMatch.isNotEmpty()) {
         for ((newId, newScanner) in scannerReports) {
             if (newId !in scannersToMatch.keys) {
@@ -142,9 +157,7 @@ fun findScannerStates(scannerReports: Map<Int, ScannerReport>): Map<Int, Scanner
                 if (baseScannerId !in scannersToMatch[newId].orEmpty()) {
                     continue
                 }
-                val baseScanner = scannerReports[baseScannerId]
-                    ?: throw IllegalStateException("No report for scanner $baseScannerId")
-                val newState = checkOverlap(baseScanner, baseScannerState, newScanner)
+                val newState = checkOverlap(baseScannerState, newScanner, rotationCache)
                 if (newState != null) {
                     scannerStates[newId] = newState
                     scannersToMatch.remove(newId)
@@ -158,12 +171,8 @@ fun findScannerStates(scannerReports: Map<Int, ScannerReport>): Map<Int, Scanner
     return scannerStates
 }
 
-fun getPart1Answer(scannerReports: Map<Int, ScannerReport>, scannerStates: Map<Int, ScannerState>) =
-    scannerReports.flatMap { (id, scanner) ->
-        val state = scannerStates[id]
-            ?: throw IllegalStateException("Could not determine state for scanner $id")
-        scanner.transformMeasurements(state)
-    }.toSet().size
+fun getPart1Answer(scannerStates: Map<Int, ScannerState>) =
+    scannerStates.values.flatMap { state -> state.transformedMeasurements }.toSet().size
 
 fun getPart2Answer(scannerStates: Map<Int, ScannerState>): Int =
     scannerStates.maxOf { (id1, state1) ->
@@ -181,6 +190,6 @@ fun main() {
         .getInputLines().toScannerReports()
     val scannerStates = findScannerStates(scannerReports)
 
-    println("The answer to part 1 is ${getPart1Answer(scannerReports, scannerStates)}")
+    println("The answer to part 1 is ${getPart1Answer(scannerStates)}")
     println("The answer to part 2 is ${getPart2Answer(scannerStates)}")
 }
