@@ -26,6 +26,7 @@ import com.askrepps.advent2021.support.AdventDayGeneratorTask
 
 plugins {
     kotlin("jvm") version "1.6.0"
+    application
 }
 
 group = "com.askrepps"
@@ -48,11 +49,6 @@ task<AdventDayGeneratorTask>("generateDay") {
     group = "advent"
 }
 
-task<JavaExec>("runDay") {
-    group = "advent"
-    classpath = java.sourceSets["main"].runtimeClasspath
-
-    val day = project.properties["day"]?.toString() ?: "0"
-    val paddedDay = String.format("%02d", day.toInt())
-    main = "com.askrepps.advent2021.day${paddedDay}.Day${paddedDay}Kt"
+application {
+    mainClass.set("com.askrepps.advent2021.MainKt")
 }
