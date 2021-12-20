@@ -37,6 +37,9 @@ data class GridCoordinates(val row: Int, val col: Int)
 
 fun List<String>.toImageData(): Pair<List<Char>, Set<GridCoordinates>> {
     val enhancementData = get(0).toList()
+    check(enhancementData.first() == '.' || enhancementData.last() == '.') {
+        "Enhanced image will have infinite lit pixels"
+    }
 
     val image = (1 until size).flatMap { lineIndex ->
         val row = lineIndex - 1
@@ -69,7 +72,7 @@ fun GridCoordinates.checkOutputPixel(
     val enhancementIndex = getKernelPixels().fold(0) { result, pixel ->
         result.shl(1) + if (inputFlipped.xor(pixel in inputPixels)) 1 else 0
     }
-    return enhancementData[enhancementIndex] == if (flipOutput) '.' else '#'
+    return flipOutput.xor(enhancementData[enhancementIndex] == '#')
 }
 
 fun Set<GridCoordinates>.enhanceOnce(enhancementData: List<Char>, inputFlipped: Boolean, flipOutput: Boolean) =
@@ -78,7 +81,7 @@ fun Set<GridCoordinates>.enhanceOnce(enhancementData: List<Char>, inputFlipped: 
     }.toSet()
 
 fun Set<GridCoordinates>.enhance(enhancementData: List<Char>, iterations: Int): Set<GridCoordinates> {
-    val flippingRequired = enhancementData[0] == '#'
+    val flippingRequired = enhancementData.first() == '#'
     check (!flippingRequired || iterations % 2 == 0) {
         "Enhancement data that requires flipping needs a even number of iterations"
     }
