@@ -32,7 +32,7 @@ fun List<Int>.countIncreases(delay: Int = 1) =
 
 fun getPart1Answer(depths: List<Int>) = depths.countIncreases()
 
-// b + c + d > a + b + c  <=>  d > a
+// b + c + d > a + b + c <=> d > a
 fun getPart2Answer(depths: List<Int>) = depths.countIncreases(delay = 3)
 
 fun main() {
