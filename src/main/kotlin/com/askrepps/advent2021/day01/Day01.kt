@@ -27,13 +27,17 @@ package com.askrepps.advent2021.day01
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
 
-fun List<Int>.countIncreases(delay: Int = 1) =
-    (delay until size).count { this[it] > this[it - delay] }
+fun List<Int>.countIncreases() =
+    (1 until size).count { this[it] > this[it - 1] }
 
-fun getPart1Answer(depths: List<Int>) = depths.countIncreases()
+fun List<Int>.getWindowSums(windowSize: Int) =
+    (windowSize..size).map { subList(it - windowSize, it).sum() }
 
-// b + c + d > a + b + c <=> d > a
-fun getPart2Answer(depths: List<Int>) = depths.countIncreases(delay = 3)
+fun getPart1Answer(depths: List<Int>) =
+    depths.countIncreases()
+
+fun getPart2Answer(depths: List<Int>) =
+    depths.getWindowSums(windowSize = 3).countIncreases()
 
 fun main() {
     val depths = File("src/main/resources/day01.txt")
