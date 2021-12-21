@@ -24,6 +24,7 @@
 
 package com.askrepps.advent2021
 
+import kotlin.system.measureTimeMillis
 import com.askrepps.advent2021.day01.main as runDay01
 import com.askrepps.advent2021.day02.main as runDay02
 import com.askrepps.advent2021.day03.main as runDay03
@@ -46,22 +47,39 @@ import com.askrepps.advent2021.day19.main as runDay19
 import com.askrepps.advent2021.day20.main as runDay20
 import com.askrepps.advent2021.day21.main as runDay21
 
-fun main(args: Array<String>) {
-    val runners = listOf(
-        ::runDay01, ::runDay02, ::runDay03, ::runDay04, ::runDay05,
-        ::runDay06, ::runDay07, ::runDay08, ::runDay09, ::runDay10,
-        ::runDay11, ::runDay12, ::runDay13, ::runDay14, ::runDay15,
-        ::runDay16, ::runDay17, ::runDay18, ::runDay19, ::runDay20,
-        ::runDay21
-    )
+private val runners = listOf(
+    ::runDay01, ::runDay02, ::runDay03, ::runDay04, ::runDay05,
+    ::runDay06, ::runDay07, ::runDay08, ::runDay09, ::runDay10,
+    ::runDay11, ::runDay12, ::runDay13, ::runDay14, ::runDay15,
+    ::runDay16, ::runDay17, ::runDay18, ::runDay19, ::runDay20,
+    ::runDay21
+)
 
+fun runDay(dayNumber: Int) {
+    println("Day $dayNumber")
+    val elapsedTime = measureTimeMillis {
+        runners.getOrNull(dayNumber - 1)?.invoke()
+            ?: throw IllegalArgumentException("No runner found for day $dayNumber")
+    }
+    println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
+}
+
+fun Long.millisecondsToSeconds() =
+    toDouble() / 1000.0
+
+fun main(args: Array<String>) {
     val day = args.firstOrNull()
     if (day == null) {
-        println("Usage: ./gradlew run --args='<day #>'")
+        println("Running all ${runners.size} days\n")
+        val elapsedTime = measureTimeMillis {
+            for (dayNumber in 1..runners.size) {
+                runDay(dayNumber)
+            }
+        }
+        println("Total elapsed time: ${elapsedTime.millisecondsToSeconds()} s")
     } else {
         val dayNumber = day.toIntOrNull()
             ?: throw IllegalArgumentException("Day must be a valid integer")
-        runners.getOrNull(dayNumber - 1)?.invoke()
-            ?: throw IllegalArgumentException("No runner found for day $day")
+        runDay(dayNumber)
     }
 }
