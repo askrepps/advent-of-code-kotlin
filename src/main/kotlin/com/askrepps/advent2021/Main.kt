@@ -44,13 +44,15 @@ import com.askrepps.advent2021.day17.main as runDay17
 import com.askrepps.advent2021.day18.main as runDay18
 import com.askrepps.advent2021.day19.main as runDay19
 import com.askrepps.advent2021.day20.main as runDay20
+import com.askrepps.advent2021.day21.main as runDay21
 
 fun main(args: Array<String>) {
     val runners = listOf(
         ::runDay01, ::runDay02, ::runDay03, ::runDay04, ::runDay05,
         ::runDay06, ::runDay07, ::runDay08, ::runDay09, ::runDay10,
         ::runDay11, ::runDay12, ::runDay13, ::runDay14, ::runDay15,
-        ::runDay16, ::runDay17, ::runDay18, ::runDay19, ::runDay20
+        ::runDay16, ::runDay17, ::runDay18, ::runDay19, ::runDay20,
+        ::runDay21
     )
 
     val day = args.firstOrNull()
