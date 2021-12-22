@@ -26,23 +26,90 @@ package com.askrepps.advent2021.day22
 
 import com.askrepps.advent2021.util.getInputLines
 import java.io.File
+import kotlin.math.max
 
 enum class Operation { On, Off }
 
-data class GraphCoordinates(val x: Int, val y: Int, val z: Int)
+val IntRange.length: Long
+    get() = max(0, last.toLong() - first.toLong() + 1L)
 
-data class CubeRegion(val operation: Operation, val xRange: IntRange, val yRange: IntRange, val zRange: IntRange) {
-    fun contains(cube: GraphCoordinates) =
-        cube.x in xRange && cube.y in yRange && cube.z in zRange
+fun IntRange.fullyContains(other: IntRange) =
+    other.first >= first && other.last <= last
 
-    fun createCubes() =
-        xRange.flatMap { x ->
-            yRange.flatMap { y ->
-                zRange.map { z ->
-                    GraphCoordinates(x, y, z)
-                }
-            }
-        }.toSet()
+fun IntRange.intersects(other: IntRange) =
+    first <= other.last && last >= other.first
+
+fun IntRange.partitionOverlapWith(other: IntRange): Triple<IntRange, IntRange, IntRange> {
+    check(intersects(other)) { "Cannot partition ranges that do not intersect" }
+    val points = listOf(first, other.first, last, other.last).sorted()
+    val beforeOverlap = points[0] until points[1]
+    val duringOverlap = points[1]..points[2]
+    val afterOverlap = (points[2] + 1)..points[3]
+    return Triple(beforeOverlap, duringOverlap, afterOverlap)
+}
+
+fun IntRange.isBefore(other: IntRange) =
+    first < other.first
+
+fun IntRange.isAfter(other: IntRange) =
+    last > other.last
+
+data class CuboidRegion(
+    val xRange: IntRange,
+    val yRange: IntRange,
+    val zRange: IntRange,
+    val operation: Operation = Operation.On
+) {
+    fun subtractFrom(other: CuboidRegion): Set<CuboidRegion> {
+        if (fullyContains(other)) {
+            return emptySet()
+        } else if (!intersects(other)) {
+            return setOf(other)
+        }
+
+        val results = mutableSetOf<CuboidRegion>()
+
+        val (beforeOverlapX, duringOverlapX, afterOverlapX) = xRange.partitionOverlapWith(other.xRange)
+        if (other.xRange.isBefore(xRange)) {
+            check(!beforeOverlapX.isEmpty()) { "X region before overlap must exist" }
+            results.add(CuboidRegion(beforeOverlapX, other.yRange, other.zRange))
+        }
+        if (other.xRange.isAfter(xRange)) {
+            check(!afterOverlapX.isEmpty()) { "X region after overlap must exist" }
+            results.add(CuboidRegion(afterOverlapX, other.yRange, other.zRange))
+        }
+
+        val (beforeOverlapY, duringOverlapY, afterOverlapY) = yRange.partitionOverlapWith(other.yRange)
+        if (other.yRange.isBefore(yRange)) {
+            check(!beforeOverlapY.isEmpty()) { "Y region before overlap must exist" }
+            results.add(CuboidRegion(duringOverlapX, beforeOverlapY, other.zRange))
+        }
+        if (other.yRange.isAfter(yRange)) {
+            check(!afterOverlapY.isEmpty()) { "Y region after overlap must exist" }
+            results.add(CuboidRegion(duringOverlapX, afterOverlapY, other.zRange))
+        }
+
+        val (beforeOverlapZ, _, afterOverlapZ) = zRange.partitionOverlapWith(other.zRange)
+        if (other.zRange.isBefore(zRange)) {
+            check(!beforeOverlapZ.isEmpty()) { "Z region before overlap must exist" }
+            results.add(CuboidRegion(duringOverlapX, duringOverlapY, beforeOverlapZ))
+        }
+        if (other.zRange.isAfter(zRange)) {
+            check(!afterOverlapZ.isEmpty()) { "Z region after overlap must exist" }
+            results.add(CuboidRegion(duringOverlapX, duringOverlapY, afterOverlapZ))
+        }
+
+        return results
+    }
+
+    val volume: Long
+        get() = xRange.length * yRange.length * zRange.length
+
+    fun fullyContains(other: CuboidRegion) =
+        xRange.fullyContains(other.xRange) && yRange.fullyContains(other.yRange) && zRange.fullyContains(other.zRange)
+
+    private fun intersects(other: CuboidRegion) =
+        xRange.intersects(other.xRange) && yRange.intersects(other.yRange) && zRange.intersects(other.zRange)
 }
 
 fun String.toRange(): IntRange {
@@ -50,7 +117,7 @@ fun String.toRange(): IntRange {
     return minValue..maxValue
 }
 
-fun String.toCubeRegion(): CubeRegion {
+fun String.toCuboidRegion(): CuboidRegion {
     val (opString, regionDefinition) = split(" ")
     val operation = when (opString) {
         "on" -> Operation.On
@@ -58,41 +125,52 @@ fun String.toCubeRegion(): CubeRegion {
         else -> throw IllegalArgumentException("Unrecognized operation: $opString")
     }
     val (xRange, yRange, zRange) = regionDefinition.split(",").map { it.toRange() }
-    return CubeRegion(operation, xRange, yRange, zRange)
+    return CuboidRegion(xRange, yRange, zRange, operation)
 }
 
-fun countActiveCubes(regions: List<CubeRegion>, lowerLimit: Int? = null, upperLimit: Int? = null): Int {
-    val regionsOfInterest =
-        if (lowerLimit != null && upperLimit != null) {
-            regions.filter {
-                it.xRange.first >= lowerLimit && it.xRange.last <= upperLimit
-                        && it.yRange.first >= lowerLimit && it.yRange.last <= upperLimit
-                        && it.zRange.first >= lowerLimit && it.zRange.last <= upperLimit
-            }
-        } else {
-            regions
-        }
+fun List<CuboidRegion>.filterToInitializationRegion(lowerLimit: Int, upperLimit: Int): List<CuboidRegion> {
+    val filterRange = lowerLimit..upperLimit
+    val filterRegion = CuboidRegion(filterRange, filterRange, filterRange)
+    return filter { filterRegion.fullyContains(it) }
+}
 
-    val activeCubes = mutableSetOf<GraphCoordinates>()
-    for (region in regionsOfInterest) {
-        when (region.operation) {
-            Operation.On -> activeCubes.addAll(region.createCubes())
-            Operation.Off -> activeCubes.removeIf { region.contains(it) }
+fun countActiveCubes(regions: List<CuboidRegion>): Long {
+    val finalRegions = mutableSetOf<CuboidRegion>()
+    for (inputRegion in regions) {
+        when (inputRegion.operation) {
+            Operation.On -> {
+                val uniqueNewRegions = mutableSetOf(inputRegion)
+                for (existingRegion in finalRegions) {
+                    val choppingBlock = uniqueNewRegions.toSet()
+                    uniqueNewRegions.clear()
+                    for (newRegion in choppingBlock) {
+                        uniqueNewRegions.addAll(existingRegion.subtractFrom(newRegion))
+                    }
+                }
+                finalRegions.addAll(uniqueNewRegions)
+            }
+            Operation.Off ->  {
+                val choppingBlock = finalRegions.toSet()
+                finalRegions.clear()
+                for (existingRegion in choppingBlock) {
+                    finalRegions.addAll(inputRegion.subtractFrom(existingRegion))
+                }
+            }
         }
     }
-    return activeCubes.size
+    return finalRegions.sumOf { it.volume }
 }
 
-fun getPart1Answer(regions: List<CubeRegion>) =
-    countActiveCubes(regions, lowerLimit = -50, upperLimit = 50)
+fun getPart1Answer(regions: List<CuboidRegion>) =
+    countActiveCubes(regions.filterToInitializationRegion(lowerLimit = -50, upperLimit = 50))
 
-fun getPart2Answer(regions: List<CubeRegion>) =
+fun getPart2Answer(regions: List<CuboidRegion>) =
     countActiveCubes(regions)
 
 fun main() {
     val regions = File("src/main/resources/day22.txt")
-        .getInputLines().map { it.toCubeRegion() }
+        .getInputLines().map { it.toCuboidRegion() }
 
     println("The answer to part 1 is ${getPart1Answer(regions)}")
-//    println("The answer to part 2 is ${getPart2Answer(regions)}")
+    println("The answer to part 2 is ${getPart2Answer(regions)}")
 }
