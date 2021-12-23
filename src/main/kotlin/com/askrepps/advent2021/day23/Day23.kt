@@ -123,6 +123,7 @@ fun createPart1Map(): Pair<List<Location>, Map<PodType, List<Int>>> {
         location.generateDataMaps()
     }
 
+    // homes must be ordered from bottom to top
     val homesByType = mapOf(
         PodType.Amber to listOf(3, 2),
         PodType.Bronze to listOf(6, 5),
@@ -202,6 +203,7 @@ fun createPart2Map(): Pair<List<Location>, Map<PodType, List<Int>>> {
         location.generateDataMaps()
     }
 
+    // homes must be ordered from bottom to top
     val homesByType = mapOf(
         PodType.Amber to listOf(3, 16, 15, 2),
         PodType.Bronze to listOf(6, 18, 17, 5),
@@ -223,19 +225,21 @@ data class PodState(val type: PodType, val locationId: Int) {
     fun isHome(allPods: List<PodState>, homesByType: Map<PodType, List<Int>>): Boolean {
         val homeLocations = homesByType[type]
             ?: throw IllegalStateException("No homes found for type $type")
-        if (locationId !in homeLocations || homeLocations.any { homeId ->
+        if (locationId !in homeLocations) {
+            return false
+        }
+        val hasMismatchedNeighbors = homeLocations.any { homeId ->
             val pod = allPods.find { it.locationId == homeId }
             pod != null && pod.type != type
-        }) {
+        }
+        if (hasMismatchedNeighbors) {
             return false
         }
         return true
     }
 }
 
-data class BurrowState(
-    val pods: List<PodState>
-) {
+data class BurrowState(val pods: List<PodState>) {
     fun getNextValidStates(
         locations: List<Location>,
         homesByType: Map<PodType, List<Int>>
