@@ -188,7 +188,7 @@ fun getPart2Answer(program: List<Instruction>) =
 
 fun main() {
     val program = File("src/main/resources/day24.txt")
-        .getInputLines().map { it.toInstruction() }
+        .getInputLines().toProgram()
 
     println("The answer to part 1 is ${getPart1Answer(program)}")
     println("The answer to part 2 is ${getPart2Answer(program)}")
