@@ -48,13 +48,14 @@ import com.askrepps.advent2021.day20.main as runDay20
 import com.askrepps.advent2021.day21.main as runDay21
 import com.askrepps.advent2021.day22.main as runDay22
 import com.askrepps.advent2021.day23.main as runDay23
+import com.askrepps.advent2021.day24.main as runDay24
 
 private val runners = listOf(
     ::runDay01, ::runDay02, ::runDay03, ::runDay04, ::runDay05,
     ::runDay06, ::runDay07, ::runDay08, ::runDay09, ::runDay10,
     ::runDay11, ::runDay12, ::runDay13, ::runDay14, ::runDay15,
     ::runDay16, ::runDay17, ::runDay18, ::runDay19, ::runDay20,
-    ::runDay21, ::runDay22, ::runDay23
+    ::runDay21, ::runDay22, ::runDay23, ::runDay24
 )
 
 fun runDay(dayNumber: Int) {
