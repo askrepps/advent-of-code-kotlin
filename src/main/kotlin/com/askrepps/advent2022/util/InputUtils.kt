@@ -22,37 +22,14 @@
  * SOFTWARE.
  */
 
-import com.askrepps.advent2022.support.AdventDayGeneratorTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+package com.askrepps.advent2022.util
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-    application
-}
+import java.io.File
 
-group = "com.askrepps"
-version = "1.0-SNAPSHOT"
+fun String.getInputLines(includeBlanks: Boolean = false) =
+    split("\n")
+        .filter { includeBlanks || it.isNotBlank() }
+        .map { it.trim() }
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-task<AdventDayGeneratorTask>("generateDay") {
-    group = "advent"
-}
-
-application {
-    mainClass.set("com.askrepps.advent2022.MainKt")
-}
+fun File.getInputLines(includeBlanks: Boolean = false) =
+    readText().getInputLines(includeBlanks)

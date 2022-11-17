@@ -22,37 +22,37 @@
  * SOFTWARE.
  */
 
-import com.askrepps.advent2022.support.AdventDayGeneratorTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+package com.askrepps.advent2022
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-    application
+import kotlin.system.measureTimeMillis
+
+private val runners = listOf<() -> Unit>()
+
+fun runDay(dayNumber: Int) {
+    println("Day $dayNumber")
+    val elapsedTime = measureTimeMillis {
+        runners.getOrNull(dayNumber - 1)?.invoke()
+            ?: throw IllegalArgumentException("No runner found for day $dayNumber")
+    }
+    println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
 }
 
-group = "com.askrepps"
-version = "1.0-SNAPSHOT"
+fun Long.millisecondsToSeconds() =
+    toDouble() / 1000.0
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(kotlin("test"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
-
-task<AdventDayGeneratorTask>("generateDay") {
-    group = "advent"
-}
-
-application {
-    mainClass.set("com.askrepps.advent2022.MainKt")
+fun main(args: Array<String>) {
+    val day = args.firstOrNull()
+    if (day == null) {
+        println("Running all ${runners.size} days\n")
+        val elapsedTime = measureTimeMillis {
+            for (dayNumber in 1..runners.size) {
+                runDay(dayNumber)
+            }
+        }
+        println("Total elapsed time: ${elapsedTime.millisecondsToSeconds()} s")
+    } else {
+        val dayNumber = day.toIntOrNull()
+            ?: throw IllegalArgumentException("Day must be a valid integer")
+        runDay(dayNumber)
+    }
 }
