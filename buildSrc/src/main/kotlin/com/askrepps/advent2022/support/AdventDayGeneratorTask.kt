@@ -44,6 +44,10 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     @set:Option(option = "adventYear", description = "The year of the advent of code event")
     var adventYear: String? = null
 
+    @get:Input
+    @set:Option(option = "force", description = "Overwrite existing files")
+    var force: Boolean = false
+
     @TaskAction
     fun generateDay() {
         requireNotNull(day) {
@@ -60,6 +64,12 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         )
 
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
+
+        if (force) {
+            mainSourceFile.delete()
+            testSourceFile.delete()
+            inputFile.delete()
+        }
 
         mainSourceFile.writeFileFromTemplateIfNeeded(mainTemplate, substitutionMap)
         testSourceFile.writeFileFromTemplateIfNeeded(testTemplate, substitutionMap)
