@@ -46,11 +46,8 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         require(dayNumber > 0) {
             "Generated day must be positive (provided $dayNumber)"
         }
-        require(!mainSourceFile.exists() && !testSourceFile.exists() && !inputFile.exists()) {
-            "Day $dayNumber files already exist"
-        }
 
-        val substitutionMap = mutableMapOf<String, String?>(
+        val substitutionMap = mutableMapOf<String, String>(
             "advent_year" to ADVENT_YEAR,
             "date_year" to ZonedDateTime.now().year.toString(),
             "day" to paddedDay
@@ -58,9 +55,9 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
 
-        mainSourceFile.writeFileFromTemplate(mainTemplate, substitutionMap)
-        testSourceFile.writeFileFromTemplate(testTemplate, substitutionMap)
-        inputFile.createNewFile()
+        mainSourceFile.writeFileFromTemplateIfNeeded(mainTemplate, substitutionMap)
+        testSourceFile.writeFileFromTemplateIfNeeded(testTemplate, substitutionMap)
+        inputFile.createNewFileIfNeeded()
     }
 
     private val dayNumber by lazy {
@@ -102,23 +99,32 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     private fun readFileContents(filename: String) =
         requireNotNull(javaClass.getResourceAsStream(filename)).bufferedReader().use { it.readText() }
 
-    private fun String?.substituteTemplateVariables(substitutionMap: Map<String, String?>) =
-        this?.let { input ->
-            var output = input
-            for ((key, value) in substitutionMap) {
-                value?.let {
-                    output = output.replace("\${$key}", it)
-                }
-            }
-            output
+    private fun String.substituteTemplateVariables(substitutionMap: Map<String, String>) =
+        substitutionMap.entries.fold(this) { current, (key, value) ->
+            current.replace("\${$key}", value)
         }
 
-    private fun File.writeFileFromTemplate(template: String?, substitutionMap: Map<String, String?>) {
-        parentFile?.mkdirs()
-        bufferedWriter().use { writer ->
-            for (inputLine in template?.split("\n") ?: emptyList()) {
-                writer.write("${inputLine.substituteTemplateVariables(substitutionMap)}\n")
+    private fun File.writeFileFromTemplateIfNeeded(template: String, substitutionMap: Map<String, String>) =
+        generateIfNeeded {
+            bufferedWriter().use { writer ->
+                for (inputLine in template.split("\n")) {
+                    writer.write("${inputLine.substituteTemplateVariables(substitutionMap)}\n")
+                }
             }
+        }
+
+    private fun File.createNewFileIfNeeded() =
+        generateIfNeeded {
+            createNewFile()
+        }
+
+    private fun File.generateIfNeeded(generator: (File) -> Unit) {
+        if (exists()) {
+            logger.lifecycle("$name exists. skipping...")
+        } else {
+            parentFile?.mkdirs()
+            generator(this)
+            logger.lifecycle("$name generated")
         }
     }
 }
