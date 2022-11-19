@@ -31,12 +31,16 @@ import org.gradle.api.tasks.options.Option
 import java.io.File
 import java.time.ZonedDateTime
 
-private const val ADVENT_YEAR = "2022"
+private const val DEFAULT_ADVENT_YEAR = "2022"
 
 abstract class AdventDayGeneratorTask : DefaultTask() {
     @get:Input
     @set:Option(option = "day", description = "The number of the day to generate")
     var day: String? = null
+
+    @get:Input
+    @set:Option(option = "adventYear", description = "The year of the advent of code event")
+    var adventYear: String? = null
 
     @TaskAction
     fun generateDay() {
@@ -48,7 +52,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         }
 
         val substitutionMap = mutableMapOf<String, String>(
-            "advent_year" to ADVENT_YEAR,
+            "advent_year" to (adventYear ?: DEFAULT_ADVENT_YEAR),
             "date_year" to ZonedDateTime.now().year.toString(),
             "day" to paddedDay
         )
@@ -69,7 +73,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     }
 
     private val packagePath by lazy {
-        "com/askrepps/advent$ADVENT_YEAR/day${paddedDay}"
+        "com/askrepps/advent$adventYear/day${paddedDay}"
     }
 
     private val mainSourceFile by lazy {
