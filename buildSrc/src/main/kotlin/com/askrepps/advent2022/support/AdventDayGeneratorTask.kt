@@ -118,12 +118,12 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
             createNewFile()
         }
 
-    private fun File.generateIfNeeded(generator: (File) -> Unit) {
+    private fun File.generateIfNeeded(generator: File.() -> Unit) {
         if (exists()) {
             logger.lifecycle("$name exists. skipping...")
         } else {
             parentFile?.mkdirs()
-            generator(this)
+            generator()
             logger.lifecycle("$name generated")
         }
     }
