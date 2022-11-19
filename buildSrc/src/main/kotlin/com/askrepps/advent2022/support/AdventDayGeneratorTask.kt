@@ -89,7 +89,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     }
 
     private val packagePath by lazy {
-        "com/askrepps/advent$configuredAdventYear/day${paddedDay}"
+        "com/askrepps/advent${configuredAdventYear}/day${paddedDay}"
     }
 
     private val mainSourceFile by lazy {
