@@ -26,6 +26,7 @@ package com.askrepps.advent2022.support
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
@@ -39,6 +40,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     var day: String? = null
 
     @get:Input
+    @get:Optional
     @set:Option(option = "adventYear", description = "The year of the advent of code event")
     var adventYear: String? = null
 
@@ -52,7 +54,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         }
 
         val substitutionMap = mutableMapOf<String, String>(
-            "advent_year" to (adventYear ?: DEFAULT_ADVENT_YEAR),
+            "advent_year" to configuredAdventYear,
             "date_year" to ZonedDateTime.now().year.toString(),
             "day" to paddedDay
         )
@@ -64,6 +66,10 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         inputFile.createNewFileIfNeeded()
     }
 
+    private val configuredAdventYear by lazy {
+        adventYear ?: DEFAULT_ADVENT_YEAR
+    }
+
     private val dayNumber by lazy {
         requireNotNull(day?.toIntOrNull()) { "Generated day must be a number" }
     }
@@ -73,7 +79,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     }
 
     private val packagePath by lazy {
-        "com/askrepps/advent$adventYear/day${paddedDay}"
+        "com/askrepps/advent$configuredAdventYear/day${paddedDay}"
     }
 
     private val mainSourceFile by lazy {
