@@ -12,7 +12,7 @@ fun getPart1Answer(lines: Any?) = null
 fun getPart2Answer(lines: Any?) = null
 
 fun main() {
-    val lines = File("src/main/resources/day${day}.txt")
+    val lines = File("src/main/resources/${advent_year}/day${day}.txt")
         .getInputLines().map { it.toThing() }
 
     println("The answer to part 1 is ${getPart1Answer(lines)}")

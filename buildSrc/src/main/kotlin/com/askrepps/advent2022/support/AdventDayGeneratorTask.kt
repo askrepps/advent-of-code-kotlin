@@ -101,7 +101,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     }
 
     private val inputFile by lazy {
-        File(project.rootDir, "src/main/resources/day${paddedDay}.txt")
+        File(project.rootDir, "src/main/resources/${configuredAdventYear}/day${paddedDay}.txt")
     }
 
     private val licenseTemplate by lazy {
