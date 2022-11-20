@@ -24,15 +24,29 @@
 
 package com.askrepps.advent2022.support
 
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.request.cookie
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.isSuccess
+import kotlinx.coroutines.runBlocking
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.options.Option
 import java.io.File
+import java.io.FileInputStream
 import java.time.ZonedDateTime
+import java.util.Properties
 
 private const val DEFAULT_ADVENT_YEAR = "2022"
+
+private const val PROPERTIES_FILENAME = "local.properties"
+private const val PROPERTY_ADVENT_SESSION = "advent.session.id"
+
+private const val SESSION_COOKIE_NAME = "session"
 
 abstract class AdventDayGeneratorTask : DefaultTask() {
     @get:Input
@@ -73,7 +87,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
         mainSourceFile.writeFileFromTemplateIfNeeded(mainTemplate, substitutionMap)
         testSourceFile.writeFileFromTemplateIfNeeded(testTemplate, substitutionMap)
-        inputFile.createNewFileIfNeeded()
+        inputFile.downloadInputDataIfNeeded(configuredAdventYear, dayNumber)
     }
 
     private val configuredAdventYear by lazy {
@@ -104,6 +118,9 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         File(project.rootDir, "src/main/resources/${configuredAdventYear}/day${paddedDay}.txt")
     }
 
+    private fun getInputUrl(adventYear: String, dayNumber: Int) =
+        "https://adventofcode.com/${adventYear}/day/${dayNumber}/input"
+
     private val licenseTemplate by lazy {
         readFileContents("/license.template")
     }
@@ -133,9 +150,42 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
             }
         }
 
-    private fun File.createNewFileIfNeeded() =
+    private fun File.downloadInputDataIfNeeded(adventYear: String, dayNumber: Int) =
         generateIfNeeded {
-            createNewFile()
+            val propertiesFile = File(project.rootDir, PROPERTIES_FILENAME)
+            val sessionId = propertiesFile.readProperty(PROPERTY_ADVENT_SESSION)
+            if (sessionId != null) {
+                runBlocking {
+                    try {
+                        val client = HttpClient(OkHttp)
+                        val response = client.get(getInputUrl(adventYear, dayNumber)) {
+                            cookie(SESSION_COOKIE_NAME, sessionId)
+                        }
+                        if (response.status.isSuccess()) {
+                            writeText(response.bodyAsText())
+                        } else {
+                            throw RuntimeException("Unsucessful response: ${response.status}")
+                        }
+                    } catch (e: Exception) {
+                        logger.error("Input data retrieval failed. Generating empty input file...", e)
+                        createNewFile()
+                    }
+                }
+            } else {
+                logger.error("$PROPERTY_ADVENT_SESSION not set in $PROPERTIES_FILENAME. Generating empty input file...")
+                createNewFile()
+            }
+        }
+
+    private fun File.readProperty(key: String, defaultValue: String? = null) =
+        if (exists()) {
+            FileInputStream(this).use {
+                val properties = Properties()
+                properties.load(it)
+                properties.getProperty(key, defaultValue)
+            }
+        } else {
+            defaultValue
         }
 
     private fun File.generateIfNeeded(generator: File.() -> Unit) {
