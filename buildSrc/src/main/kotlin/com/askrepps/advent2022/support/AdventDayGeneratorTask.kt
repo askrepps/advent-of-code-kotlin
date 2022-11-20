@@ -57,6 +57,10 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
 
+        if (mainSourceFile.exists() || testSourceFile.exists()) {
+            logger.warn("One or more files for day $day already exist and will be skipped (use -Pforce to overwrite)")
+        }
+
         if (force) {
             mainSourceFile.delete()
             testSourceFile.delete()
