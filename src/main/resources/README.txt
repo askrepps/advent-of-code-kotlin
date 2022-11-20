@@ -1,4 +1,4 @@
-Run the generateDay gradle task to download the input file for a given day. Your Advent of Code session ID
+Run the downloadInput gradle task to download the input files automatically. Your Advent of Code session ID
 must be stored in an advent.session.id property in a local.properties file at the root of the repository.
 
 If the session ID is not configured, you must manually obtain input data for each day from the

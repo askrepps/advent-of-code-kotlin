@@ -22,51 +22,30 @@
  * SOFTWARE.
  */
 
-import com.askrepps.advent2022.support.AdventDayGeneratorTask
-import com.askrepps.advent2022.support.AdventInputDownloaderTask
-import com.askrepps.advent2022.support.adventYearProperty
-import com.askrepps.advent2022.support.dayProperty
-import com.askrepps.advent2022.support.forceProperty
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+package com.askrepps.advent2022.support
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-    application
-}
+import org.gradle.api.Project
 
-group = "com.askrepps"
-version = "1.0-SNAPSHOT"
+private const val PROPERTY_DAY = "day"
+private const val PROPERTY_ADVENT_YEAR = "adventYear"
+private const val PROPERTY_FORCE = "force"
 
-repositories {
-    mavenCentral()
-}
+private const val DEFAULT_DAY = Int.MIN_VALUE
+private const val DEFAULT_ADVENT_YEAR = "2022"
 
-dependencies {
-    testImplementation(kotlin("test"))
-}
+private const val FIRST_DAY = 1
+private const val LAST_DAY = 25
 
-tasks.test {
-    useJUnitPlatform()
-}
+val Project.dayProperty: Int
+    get() = findProperty(PROPERTY_DAY)?.toString()?.toIntOrNull() ?: DEFAULT_DAY
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
-}
+val Project.adventYearProperty: String
+    get() = findProperty(PROPERTY_ADVENT_YEAR)?.toString() ?: DEFAULT_ADVENT_YEAR
 
-val downloadTask = task<AdventInputDownloaderTask>("downloadInput") {
-    group = "advent"
-    day = project.dayProperty
-    adventYear = project.adventYearProperty
-}
+val Project.forceProperty: Boolean
+    get() = hasProperty(PROPERTY_FORCE)
 
-task<AdventDayGeneratorTask>("generateDay") {
-    group = "advent"
-    day = project.dayProperty
-    adventYear = project.adventYearProperty
-    force = project.forceProperty
-    finalizedBy(downloadTask)
-}
+val allDays = FIRST_DAY..LAST_DAY
 
-application {
-    mainClass.set("com.askrepps.advent2022.MainKt")
-}
+fun getPaddedDay(day: Int) =
+    String.format("%02d", day)
