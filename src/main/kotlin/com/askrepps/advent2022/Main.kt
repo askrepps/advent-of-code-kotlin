@@ -26,7 +26,9 @@ package com.askrepps.advent2022
 
 import kotlin.system.measureTimeMillis
 
-private val runners = listOf<() -> Unit>()
+private val runners = listOf<() -> Unit>(
+
+)
 
 fun runDay(dayNumber: Int) {
     println("Day $dayNumber")

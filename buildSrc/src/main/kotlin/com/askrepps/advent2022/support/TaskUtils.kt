@@ -25,6 +25,7 @@
 package com.askrepps.advent2022.support
 
 import org.gradle.api.Project
+import java.io.File
 
 private const val PROPERTY_DAY = "day"
 private const val PROPERTY_ADVENT_YEAR = "adventYear"
@@ -49,3 +50,19 @@ val allDays = FIRST_DAY..LAST_DAY
 
 fun getPaddedDay(day: Int) =
     String.format("%02d", day)
+
+fun <T> readResourceFileContents(filename: String, javaClass: Class<T>) =
+    requireNotNull(javaClass.getResourceAsStream(filename)).bufferedReader().use { it.readText() }
+
+fun File.writeFileFromTemplate(template: String, substitutionMap: Map<String, String>) =
+    bufferedWriter().use { writer ->
+        for (inputLine in template.split("\n")) {
+            writer.write("${inputLine.substituteTemplateVariables(substitutionMap)}\n")
+        }
+    }
+
+fun String.substituteTemplateVariables(substitutionMap: Map<String, String>) =
+    substitutionMap.entries.fold(this) { current, (key, value) ->
+        current.replace("\${$key}", value)
+    }
+

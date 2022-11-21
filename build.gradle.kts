@@ -24,6 +24,7 @@
 
 import com.askrepps.advent2022.support.AdventDayGeneratorTask
 import com.askrepps.advent2022.support.AdventInputDownloaderTask
+import com.askrepps.advent2022.support.AdventMainGeneratorTask
 import com.askrepps.advent2022.support.adventYearProperty
 import com.askrepps.advent2022.support.dayProperty
 import com.askrepps.advent2022.support.forceProperty
@@ -59,14 +60,19 @@ val downloadTask = task<AdventInputDownloaderTask>("downloadInput") {
     adventYear = project.adventYearProperty
 }
 
+val updateMainTask = task<AdventMainGeneratorTask>("generateMain") {
+    group = "advent"
+    adventYear = project.adventYearProperty
+}
+
 task<AdventDayGeneratorTask>("generateDay") {
     group = "advent"
     day = project.dayProperty
     adventYear = project.adventYearProperty
     force = project.forceProperty
-    finalizedBy(downloadTask)
+    finalizedBy(downloadTask, updateMainTask)
 }
 
 application {
-    mainClass.set("com.askrepps.advent2022.MainKt")
+    mainClass.set("com.askrepps.advent${project.adventYearProperty}.MainKt")
 }

@@ -57,16 +57,16 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
 
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
 
-        if (mainSourceFile.exists() || testSourceFile.exists()) {
+        if (daySourceFile.exists() || testSourceFile.exists()) {
             logger.warn("One or more files for day $day already exist and will be skipped (use -Pforce to overwrite)")
         }
 
         if (force) {
-            mainSourceFile.delete()
+            daySourceFile.delete()
             testSourceFile.delete()
         }
 
-        mainSourceFile.writeFileFromTemplateIfNeeded(mainTemplate, substitutionMap)
+        daySourceFile.writeFileFromTemplateIfNeeded(dayTemplate, substitutionMap)
         testSourceFile.writeFileFromTemplateIfNeeded(testTemplate, substitutionMap)
     }
 
@@ -78,7 +78,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         "com/askrepps/advent${adventYear}/day${paddedDay}"
     }
 
-    private val mainSourceFile by lazy {
+    private val daySourceFile by lazy {
         File(project.rootDir, "src/main/kotlin/${packagePath}/Day${paddedDay}.kt")
     }
 
@@ -87,41 +87,23 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     }
 
     private val licenseTemplate by lazy {
-        readFileContents("/license.template")
+        readResourceFileContents("/license.template", javaClass)
     }
 
-    private val mainTemplate by lazy {
-        readFileContents("/main.template")
+    private val dayTemplate by lazy {
+        readResourceFileContents("/day.template", javaClass)
     }
 
     private val testTemplate by lazy {
-        readFileContents("/test.template")
+        readResourceFileContents("/test.template", javaClass)
     }
 
-    private fun readFileContents(filename: String) =
-        requireNotNull(javaClass.getResourceAsStream(filename)).bufferedReader().use { it.readText() }
-
-    private fun String.substituteTemplateVariables(substitutionMap: Map<String, String>) =
-        substitutionMap.entries.fold(this) { current, (key, value) ->
-            current.replace("\${$key}", value)
-        }
-
     private fun File.writeFileFromTemplateIfNeeded(template: String, substitutionMap: Map<String, String>) =
-        generateIfNeeded {
-            bufferedWriter().use { writer ->
-                for (inputLine in template.split("\n")) {
-                    writer.write("${inputLine.substituteTemplateVariables(substitutionMap)}\n")
-                }
-            }
-        }
-
-    private fun File.generateIfNeeded(generator: File.() -> Unit) {
         if (exists()) {
             logger.lifecycle("$name exists. skipping...")
         } else {
             parentFile?.mkdirs()
-            generator()
+            writeFileFromTemplate(template, substitutionMap)
             logger.lifecycle("$name generated")
         }
-    }
 }

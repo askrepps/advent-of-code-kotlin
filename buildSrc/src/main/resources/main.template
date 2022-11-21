@@ -1,20 +1,38 @@
 ${license}
 
-package com.askrepps.advent${advent_year}.day${day}
+package com.askrepps.advent${advent_year}
 
-import com.askrepps.advent${advent_year}.util.getInputLines
-import java.io.File
+import kotlin.system.measureTimeMillis
+${runner_imports}
+private val runners = listOf${runner_type}(
+${runner_list}
+)
 
-fun String.toThing() = this
+fun runDay(dayNumber: Int) {
+    println("Day $dayNumber")
+    val elapsedTime = measureTimeMillis {
+        runners.getOrNull(dayNumber - 1)?.invoke()
+            ?: throw IllegalArgumentException("No runner found for day $dayNumber")
+    }
+    println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
+}
 
-fun getPart1Answer(lines: Any?) = null
+fun Long.millisecondsToSeconds() =
+    toDouble() / 1000.0
 
-fun getPart2Answer(lines: Any?) = null
-
-fun main() {
-    val lines = File("src/main/resources/${advent_year}/day${day}.txt")
-        .getInputLines().map { it.toThing() }
-
-    println("The answer to part 1 is ${getPart1Answer(lines)}")
-    println("The answer to part 2 is ${getPart2Answer(lines)}")
+fun main(args: Array<String>) {
+    val day = args.firstOrNull()
+    if (day == null) {
+        println("Running all ${runners.size} days\n")
+        val elapsedTime = measureTimeMillis {
+            for (dayNumber in 1..runners.size) {
+                runDay(dayNumber)
+            }
+        }
+        println("Total elapsed time: ${elapsedTime.millisecondsToSeconds()} s")
+    } else {
+        val dayNumber = day.toIntOrNull()
+            ?: throw IllegalArgumentException("Day must be a valid integer")
+        runDay(dayNumber)
+    }
 }
