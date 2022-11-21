@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.askrepps.advent2022.support
+package com.askrepps.advent.support
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input

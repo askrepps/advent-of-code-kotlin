@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-import com.askrepps.advent2022.support.AdventDayGeneratorTask
-import com.askrepps.advent2022.support.AdventInputDownloaderTask
-import com.askrepps.advent2022.support.AdventMainGeneratorTask
-import com.askrepps.advent2022.support.adventYearProperty
-import com.askrepps.advent2022.support.dayProperty
-import com.askrepps.advent2022.support.forceProperty
+import com.askrepps.advent.support.AdventDayGeneratorTask
+import com.askrepps.advent.support.AdventInputDownloaderTask
+import com.askrepps.advent.support.AdventMainGeneratorTask
+import com.askrepps.advent.support.adventYearProperty
+import com.askrepps.advent.support.dayProperty
+import com.askrepps.advent.support.forceProperty
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {

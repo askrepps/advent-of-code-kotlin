@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.askrepps.advent2022.support
+package com.askrepps.advent.support
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
