@@ -50,12 +50,6 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
     @get:Input
     abstract var adventYear: String
 
-    private fun getInputfile(adventYear: String, day: Int) =
-        File(project.rootDir, "src/main/resources/${adventYear}/day${getPaddedDay(day)}.txt")
-
-    private fun getInputUrl(adventYear: String, day: Int) =
-        "https://adventofcode.com/${adventYear}/day/${day}/input"
-
     @TaskAction
     fun downloadInput() {
         if (day <= 0) {
@@ -107,4 +101,10 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
         } else {
             defaultValue
         }
+
+    private fun getInputfile(adventYear: String, day: Int) =
+        File(project.rootDir, "src/main/resources/${adventYear}/day${getPaddedDay(day)}.txt")
+
+    private fun getInputUrl(adventYear: String, day: Int) =
+        "https://adventofcode.com/${adventYear}/day/${day}/input"
 }
