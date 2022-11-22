@@ -48,8 +48,11 @@ val Project.forceProperty: Boolean
 
 val allDays = FIRST_DAY..LAST_DAY
 
-fun getPaddedDay(day: Int) =
+fun getZeroPaddedDay(day: Int) =
     String.format("%02d", day)
+
+fun getSpacePaddedDay(day: Int) =
+    String.format("%2d", day)
 
 fun <T> readResourceFileContents(filename: String, javaClass: Class<T>) =
     requireNotNull(javaClass.getResourceAsStream(filename)).bufferedReader().use { it.readText() }

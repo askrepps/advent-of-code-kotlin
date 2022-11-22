@@ -71,7 +71,7 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
     }
 
     private val paddedDay by lazy {
-        getPaddedDay(day)
+        getZeroPaddedDay(day)
     }
 
     private val packagePath by lazy {

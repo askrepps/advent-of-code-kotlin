@@ -26,14 +26,14 @@ package com.askrepps.advent2022
 
 import kotlin.system.measureTimeMillis
 
-private val runners = listOf<() -> Unit>(
+private val runners = mapOf<Int, () -> Unit>(
 
 )
 
 fun runDay(dayNumber: Int) {
     println("Day $dayNumber")
     val elapsedTime = measureTimeMillis {
-        runners.getOrNull(dayNumber - 1)?.invoke()
+        runners[dayNumber]?.invoke()
             ?: throw IllegalArgumentException("No runner found for day $dayNumber")
     }
     println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
@@ -47,7 +47,7 @@ fun main(args: Array<String>) {
     if (day == null) {
         println("Running all ${runners.size} days\n")
         val elapsedTime = measureTimeMillis {
-            for (dayNumber in 1..runners.size) {
+            for (dayNumber in runners.keys.sorted()) {
                 runDay(dayNumber)
             }
         }

@@ -103,7 +103,7 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
         }
 
     private fun getInputfile(adventYear: String, day: Int) =
-        File(project.rootDir, "src/main/resources/${adventYear}/day${getPaddedDay(day)}.txt")
+        File(project.rootDir, "src/main/resources/${adventYear}/day${getZeroPaddedDay(day)}.txt")
 
     private fun getInputUrl(adventYear: String, day: Int) =
         "https://adventofcode.com/${adventYear}/day/${day}/input"

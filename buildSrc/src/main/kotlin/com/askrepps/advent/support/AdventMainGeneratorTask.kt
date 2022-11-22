@@ -47,22 +47,22 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
                 ""
             } else {
                 days.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
-                    val paddedDay = getPaddedDay(it)
+                    val paddedDay = getZeroPaddedDay(it)
                     "import com.askrepps.advent${adventYear}.day${paddedDay}.main as runDay${paddedDay}"
                 }
             }
 
-        val dayRunnerType =
+        val dayRunnerMapType =
             if (days.isEmpty()) {
-                "<() -> Unit>"
+                "<Int, () -> Unit>"
             } else {
                 ""
             }
 
-        val dayRunnerList = days.chunked(5)
+        val dayRunnerMappings = days.chunked(5)
             .joinToString(separator = ",\n") { subList ->
                 subList.joinToString(prefix = "    ") {
-                    "::runDay${getPaddedDay(it)}"
+                    "${getSpacePaddedDay(it)} to ::runDay${getZeroPaddedDay(it)}"
                 }
             }
 
@@ -70,8 +70,8 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
             "advent_year" to adventYear,
             "date_year" to ZonedDateTime.now().year.toString(),
             "runner_imports" to dayRunnerImports,
-            "runner_type" to dayRunnerType,
-            "runner_list" to dayRunnerList
+            "runner_map_type" to dayRunnerMapType,
+            "runner_mappings" to dayRunnerMappings
         )
 
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
