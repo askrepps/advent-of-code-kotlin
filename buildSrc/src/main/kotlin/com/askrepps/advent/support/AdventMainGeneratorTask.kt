@@ -76,6 +76,7 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
 
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
 
+        sourceDirectory.mkdirs()
         mainSourceFile.writeFileFromTemplate(mainTemplate, substitutionMap)
         logger.lifecycle("${mainSourceFile.name} generated")
     }
