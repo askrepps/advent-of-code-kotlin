@@ -75,4 +75,3 @@ fun String.substituteTemplateVariables(substitutionMap: Map<String, String>) =
     substitutionMap.entries.fold(this) { current, (key, value) ->
         current.replace("\${$key}", value)
     }
-
