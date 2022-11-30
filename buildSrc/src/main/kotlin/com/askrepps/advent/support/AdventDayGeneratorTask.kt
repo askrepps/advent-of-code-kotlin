@@ -49,53 +49,34 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
             "Generated day must be positive (provided $day)"
         }
 
-        val substitutionMap = mutableMapOf<String, String>(
-            "advent_year" to adventYear,
-            "date_year" to ZonedDateTime.now().year.toString(),
-            "day" to paddedDay
-        )
+        val paddedDay = getZeroPaddedDay(day)
+        val packagePath = "${project.packagePrefixDirectoryPath}/advent${adventYear}/day${paddedDay}"
 
-        substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
-
+        val daySourceFile = File(project.rootDir, "src/main/kotlin/${packagePath}/Day${paddedDay}.kt")
+        val testSourceFile = File(project.rootDir, "src/test/kotlin/${packagePath}/Day${paddedDay}Test.kt")
         if (daySourceFile.exists() || testSourceFile.exists()) {
             logger.warn("One or more files for day $day already exist and will be skipped (use -Pforce to overwrite)")
         }
-
         if (force) {
             daySourceFile.delete()
             testSourceFile.delete()
         }
 
+        val substitutionMap = mutableMapOf<String, String>(
+            "advent_year" to adventYear,
+            "date_year" to ZonedDateTime.now().year.toString(),
+            "day" to paddedDay,
+            "package_prefix" to project.packagePrefixProperty
+        )
+
+        val licenseTemplate = readResourceFileContents("/license.template", javaClass)
+        substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
+
+        val dayTemplate = readResourceFileContents("/day.template", javaClass)
         daySourceFile.writeFileFromTemplateIfNeeded(dayTemplate, substitutionMap)
+
+        val testTemplate = readResourceFileContents("/test.template", javaClass)
         testSourceFile.writeFileFromTemplateIfNeeded(testTemplate, substitutionMap)
-    }
-
-    private val paddedDay by lazy {
-        getZeroPaddedDay(day)
-    }
-
-    private val packagePath by lazy {
-        "com/askrepps/advent${adventYear}/day${paddedDay}"
-    }
-
-    private val daySourceFile by lazy {
-        File(project.rootDir, "src/main/kotlin/${packagePath}/Day${paddedDay}.kt")
-    }
-
-    private val testSourceFile by lazy {
-        File(project.rootDir, "src/test/kotlin/${packagePath}/Day${paddedDay}Test.kt")
-    }
-
-    private val licenseTemplate by lazy {
-        readResourceFileContents("/license.template", javaClass)
-    }
-
-    private val dayTemplate by lazy {
-        readResourceFileContents("/day.template", javaClass)
-    }
-
-    private val testTemplate by lazy {
-        readResourceFileContents("/test.template", javaClass)
     }
 
     private fun File.writeFileFromTemplateIfNeeded(template: String, substitutionMap: Map<String, String>) =

@@ -1,8 +1,8 @@
 ${license}
 
-package com.askrepps.advent${advent_year}.day${day}
+package ${package_prefix}.advent${advent_year}.day${day}
 
-import com.askrepps.advent${advent_year}.util.getInputLines
+import ${package_prefix}.advent${advent_year}.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 

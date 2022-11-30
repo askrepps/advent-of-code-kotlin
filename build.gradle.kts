@@ -28,6 +28,7 @@ import com.askrepps.advent.support.AdventMainGeneratorTask
 import com.askrepps.advent.support.adventYearProperty
 import com.askrepps.advent.support.dayProperty
 import com.askrepps.advent.support.forceProperty
+import com.askrepps.advent.support.packagePrefixProperty
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -74,5 +75,5 @@ task<AdventDayGeneratorTask>("generateDay") {
 }
 
 application {
-    mainClass.set("com.askrepps.advent${project.adventYearProperty}.MainKt")
+    mainClass.set("${project.packagePrefixProperty}.advent${project.adventYearProperty}.MainKt")
 }

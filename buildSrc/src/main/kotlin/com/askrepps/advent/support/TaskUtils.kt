@@ -30,6 +30,7 @@ import java.io.File
 private const val PROPERTY_DAY = "day"
 private const val PROPERTY_ADVENT_YEAR = "adventYear"
 private const val PROPERTY_FORCE = "force"
+private const val PROPERTY_PACKAGE_PREFIX = "packagePrefix"
 
 private const val DEFAULT_DAY = Int.MIN_VALUE
 private const val DEFAULT_ADVENT_YEAR = "2022"
@@ -45,6 +46,12 @@ val Project.adventYearProperty: String
 
 val Project.forceProperty: Boolean
     get() = hasProperty(PROPERTY_FORCE)
+
+val Project.packagePrefixProperty: String
+    get() = findProperty(PROPERTY_PACKAGE_PREFIX)?.toString() ?: group.toString()
+
+val Project.packagePrefixDirectoryPath: String
+    get() = packagePrefixProperty.replace('.', '/')
 
 val allDays = FIRST_DAY..LAST_DAY
 

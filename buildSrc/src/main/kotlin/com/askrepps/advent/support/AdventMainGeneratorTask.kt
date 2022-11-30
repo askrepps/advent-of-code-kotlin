@@ -36,6 +36,12 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
 
     @TaskAction
     fun generateMain() {
+        val packagePrefix = project.packagePrefixProperty
+        val packagePrefixPath = project.packagePrefixDirectoryPath
+
+        val sourceDirectory = File(project.rootDir, "src/main/kotlin/${packagePrefixPath}/advent${adventYear}")
+        sourceDirectory.mkdirs()
+
         val days = sourceDirectory.listFiles()
             ?.filter { it.name.startsWith("day") }
             ?.sortedBy { it.name }
@@ -48,7 +54,7 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
             } else {
                 days.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
                     val paddedDay = getZeroPaddedDay(it)
-                    "import com.askrepps.advent${adventYear}.day${paddedDay}.main as runDay${paddedDay}"
+                    "import ${packagePrefix}.advent${adventYear}.day${paddedDay}.main as runDay${paddedDay}"
                 }
             }
 
@@ -69,31 +75,18 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
         val substitutionMap = mutableMapOf<String, String>(
             "advent_year" to adventYear,
             "date_year" to ZonedDateTime.now().year.toString(),
+            "package_prefix" to packagePrefix,
             "runner_imports" to dayRunnerImports,
             "runner_map_type" to dayRunnerMapType,
             "runner_mappings" to dayRunnerMappings
         )
 
+        val licenseTemplate = readResourceFileContents("/license.template", javaClass)
         substitutionMap["license"] = licenseTemplate.substituteTemplateVariables(substitutionMap)
 
-        sourceDirectory.mkdirs()
+        val mainTemplate = readResourceFileContents("/main.template", javaClass)
+        val mainSourceFile = File(sourceDirectory, "Main.kt")
         mainSourceFile.writeFileFromTemplate(mainTemplate, substitutionMap)
         logger.lifecycle("${mainSourceFile.name} generated")
-    }
-
-    private val sourceDirectory by lazy {
-        File(project.rootDir, "src/main/kotlin/com/askrepps/advent${adventYear}")
-    }
-
-    private val mainSourceFile by lazy {
-        File(sourceDirectory, "Main.kt")
-    }
-
-    private val licenseTemplate by lazy {
-        readResourceFileContents("/license.template", javaClass)
-    }
-
-    private val mainTemplate by lazy {
-        readResourceFileContents("/main.template", javaClass)
     }
 }

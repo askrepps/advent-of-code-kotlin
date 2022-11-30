@@ -1,6 +1,6 @@
 ${license}
 
-package com.askrepps.advent${advent_year}
+package ${package_prefix}.advent${advent_year}
 
 import kotlin.system.measureTimeMillis
 ${runner_imports}
