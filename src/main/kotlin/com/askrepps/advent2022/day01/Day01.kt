@@ -22,41 +22,29 @@
  * SOFTWARE.
  */
 
-package com.askrepps.advent2022
+package com.askrepps.advent2022.day01
 
-import kotlin.system.measureTimeMillis
+import java.io.File
 
-import com.askrepps.advent2022.day01.main as runDay01
-
-private val runners = mapOf(
-     1 to ::runDay01
-)
-
-fun runDay(dayNumber: Int) {
-    println("Day $dayNumber")
-    val elapsedTime = measureTimeMillis {
-        runners[dayNumber]?.invoke()
-            ?: throw IllegalArgumentException("No runner found for day $dayNumber")
+fun String.toCalorieLists() =
+    split("\n\n").map { group ->
+        group.split("\n")
+            .mapNotNull { line -> line.toIntOrNull() }
     }
-    println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
-}
 
-fun Long.millisecondsToSeconds() =
-    toDouble() / 1000.0
+fun getPart1Answer(calorieLists: List<List<Int>>) =
+    calorieLists.maxOf { it.sum() }
 
-fun main(args: Array<String>) {
-    val day = args.firstOrNull()
-    if (day == null) {
-        println("Running all ${runners.size} days\n")
-        val elapsedTime = measureTimeMillis {
-            for (dayNumber in runners.keys.sorted()) {
-                runDay(dayNumber)
-            }
-        }
-        println("Total elapsed time: ${elapsedTime.millisecondsToSeconds()} s")
-    } else {
-        val dayNumber = day.toIntOrNull()
-            ?: throw IllegalArgumentException("Day must be a valid integer")
-        runDay(dayNumber)
-    }
+fun getPart2Answer(calorieLists: List<List<Int>>) =
+    calorieLists.map { it.sum() }
+        .sortedDescending()
+        .take(3)
+        .sum()
+
+fun main() {
+    val calorieLists = File("src/main/resources/2022/day01.txt")
+        .readText().toCalorieLists()
+
+    println("The answer to part 1 is ${getPart1Answer(calorieLists)}")
+    println("The answer to part 2 is ${getPart2Answer(calorieLists)}")
 }

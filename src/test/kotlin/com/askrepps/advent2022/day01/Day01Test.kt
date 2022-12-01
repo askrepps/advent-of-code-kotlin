@@ -22,41 +22,34 @@
  * SOFTWARE.
  */
 
-package com.askrepps.advent2022
+package com.askrepps.advent2022.day01
 
-import kotlin.system.measureTimeMillis
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-import com.askrepps.advent2022.day01.main as runDay01
+private const val testData = """
+1000
+2000
+3000
 
-private val runners = mapOf(
-     1 to ::runDay01
-)
+4000
 
-fun runDay(dayNumber: Int) {
-    println("Day $dayNumber")
-    val elapsedTime = measureTimeMillis {
-        runners[dayNumber]?.invoke()
-            ?: throw IllegalArgumentException("No runner found for day $dayNumber")
-    }
-    println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
-}
+5000
+6000
 
-fun Long.millisecondsToSeconds() =
-    toDouble() / 1000.0
+7000
+8000
+9000
 
-fun main(args: Array<String>) {
-    val day = args.firstOrNull()
-    if (day == null) {
-        println("Running all ${runners.size} days\n")
-        val elapsedTime = measureTimeMillis {
-            for (dayNumber in runners.keys.sorted()) {
-                runDay(dayNumber)
-            }
-        }
-        println("Total elapsed time: ${elapsedTime.millisecondsToSeconds()} s")
-    } else {
-        val dayNumber = day.toIntOrNull()
-            ?: throw IllegalArgumentException("Day must be a valid integer")
-        runDay(dayNumber)
+10000
+"""
+
+class Day01Test {
+    @Test
+    fun testDay01() {
+        val calorieLists = testData.toCalorieLists()
+
+        assertEquals(24000, getPart1Answer(calorieLists))
+        assertEquals(45000, getPart2Answer(calorieLists))
     }
 }
