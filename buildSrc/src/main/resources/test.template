@@ -6,14 +6,14 @@ import ${package_prefix}.advent${advent_year}.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 
 """
 
 class Day${day}Test {
     @Test
     fun testDay${day}() {
-        val lines = testData.getInputLines().map { it.toThing() }
+        val lines = TEST_DATA.getInputLines().map { it.toThing() }
 
         assertEquals(null, getPart1Answer(lines))
         assertEquals(null, getPart2Answer(lines))

@@ -28,7 +28,7 @@ import com.askrepps.advent2022.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 A Y
 B X
 C Z
@@ -37,7 +37,8 @@ C Z
 class Day02Test {
     @Test
     fun testDay02() {
-        val lines = testData.getInputLines()
+        val lines = TEST_DATA.getInputLines()
+
         assertEquals(15, getPart1Answer(lines))
         assertEquals(12, getPart2Answer(lines))
     }

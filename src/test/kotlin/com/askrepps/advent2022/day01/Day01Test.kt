@@ -27,7 +27,7 @@ package com.askrepps.advent2022.day01
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 1000
 2000
 3000
@@ -47,7 +47,7 @@ private const val testData = """
 class Day01Test {
     @Test
     fun testDay01() {
-        val calorieLists = testData.toCalorieLists()
+        val calorieLists = TEST_DATA.toCalorieLists()
 
         assertEquals(24000, getPart1Answer(calorieLists))
         assertEquals(45000, getPart2Answer(calorieLists))
