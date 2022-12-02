@@ -43,43 +43,31 @@ enum class Move(val score: Int) {
 
 enum class Outcome { Win, Lose, Draw }
 
+private val winsAgainst = mapOf(
+    Move.Rock to Move.Paper,
+    Move.Paper to Move.Scissors,
+    Move.Scissors to Move.Rock
+)
+
+private val losesAgainst = mapOf(
+    Move.Rock to Move.Scissors,
+    Move.Paper to Move.Rock,
+    Move.Scissors to Move.Paper
+)
+
 fun Move.getScoreAgainst(other: Move) =
     score + when (this) {
-        Move.Rock -> when (other) {
-            Move.Rock -> DRAW_SCORE
-            Move.Paper -> LOSE_SCORE
-            Move.Scissors -> WIN_SCORE
-        }
-        Move.Paper -> when (other) {
-            Move.Rock -> WIN_SCORE
-            Move.Paper -> DRAW_SCORE
-            Move.Scissors -> LOSE_SCORE
-        }
-        Move.Scissors -> when (other) {
-            Move.Rock -> LOSE_SCORE
-            Move.Paper -> WIN_SCORE
-            Move.Scissors -> DRAW_SCORE
-        }
+        winsAgainst[other] -> WIN_SCORE
+        losesAgainst[other] -> LOSE_SCORE
+        else -> DRAW_SCORE
     }
 
 fun Move.getCounterMoveForOutcome(outcome: Outcome) =
-    when (this) {
-        Move.Rock -> when (outcome) {
-            Outcome.Win -> Move.Paper
-            Outcome.Lose -> Move.Scissors
-            Outcome.Draw -> Move.Rock
-        }
-        Move.Paper -> when (outcome) {
-            Outcome.Win -> Move.Scissors
-            Outcome.Lose -> Move.Rock
-            Outcome.Draw -> Move.Paper
-        }
-        Move.Scissors -> when (outcome) {
-            Outcome.Win -> Move.Rock
-            Outcome.Lose -> Move.Paper
-            Outcome.Draw -> Move.Scissors
-        }
-    }
+    when (outcome) {
+        Outcome.Win -> winsAgainst[this]
+        Outcome.Lose -> losesAgainst[this]
+        Outcome.Draw -> this
+    } ?: error("No counter move found for $this and outcome $outcome")
 
 fun String.toMove() =
     when (this) {
@@ -102,20 +90,20 @@ fun String.toOutcome() =
 
 fun playGame(lines: List<String>, moveStrategy: (Move, String) -> Move) =
     lines.sumOf { line ->
-        val (opponent, myStrategy) = line.split(" ")
-        val opponentMove = opponent.toMove()
-        val myMove = moveStrategy(opponentMove, myStrategy)
+        val (opponentCode, myCode) = line.split(" ")
+        val opponentMove = opponentCode.toMove()
+        val myMove = moveStrategy(opponentMove, myCode)
         myMove.getScoreAgainst(opponentMove)
     }
 
 fun getPart1Answer(lines: List<String>) =
-    playGame(lines) { _, myStrategy ->
-        myStrategy.toMove()
+    playGame(lines) { _, myCode ->
+        myCode.toMove()
     }
 
 fun getPart2Answer(lines: List<String>) =
-    playGame(lines) { opponentMove, myStrategy ->
-        opponentMove.getCounterMoveForOutcome(myStrategy.toOutcome())
+    playGame(lines) { opponentMove, myCode ->
+        opponentMove.getCounterMoveForOutcome(myCode.toOutcome())
     }
 
 fun main() {
