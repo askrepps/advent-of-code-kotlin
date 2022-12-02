@@ -81,37 +81,41 @@ fun Move.getCounterMoveForOutcome(outcome: Outcome) =
         }
     }
 
-private val moveMapping = mapOf(
-    "A" to Move.Rock,
-    "B" to Move.Paper,
-    "C" to Move.Scissors,
-    "X" to Move.Rock,
-    "Y" to Move.Paper,
-    "Z" to Move.Scissors
-)
+fun String.toMove() =
+    when (this) {
+        "A" -> Move.Rock
+        "B" -> Move.Paper
+        "C" -> Move.Scissors
+        "X" -> Move.Rock
+        "Y" -> Move.Paper
+        "Z" -> Move.Scissors
+        else -> error("Unrecognized move code $this")
+    }
 
-private val outcomeMapping = mapOf(
-    "X" to Outcome.Lose,
-    "Y" to Outcome.Draw,
-    "Z" to Outcome.Win
-)
+fun String.toOutcome() =
+    when (this) {
+        "X" -> Outcome.Lose
+        "Y" -> Outcome.Draw
+        "Z" -> Outcome.Win
+        else -> error("Unrecognized outcome code $this")
+    }
 
-fun String.parseComponents() = split(" ")
-
-fun getPart1Answer(lines: List<String>) =
+fun playGame(lines: List<String>, moveStrategy: (Move, String) -> Move) =
     lines.sumOf { line ->
-        val (opponent, me) = line.parseComponents()
-        val opponentMove = requireNotNull(moveMapping[opponent])
-        val myMove = requireNotNull(moveMapping[me])
+        val (opponent, myStrategy) = line.split(" ")
+        val opponentMove = opponent.toMove()
+        val myMove = moveStrategy(opponentMove, myStrategy)
         myMove.getScoreAgainst(opponentMove)
     }
 
+fun getPart1Answer(lines: List<String>) =
+    playGame(lines) { _, myStrategy ->
+        myStrategy.toMove()
+    }
+
 fun getPart2Answer(lines: List<String>) =
-    lines.sumOf { line ->
-        val (opponent, me) = line.parseComponents()
-        val opponentMove = requireNotNull(moveMapping[opponent])
-        val myMove = opponentMove.getCounterMoveForOutcome(requireNotNull(outcomeMapping[me]))
-        myMove.getScoreAgainst(opponentMove)
+    playGame(lines) { opponentMove, myStrategy ->
+        opponentMove.getCounterMoveForOutcome(myStrategy.toOutcome())
     }
 
 fun main() {
