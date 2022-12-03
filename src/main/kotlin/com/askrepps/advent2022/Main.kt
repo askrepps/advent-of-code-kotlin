@@ -28,9 +28,10 @@ import kotlin.system.measureTimeMillis
 
 import com.askrepps.advent2022.day01.main as runDay01
 import com.askrepps.advent2022.day02.main as runDay02
+import com.askrepps.advent2022.day03.main as runDay03
 
 private val runners = mapOf(
-     1 to ::runDay01,  2 to ::runDay02
+     1 to ::runDay01,  2 to ::runDay02,  3 to ::runDay03
 )
 
 fun runDay(dayNumber: Int) {
