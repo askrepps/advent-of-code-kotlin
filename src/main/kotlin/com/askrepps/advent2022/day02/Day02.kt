@@ -72,12 +72,9 @@ fun Move.getCounterMoveForOutcome(outcome: Outcome) =
 
 fun String.toMove() =
     when (this) {
-        "A" -> Move.Rock
-        "B" -> Move.Paper
-        "C" -> Move.Scissors
-        "X" -> Move.Rock
-        "Y" -> Move.Paper
-        "Z" -> Move.Scissors
+        "A", "X" -> Move.Rock
+        "B", "Y" -> Move.Paper
+        "C", "Z" -> Move.Scissors
         else -> error("Unrecognized move code $this")
     }
 
