@@ -57,9 +57,10 @@ private val losesAgainst = mapOf(
 
 fun Move.getScoreAgainst(other: Move) =
     score + when (this) {
+        other -> DRAW_SCORE
         winsAgainst[other] -> WIN_SCORE
         losesAgainst[other] -> LOSE_SCORE
-        else -> DRAW_SCORE
+        else -> error("No outcome found for $this and $other")
     }
 
 fun Move.getCounterMoveForOutcome(outcome: Outcome) =
