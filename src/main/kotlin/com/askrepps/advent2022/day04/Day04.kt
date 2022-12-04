@@ -41,7 +41,7 @@ fun IntRange.fullyContains(other: IntRange) =
     first <= other.first && last >= other.last
 
 fun IntRange.overlaps(other: IntRange) =
-    any { it in other }
+    last >= other.first && first <= other.last
 
 fun getPart1Answer(pairs: List<Pair<IntRange, IntRange>>) =
     pairs.count { it.first.fullyContains(it.second) || it.second.fullyContains(it.first) }
