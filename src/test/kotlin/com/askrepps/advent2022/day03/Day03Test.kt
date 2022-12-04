@@ -40,9 +40,9 @@ CrZsJsPPZsGzwwsLwLmpwMDw
 class Day03Test {
     @Test
     fun testDay03() {
-        val lines = TEST_DATA.getInputLines().map { it.toRucksack() }
+        val rucksacks = TEST_DATA.getInputLines().map { it.toRucksack() }
 
-        assertEquals(157, getPart1Answer(lines))
-        assertEquals(70, getPart2Answer(lines))
+        assertEquals(157, getPart1Answer(rucksacks))
+        assertEquals(70, getPart2Answer(rucksacks))
     }
 }

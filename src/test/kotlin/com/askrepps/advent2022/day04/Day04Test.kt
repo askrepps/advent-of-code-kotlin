@@ -40,9 +40,9 @@ private const val TEST_DATA = """
 class Day04Test {
     @Test
     fun testDay04() {
-        val lines = TEST_DATA.getInputLines().map { it.toRangePairs() }
+        val pairs = TEST_DATA.getInputLines().map { it.toRangePairs() }
 
-        assertEquals(2, getPart1Answer(lines))
-        assertEquals(4, getPart2Answer(lines))
+        assertEquals(2, getPart1Answer(pairs))
+        assertEquals(4, getPart2Answer(pairs))
     }
 }
