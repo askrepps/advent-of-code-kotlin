@@ -42,7 +42,9 @@ move 1 from 1 to 2
 class Day05Test {
     @Test
     fun testDay05() {
-        assertEquals("CMZ", getPart1Answer(TEST_DATA))
-        assertEquals("MCD", getPart2Answer(TEST_DATA))
+        val input = TEST_DATA.toInputData()
+
+        assertEquals("CMZ", getPart1Answer(input))
+        assertEquals("MCD", getPart2Answer(input))
     }
 }

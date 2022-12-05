@@ -83,21 +83,22 @@ fun applyCommandsWithMultiGrab(input: Input) {
     }
 }
 
-fun runCommands(inputText: String, commandStrategy: (Input) -> Unit): String {
-    val input = inputText.toInputData()
-    commandStrategy(input)
-    return input.stacks.joinToString(separator = "") { it.peek().toString() }
+fun runCommands(input: Input, commandStrategy: (Input) -> Unit): String {
+    @Suppress("UNCHECKED_CAST")
+    val inputCopy = input.copy(stacks = input.stacks.map { it.clone() as Stack<Char> })
+    commandStrategy(inputCopy)
+    return inputCopy.stacks.joinToString(separator = "") { it.peek().toString() }
 }
 
-fun getPart1Answer(inputText: String) =
-    runCommands(inputText, ::applyCommandsWithSingleGrab)
+fun getPart1Answer(input: Input) =
+    runCommands(input, ::applyCommandsWithSingleGrab)
 
-fun getPart2Answer(inputText: String) =
-    runCommands(inputText, ::applyCommandsWithMultiGrab)
+fun getPart2Answer(input: Input) =
+    runCommands(input, ::applyCommandsWithMultiGrab)
 
 fun main() {
     val input = File("src/main/resources/2022/day05.txt")
-        .readText()
+        .readText().toInputData()
 
     println("The answer to part 1 is ${getPart1Answer(input)}")
     println("The answer to part 2 is ${getPart2Answer(input)}")
