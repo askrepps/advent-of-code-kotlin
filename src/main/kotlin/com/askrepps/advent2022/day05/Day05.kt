@@ -83,17 +83,17 @@ fun applyCommandsWithMultiGrab(input: Input) {
     }
 }
 
-fun getPart1Answer(inputText: String): String {
+fun runCommands(inputText: String, commandStrategy: (Input) -> Unit): String {
     val input = inputText.toInputData()
-    applyCommandsWithSingleGrab(input)
+    commandStrategy(input)
     return input.stacks.joinToString(separator = "") { it.peek().toString() }
 }
 
-fun getPart2Answer(inputText: String): String {
-    val input = inputText.toInputData()
-    applyCommandsWithMultiGrab(input)
-    return input.stacks.joinToString(separator = "") { it.peek().toString() }
-}
+fun getPart1Answer(inputText: String) =
+    runCommands(inputText, ::applyCommandsWithSingleGrab)
+
+fun getPart2Answer(inputText: String) =
+    runCommands(inputText, ::applyCommandsWithMultiGrab)
 
 fun main() {
     val input = File("src/main/resources/2022/day05.txt")
