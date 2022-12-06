@@ -26,16 +26,21 @@ package com.askrepps.advent2022.day06
 
 import java.io.File
 
-fun findPostMarkerIndex(input: String, markerLength: Int): Int {
-    var index = markerLength
-    while (index < input.length) {
-        if (input.subSequence(index - markerLength until index).toSet().size == markerLength) {
-            return index
+fun getUniqueRunLength(input: String, startIndex: Int, endIndex: Int): Int {
+    val encounteredCharacters = mutableSetOf<Char>()
+    for (currentCharacter in input.subSequence(startIndex, endIndex)) {
+        if (currentCharacter in encounteredCharacters) {
+            break
         }
-        index++
+        encounteredCharacters.add(currentCharacter)
     }
-    error("No marker found")
+    return encounteredCharacters.size
 }
+
+fun findPostMarkerIndex(input: String, markerLength: Int) =
+    (markerLength until input.length).find { endIndex ->
+        getUniqueRunLength(input, endIndex - markerLength, endIndex) == markerLength
+    } ?: error("No marker found")
 
 fun getPart1Answer(input: String) =
     findPostMarkerIndex(input, markerLength = 4)
