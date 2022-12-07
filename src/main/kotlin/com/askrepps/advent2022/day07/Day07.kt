@@ -64,9 +64,7 @@ fun String.lastToken() = split(" ").last()
 fun List<String>.toFileTree(): DirectoryNode {
     val rootNode = DirectoryNode("/")
     var currentNode = rootNode
-    var index = 1
-    while (index < size) {
-        val line = get(index)
+    subList(1, size).forEach { line ->
         when {
             line.startsWith("dir") -> {
                 val dirName = line.lastToken()
@@ -76,7 +74,7 @@ fun List<String>.toFileTree(): DirectoryNode {
                 val (fileSize, fileName) = line.split(" ")
                 currentNode.addChild(FileNode(fileName, fileSize.toLong()))
             }
-            line.startsWith("$ cd ..") -> {
+            line == "$ cd .." -> {
                 currentNode = checkNotNull(currentNode.parent) {
                     "node ${currentNode.name} does not have a parent directory"
                 }
@@ -88,7 +86,6 @@ fun List<String>.toFileTree(): DirectoryNode {
                 }
             }
         }
-        index++
     }
     return rootNode
 }
