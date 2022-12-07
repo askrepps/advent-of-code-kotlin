@@ -46,7 +46,12 @@ class DirectoryNode(override val name: String, val parent: DirectoryNode? = null
 
     fun addChild(node: Node) {
         _childNodes[node.name] = node
+        invalidateCachedSize()
+    }
+
+    private fun invalidateCachedSize() {
         cachedSize = null
+        parent?.invalidateCachedSize()
     }
 
     fun getDirectoriesRecursive(): List<DirectoryNode> =
