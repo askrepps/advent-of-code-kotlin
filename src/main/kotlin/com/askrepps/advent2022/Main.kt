@@ -32,10 +32,11 @@ import com.askrepps.advent2022.day03.main as runDay03
 import com.askrepps.advent2022.day04.main as runDay04
 import com.askrepps.advent2022.day05.main as runDay05
 import com.askrepps.advent2022.day06.main as runDay06
+import com.askrepps.advent2022.day07.main as runDay07
 
 private val runners = mapOf(
      1 to ::runDay01,  2 to ::runDay02,  3 to ::runDay03,  4 to ::runDay04,  5 to ::runDay05,
-     6 to ::runDay06
+     6 to ::runDay06,  7 to ::runDay07
 )
 
 fun runDay(dayNumber: Int) {
