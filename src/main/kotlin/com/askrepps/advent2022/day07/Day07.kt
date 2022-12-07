@@ -39,22 +39,14 @@ class DirectoryNode(override val name: String, val parent: DirectoryNode? = null
     val childNodes: Map<String, Node>
         get() = _childNodes
 
-    private var dirtySize = true
-    private var cachedSize = 0L
-
+    private var cachedSize: Long? = null
     override val size: Long
-        get() =
-            if (dirtySize) {
-                dirtySize = false
-                childNodes.values.sumOf { it.size }
-                    .also { cachedSize = it }
-            } else {
-                cachedSize
-            }
+        get() = cachedSize
+            ?: childNodes.values.sumOf { it.size }.also { cachedSize = it }
 
     fun addChild(node: Node) {
         _childNodes[node.name] = node
-        dirtySize = true
+        cachedSize = null
     }
 
     fun getDirectoriesRecursive(): List<DirectoryNode> =
