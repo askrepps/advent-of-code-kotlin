@@ -34,58 +34,38 @@ fun List<String>.toHeightMap() = map { row ->
 fun isTreeVisible(heightMap: List<List<Int>>, treeRow: Int, treeColumn: Int): Boolean {
     val treeHeight = heightMap[treeRow][treeColumn]
 
-    if ((0 until treeRow).all { heightMap[it][treeColumn] < treeHeight }) {
-        return true
-    }
-    if ((treeRow + 1 until heightMap.size).all { heightMap[it][treeColumn] < treeHeight }) {
-        return true
-    }
-    if ((0 until treeColumn).all { heightMap[treeRow][it] < treeHeight }) {
-        return true
-    }
-    if ((treeColumn + 1 until heightMap[treeRow].size).all { heightMap[treeRow][it] < treeHeight }) {
-        return true
-    }
+    fun testRows(rows: IntProgression) = rows.all { heightMap[it][treeColumn] < treeHeight }
 
-    return false
+    fun testColumns(columns: IntProgression) = columns.all { heightMap[treeRow][it] < treeHeight }
+
+    return testRows(0 until treeRow)
+        || testRows(treeRow + 1 until heightMap.size)
+        || testColumns(0 until treeColumn)
+        || testColumns(treeColumn + 1 until heightMap[treeRow].size)
+}
+
+inline fun <T> Iterable<T>.countUntil(predicate: (T) -> Boolean): Int {
+    var count = 0
+    for (value in this) {
+        count++
+        if (predicate(value)) {
+            break
+        }
+    }
+    return count
 }
 
 fun getTreeScenicScore(heightMap: List<List<Int>>, treeRow: Int, treeColumn: Int): Int {
     val treeHeight = heightMap[treeRow][treeColumn]
 
-    var upperCount = 0
-    for (upperRow in treeRow - 1 downTo 0) {
-        upperCount++
-        if (heightMap[upperRow][treeColumn] >= treeHeight) {
-            break
-        }
-    }
+    fun countRows(rows: IntProgression) = rows.countUntil { heightMap[it][treeColumn] >= treeHeight }
 
-    var lowerCount = 0
-    for (lowerRow in treeRow + 1 until heightMap.size) {
-        lowerCount++
-        if (heightMap[lowerRow][treeColumn] >= treeHeight) {
-            break
-        }
-    }
+    fun countColumns(columns: IntProgression) = columns.countUntil { heightMap[treeRow][it] >= treeHeight }
 
-    var leftCount = 0
-    for (leftColumn in treeColumn - 1 downTo 0) {
-        leftCount++
-        if (heightMap[treeRow][leftColumn] >= treeHeight) {
-            break
-        }
-    }
-
-    var rightCount = 0
-    for (rightColumn in treeColumn + 1 until heightMap[treeRow].size) {
-        rightCount++
-        if (heightMap[treeRow][rightColumn] >= treeHeight) {
-            break
-        }
-    }
-
-    return upperCount * lowerCount * leftCount * rightCount
+    return countRows(treeRow - 1 downTo 0) *
+        countRows(treeRow + 1 until heightMap.size) *
+        countColumns(treeColumn - 1 downTo 0) *
+        countColumns(treeColumn + 1 until heightMap[treeRow].size)
 }
 
 fun getPart1Answer(heightMap: List<List<Int>>) =
