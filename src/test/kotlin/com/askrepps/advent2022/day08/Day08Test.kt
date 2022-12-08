@@ -39,9 +39,9 @@ private const val TEST_DATA = """
 class Day08Test {
     @Test
     fun testDay08() {
-        val lines = TEST_DATA.getInputLines().toHeightMap()
+        val heightMap = TEST_DATA.getInputLines().toHeightMap()
 
-        assertEquals(21, getPart1Answer(lines))
-        assertEquals(8, getPart2Answer(lines))
+        assertEquals(21, getPart1Answer(heightMap))
+        assertEquals(8, getPart2Answer(heightMap))
     }
 }
