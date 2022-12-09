@@ -63,7 +63,7 @@ fun Coordinates.moveToward(head: Coordinates): Coordinates {
     val manhattanDistance = abs(deltaX) + abs(deltaY)
 
     // tail is already orthogonally adjacent (or overlapping)
-    if ((deltaX == 0 || deltaY == 0) && manhattanDistance <= 1) {
+    if (manhattanDistance <= 1) {
         return this
     }
 
