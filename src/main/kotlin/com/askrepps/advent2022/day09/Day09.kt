@@ -27,8 +27,7 @@ package com.askrepps.advent2022.day09
 import com.askrepps.advent2022.util.getInputLines
 import java.io.File
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
+import kotlin.math.sign
 
 enum class Direction { UP, DOWN, LEFT, RIGHT }
 
@@ -68,16 +67,23 @@ fun Coordinates.move(direction: Direction): Coordinates {
     return Coordinates(newX, newY)
 }
 
-fun Int.clamp(minValue: Int, maxValue: Int) =
-    max(min(this, maxValue), minValue)
-
 fun Coordinates.moveToward(head: Coordinates): Coordinates {
-    val dx = head.x - x
-    val dy = head.y - y
-    if ((dx == 0 && abs(dy) <= 1) || (dy == 0 && abs(dx) <= 1) || (dx != 0 && dy != 0 && abs(dx) + abs(dy) <= 2)) {
+    val deltaX = head.x - x
+    val deltaY = head.y - y
+    val manhattanDistance = abs(deltaX) + abs(deltaY)
+
+    // tail is already orthogonally adjacent (or overlapping)
+    if ((deltaX == 0 || deltaY == 0) && manhattanDistance <= 1) {
         return this
     }
-    return Coordinates(x + dx.clamp(-1, 1), y + dy.clamp(-1, 1))
+
+    // tail is already diagonally adjacent
+    if (deltaX != 0 && deltaY != 0 && manhattanDistance <= 2) {
+        return this
+    }
+
+    // restrict to king's move
+    return Coordinates(x + deltaX.sign, y + deltaY.sign)
 }
 
 fun simulateTailMovement(headCommands: List<Command>, length: Int): Int {
