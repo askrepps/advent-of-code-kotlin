@@ -80,24 +80,10 @@ fun Coordinates.moveToward(head: Coordinates): Coordinates {
     return Coordinates(x + dx.clamp(-1, 1), y + dy.clamp(-1, 1))
 }
 
-fun getPart1Answer(commands: List<Command>): Int {
-    var head = Coordinates(0, 0)
-    var tail = Coordinates(0, 0)
-    val tailPositions = mutableSetOf(tail)
-    for (command in commands) {
-        repeat(command.count) {
-            head = head.move(command.direction)
-            tail = tail.moveToward(head)
-            tailPositions.add(tail)
-        }
-    }
-    return tailPositions.size
-}
-
-fun getPart2Answer(commands: List<Command>): Int {
-    val rope = MutableList(10) { Coordinates(0, 0) }
+fun simulateTailMovement(headCommands: List<Command>, length: Int): Int {
+    val rope = MutableList(length) { Coordinates(0, 0) }
     val tailPositions = mutableSetOf(rope.last())
-    for (command in commands) {
+    for (command in headCommands) {
         repeat(command.count) {
             rope[0] = rope[0].move(command.direction)
             for (idx in 1 until rope.size) {
@@ -108,6 +94,12 @@ fun getPart2Answer(commands: List<Command>): Int {
     }
     return tailPositions.size
 }
+
+fun getPart1Answer(commands: List<Command>) =
+    simulateTailMovement(commands, length = 2)
+
+fun getPart2Answer(commands: List<Command>) =
+    simulateTailMovement(commands, length = 10)
 
 fun main() {
     val commands = File("src/main/resources/2022/day09.txt")
