@@ -29,7 +29,12 @@ import java.io.File
 import kotlin.math.abs
 import kotlin.math.sign
 
-enum class Direction { UP, DOWN, LEFT, RIGHT }
+enum class Direction(val deltaX: Int, val deltaY: Int) {
+    UP(0, 1),
+    DOWN(0, -1),
+    LEFT(-1, 0),
+    RIGHT(1, 0)
+}
 
 data class Command(val direction: Direction, val count: Int)
 
@@ -49,23 +54,8 @@ fun String.toCommand() =
         Command(directionStr.toDirection(), countStr.toInt())
     }
 
-fun Coordinates.move(direction: Direction): Coordinates {
-    val newX =
-        when (direction) {
-            Direction.UP -> x
-            Direction.DOWN -> x
-            Direction.LEFT -> x - 1
-            Direction.RIGHT -> x + 1
-        }
-    val newY =
-        when (direction) {
-            Direction.UP -> y + 1
-            Direction.DOWN -> y - 1
-            Direction.LEFT -> y
-            Direction.RIGHT -> y
-        }
-    return Coordinates(newX, newY)
-}
+fun Coordinates.move(direction: Direction) =
+    Coordinates(x + direction.deltaX, y + direction.deltaY)
 
 fun Coordinates.moveToward(head: Coordinates): Coordinates {
     val deltaX = head.x - x
