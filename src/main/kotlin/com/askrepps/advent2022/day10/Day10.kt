@@ -28,11 +28,14 @@ import com.askrepps.advent2022.util.getInputLines
 import java.io.File
 import kotlin.math.abs
 
-sealed class Instruction(val cycles: Int)
+private const val NOOP_CYCLES = 1
+private const val ADDX_CYCLES = 2
 
-object NoOp : Instruction(cycles = 1)
+sealed class Instruction(val cycles: Int, val value: Int)
 
-data class AddX(val value: Int) : Instruction(cycles = 2)
+object NoOp : Instruction(cycles = NOOP_CYCLES, value = 0)
+
+class AddX(value: Int) : Instruction(cycles = ADDX_CYCLES, value)
 
 fun String.toInstruction() =
     if (this == "noop") {
@@ -55,11 +58,7 @@ fun runProgram(instructions: List<Instruction>, onCycleFinished: (Int, Int) -> U
             register += pendingValue
             val instruction = instructions[programCounter]
             skipCount = instruction.cycles - 1
-            pendingValue =
-                when (instruction) {
-                    NoOp -> 0
-                    is AddX -> instruction.value
-                }
+            pendingValue = instruction.value
             programCounter++
         }
         onCycleFinished(cycle, register)
