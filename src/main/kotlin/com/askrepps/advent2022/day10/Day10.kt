@@ -45,23 +45,14 @@ fun String.toInstruction() =
     }
 
 fun runProgram(instructions: List<Instruction>, onCycleFinished: (Int, Int) -> Unit) {
-    var programCounter = 0
     var register = 1
     var cycle = 0
-    var skipCount = 0
-    var pendingValue = 0
-    while (programCounter < instructions.size) {
-        cycle++
-        if (skipCount > 0) {
-            skipCount--
-        } else {
-            register += pendingValue
-            val instruction = instructions[programCounter]
-            skipCount = instruction.cycles - 1
-            pendingValue = instruction.value
-            programCounter++
+    for (instruction in instructions) {
+        repeat(instruction.cycles) {
+            cycle++
+            onCycleFinished(cycle, register)
         }
-        onCycleFinished(cycle, register)
+        register += instruction.value
     }
 }
 
