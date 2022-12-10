@@ -31,6 +31,11 @@ import kotlin.math.abs
 private const val NOOP_CYCLES = 1
 private const val ADDX_CYCLES = 2
 
+private const val SIGNAL_CYCLE_OFFSET = 20
+private const val SIGNAL_CYCLE_PERIOD = 40
+
+private const val DISPLAY_WIDTH = 40
+
 sealed class Instruction(val cycles: Int, val value: Int)
 
 object NoOp : Instruction(cycles = NOOP_CYCLES, value = 0)
@@ -59,7 +64,7 @@ fun runProgram(instructions: List<Instruction>, onCycleFinished: (Int, Int) -> U
 fun getTotalSignalStrength(instructions: List<Instruction>): Int {
     var totalStrength = 0
     runProgram(instructions) { cycle, register ->
-        if ((cycle - 20) % 40 == 0) {
+        if ((cycle - SIGNAL_CYCLE_OFFSET) % SIGNAL_CYCLE_PERIOD == 0) {
             totalStrength += cycle * register
         }
     }
@@ -69,7 +74,7 @@ fun getTotalSignalStrength(instructions: List<Instruction>): Int {
 fun getRenderedImage(instructions: List<Instruction>): String {
     val sb = StringBuilder()
     runProgram(instructions) { cycle, register ->
-        val renderColumn = (cycle - 1) % 40
+        val renderColumn = (cycle - 1) % DISPLAY_WIDTH
         val pixel =
             if (abs(register - renderColumn) <= 1) {
                 '#'
@@ -77,7 +82,7 @@ fun getRenderedImage(instructions: List<Instruction>): String {
                 '.'
             }
         sb.append(pixel)
-        if (renderColumn == 39) {
+        if (renderColumn == DISPLAY_WIDTH - 1) {
             sb.append('\n')
         }
     }
