@@ -44,13 +44,14 @@ private val runners = mapOf(
     11 to ::runDay11
 )
 
-fun runDay(dayNumber: Int) {
+fun runDay(dayNumber: Int): Long {
     println("Day $dayNumber")
     val elapsedTime = measureTimeMillis {
         runners[dayNumber]?.invoke()
             ?: throw IllegalArgumentException("No runner found for day $dayNumber")
     }
     println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
+    return elapsedTime
 }
 
 fun Long.millisecondsToSeconds() =
@@ -60,12 +61,11 @@ fun main(args: Array<String>) {
     val day = args.firstOrNull()
     if (day == null) {
         println("Running all ${runners.size} days\n")
-        val elapsedTime = measureTimeMillis {
-            for (dayNumber in runners.keys.sorted()) {
-                runDay(dayNumber)
-            }
+        var totalTime = 0L
+        for (dayNumber in runners.keys.sorted()) {
+            totalTime += runDay(dayNumber)
         }
-        println("Total elapsed time: ${elapsedTime.millisecondsToSeconds()} s")
+        println("Total elapsed time: ${totalTime.millisecondsToSeconds()} s")
     } else {
         val dayNumber = day.toIntOrNull()
             ?: throw IllegalArgumentException("Day must be a valid integer")
