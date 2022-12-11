@@ -25,26 +25,25 @@
 package com.askrepps.advent2022.day11
 
 import java.io.File
-import java.math.BigInteger
 
-sealed class Operation(val value: BigInteger?) {
-    abstract fun applyTo(incomingValue: BigInteger): BigInteger
+sealed class Operation(val value: Long?) {
+    abstract fun applyTo(incomingValue: Long): Long
 }
 
-class Addition(value: BigInteger?) : Operation(value) {
-    override fun applyTo(incomingValue: BigInteger): BigInteger =
-        incomingValue.add(value ?: incomingValue)
+class Addition(value: Long?) : Operation(value) {
+    override fun applyTo(incomingValue: Long): Long =
+        incomingValue + (value ?: incomingValue)
 }
 
-class Multiplication(value: BigInteger?) : Operation(value) {
-    override fun applyTo(incomingValue: BigInteger): BigInteger =
-        incomingValue.multiply(value ?: incomingValue)
+class Multiplication(value: Long?) : Operation(value) {
+    override fun applyTo(incomingValue: Long): Long =
+        incomingValue * (value ?: incomingValue)
 }
 
 class Monkey(
-    val initialItems: List<BigInteger>,
+    val initialItems: List<Long>,
     val operation: Operation,
-    val divisibleTest: BigInteger,
+    val divisibleTest: Long,
     val trueMonkeyId: Int,
     val falseMonkeyId: Int
 ) {
@@ -53,24 +52,22 @@ class Monkey(
     var inspectionCount = 0L
         private set
 
-    fun takeTurn(monkeys: List<Monkey>, commonModulo: BigInteger, worryReductionFactor: BigInteger?) {
+    fun takeTurn(monkeys: List<Monkey>, commonModulo: Long, worryReductionFactor: Long) {
         while (items.isNotEmpty()) {
             val currentItem = items.removeFirst()
-            val newItem = operation.applyTo(currentItem).let { baseValue ->
-                worryReductionFactor?.let { baseValue.divide(it) } ?: baseValue
-            }
+            val newItem = (operation.applyTo(currentItem) / worryReductionFactor) % commonModulo
             val targetMonkeyId =
-                if (newItem.mod(divisibleTest) == BigInteger.ZERO) {
+                if (newItem.mod(divisibleTest) == 0L) {
                     trueMonkeyId
                 } else {
                     falseMonkeyId
                 }
-            monkeys[targetMonkeyId].catch(newItem.mod(commonModulo))
+            monkeys[targetMonkeyId].catch(newItem)
             inspectionCount++
         }
     }
 
-    private fun catch(item: BigInteger) {
+    private fun catch(item: Long) {
         items.addLast(item)
     }
 }
@@ -79,15 +76,15 @@ fun String.toMonkey(): Monkey {
     val lines = lines()
     val initialItems = lines[1].substringAfter(": ")
         .split(", ")
-        .map { it.toBigInteger() }
-    val operationValue = lines[2].split(" ").last().toBigIntegerOrNull()
+        .map { it.toLong() }
+    val operationValue = lines[2].split(" ").last().toLongOrNull()
     val operation =
         if (lines[2].contains("+")) {
             Addition(operationValue)
         } else {
             Multiplication(operationValue)
         }
-    val divisibleTest = lines[3].split(" ").last().toBigInteger()
+    val divisibleTest = lines[3].split(" ").last().toLong()
     val trueMonkeyId = lines[4].split(" ").last().toInt()
     val falseMonkeyId = lines[5].split(" ").last().toInt()
     return Monkey(initialItems, operation, divisibleTest, trueMonkeyId, falseMonkeyId)
@@ -96,10 +93,10 @@ fun String.toMonkey(): Monkey {
 fun cloneMonkey(monkey: Monkey) =
     Monkey(monkey.initialItems, monkey.operation, monkey.divisibleTest, monkey.trueMonkeyId, monkey.falseMonkeyId)
 
-fun getMonkeyBusiness(monkeys: List<Monkey>, numRounds: Int, worryReductionFactor: BigInteger? = null): Long {
+fun getMonkeyBusiness(monkeys: List<Monkey>, numRounds: Int, worryReductionFactor: Long = 1L): Long {
     val monkeyClones = monkeys.map { cloneMonkey(it) }
-    val commonModulo = monkeys.fold(BigInteger.ONE) { acc, monkey ->
-        acc.multiply(monkey.divisibleTest)
+    val commonModulo = monkeys.fold(1L) { acc, monkey ->
+        acc * monkey.divisibleTest
     }
     repeat(numRounds) {
         for (monkey in monkeyClones) {
@@ -114,7 +111,7 @@ fun getMonkeyBusiness(monkeys: List<Monkey>, numRounds: Int, worryReductionFacto
 }
 
 fun getPart1Answer(monkeys: List<Monkey>) =
-    getMonkeyBusiness(monkeys, numRounds = 20, worryReductionFactor = 3L.toBigInteger())
+    getMonkeyBusiness(monkeys, numRounds = 20, worryReductionFactor = 3L)
 
 fun getPart2Answer(monkeys: List<Monkey>) =
     getMonkeyBusiness(monkeys, numRounds = 10000)
