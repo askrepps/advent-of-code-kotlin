@@ -105,8 +105,8 @@ fun getMonkeyBusiness(monkeys: List<Monkey>, numRounds: Int, worryReductionFacto
     }
     return monkeyClones.sortedByDescending { it.inspectionCount }
         .take(2)
-        .fold(1L) { acc, monkey ->
-            acc * monkey.inspectionCount
+        .let { (m1, m2) ->
+            m1.inspectionCount * m2.inspectionCount
         }
 }
 
