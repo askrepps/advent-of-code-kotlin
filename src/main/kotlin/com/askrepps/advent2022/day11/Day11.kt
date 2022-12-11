@@ -57,7 +57,7 @@ class Monkey(
             val currentItem = items.removeFirst()
             val newItem = (operation.applyTo(currentItem) / worryReductionFactor) % commonModulo
             val targetMonkeyId =
-                if (newItem.mod(divisibleTest) == 0L) {
+                if (newItem % divisibleTest == 0L) {
                     trueMonkeyId
                 } else {
                     falseMonkeyId
