@@ -48,10 +48,12 @@ fun List<String>.toHeightMap(): HeightMap {
         row.mapIndexed { columnIndex, cell ->
             when (cell) {
                 'S' -> {
+                    check(start == null) { "Multiple starts found" }
                     start = GridCoordinates(rowIndex, columnIndex)
                     'a'
                 }
                 'E' -> {
+                    check(end == null) { "Multiple ends found" }
                     end = GridCoordinates(rowIndex, columnIndex)
                     'z'
                 }
@@ -66,11 +68,9 @@ fun List<String>.toHeightMap(): HeightMap {
     )
 }
 
-fun findShortestPathSteps(heightMap: HeightMap): Int {
-    val (heights, start, end) = heightMap
-
-    val totalPathDistanceMap = heights.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
-    totalPathDistanceMap[start.row][start.column] = 0
+fun findShortestPathSteps(heights: List<List<Char>>, start: GridCoordinates, end: GridCoordinates): Int {
+    val totalDistances = heights.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
+    totalDistances[start.row][start.column] = 0
 
     val searchQueue = PriorityQueue<GridSearchPoint>(compareBy { it.currentDistance })
     searchQueue.add(GridSearchPoint(start, heights[start.row][start.column], 0))
@@ -81,9 +81,9 @@ fun findShortestPathSteps(heightMap: HeightMap): Int {
             val neighborColumn = currentCoordinates.column + direction.deltaColumn
             val neighborDistance = currentDistance + 1
             heights.getOrNull(neighborRow)?.getOrNull(neighborColumn)?.let { neighborHeight ->
-                val currentNeighborDistance = totalPathDistanceMap[neighborRow][neighborColumn]
+                val currentNeighborDistance = totalDistances[neighborRow][neighborColumn]
                 if (neighborHeight <= currentHeight + 1 && neighborDistance < currentNeighborDistance) {
-                    totalPathDistanceMap[neighborRow][neighborColumn] = neighborDistance
+                    totalDistances[neighborRow][neighborColumn] = neighborDistance
                     val neighborCoordinates = GridCoordinates(neighborRow, neighborColumn)
                     searchQueue.add(GridSearchPoint(neighborCoordinates, neighborHeight, neighborDistance))
                 }
@@ -91,17 +91,17 @@ fun findShortestPathSteps(heightMap: HeightMap): Int {
         }
     }
 
-    return totalPathDistanceMap[end.row][end.column]
+    return totalDistances[end.row][end.column]
 }
 
 fun getPart1Answer(heightMap: HeightMap) =
-    findShortestPathSteps(heightMap)
+    findShortestPathSteps(heightMap.heights, heightMap.start, heightMap.end)
 
 fun getPart2Answer(heightMap: HeightMap) =
     heightMap.heights.flatMapIndexed { rowIndex, row ->
         row.mapIndexed { columnIndex, height ->
             if (height == 'a') {
-                findShortestPathSteps(heightMap.copy(start = GridCoordinates(rowIndex, columnIndex)))
+                findShortestPathSteps(heightMap.heights, GridCoordinates(rowIndex, columnIndex), heightMap.end)
             } else {
                 Int.MAX_VALUE
             }
