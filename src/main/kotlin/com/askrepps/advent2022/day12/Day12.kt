@@ -99,11 +99,11 @@ fun getPart1Answer(heightMap: HeightMap) =
 
 fun getPart2Answer(heightMap: HeightMap) =
     heightMap.heights.flatMapIndexed { rowIndex, row ->
-        row.mapIndexed { columnIndex, height ->
+        row.mapIndexedNotNull { columnIndex, height ->
             if (height == 'a') {
                 findShortestPathSteps(heightMap.heights, GridCoordinates(rowIndex, columnIndex), heightMap.end)
             } else {
-                Int.MAX_VALUE
+                null
             }
         }
     }.min()
