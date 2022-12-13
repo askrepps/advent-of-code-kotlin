@@ -117,9 +117,9 @@ fun String.toPacketData(): PacketData? {
 
 fun getPart1Answer(packets: List<PacketData>) =
     packets.chunked(2)
-        .mapIndexedNotNull { idx, (p1, p2) ->
-            if (p1 <= p2) {
-                idx + 1
+        .mapIndexedNotNull { pairIndex, (packet1, packet2) ->
+            if (packet1 <= packet2) {
+                pairIndex + 1
             } else {
                 null
             }
