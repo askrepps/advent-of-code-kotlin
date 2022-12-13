@@ -39,9 +39,9 @@ data class GridCoordinates(val row: Int, val column: Int)
 
 data class GridSearchPoint(val coordinates: GridCoordinates, val height: Char, val currentDistance: Int)
 
-data class HeightMap(val heights: List<List<Char>>, val start: GridCoordinates, val end: GridCoordinates)
+data class InputData(val heightMap: List<List<Char>>, val start: GridCoordinates, val end: GridCoordinates)
 
-fun List<String>.toHeightMap(): HeightMap {
+fun List<String>.toInputData(): InputData {
     var start: GridCoordinates? = null
     var end: GridCoordinates? = null
     val heights = mapIndexed { rowIndex, row ->
@@ -61,28 +61,28 @@ fun List<String>.toHeightMap(): HeightMap {
             }
         }
     }
-    return HeightMap(
+    return InputData(
         heights,
         start ?: error("No start cell found"),
         end ?: error("No end cell found")
     )
 }
 
-fun findShortestPathSteps(heights: List<List<Char>>, start: GridCoordinates, end: GridCoordinates): Int {
-    val totalDistances = heights.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
-    totalDistances[start.row][start.column] = 0
+fun findDistancesToEnd(heightMap: List<List<Char>>, end: GridCoordinates): List<List<Int>> {
+    val totalDistances = heightMap.map { row -> MutableList(row.size) { Int.MAX_VALUE } }
+    totalDistances[end.row][end.column] = 0
 
     val searchQueue = PriorityQueue<GridSearchPoint>(compareBy { it.currentDistance })
-    searchQueue.add(GridSearchPoint(start, heights[start.row][start.column], 0))
+    searchQueue.add(GridSearchPoint(end, heightMap[end.row][end.column], 0))
     while (searchQueue.isNotEmpty()) {
         val (currentCoordinates, currentHeight, currentDistance) = searchQueue.remove()
         for (direction in Direction.values()) {
             val neighborRow = currentCoordinates.row + direction.deltaRow
             val neighborColumn = currentCoordinates.column + direction.deltaColumn
             val neighborDistance = currentDistance + 1
-            heights.getOrNull(neighborRow)?.getOrNull(neighborColumn)?.let { neighborHeight ->
+            heightMap.getOrNull(neighborRow)?.getOrNull(neighborColumn)?.let { neighborHeight ->
                 val currentNeighborDistance = totalDistances[neighborRow][neighborColumn]
-                if (neighborHeight <= currentHeight + 1 && neighborDistance < currentNeighborDistance) {
+                if (neighborHeight >= currentHeight - 1 && neighborDistance < currentNeighborDistance) {
                     totalDistances[neighborRow][neighborColumn] = neighborDistance
                     val neighborCoordinates = GridCoordinates(neighborRow, neighborColumn)
                     searchQueue.add(GridSearchPoint(neighborCoordinates, neighborHeight, neighborDistance))
@@ -91,17 +91,17 @@ fun findShortestPathSteps(heights: List<List<Char>>, start: GridCoordinates, end
         }
     }
 
-    return totalDistances[end.row][end.column]
+    return totalDistances
 }
 
-fun getPart1Answer(heightMap: HeightMap) =
-    findShortestPathSteps(heightMap.heights, heightMap.start, heightMap.end)
+fun getPart1Answer(distances: List<List<Int>>, start: GridCoordinates) =
+    distances[start.row][start.column]
 
-fun getPart2Answer(heightMap: HeightMap) =
-    heightMap.heights.flatMapIndexed { rowIndex, row ->
+fun getPart2Answer(heightMap: List<List<Char>>, distances: List<List<Int>>) =
+    heightMap.flatMapIndexed { rowIndex, row ->
         row.mapIndexedNotNull { columnIndex, height ->
             if (height == 'a') {
-                findShortestPathSteps(heightMap.heights, GridCoordinates(rowIndex, columnIndex), heightMap.end)
+                distances[rowIndex][columnIndex]
             } else {
                 null
             }
@@ -109,9 +109,10 @@ fun getPart2Answer(heightMap: HeightMap) =
     }.min()
 
 fun main() {
-    val heightMap = File("src/main/resources/2022/day12.txt")
-        .getInputLines().toHeightMap()
+    val (heightMap, start, end) = File("src/main/resources/2022/day12.txt")
+        .getInputLines().toInputData()
+    val distances = findDistancesToEnd(heightMap, end)
 
-    println("The answer to part 1 is ${getPart1Answer(heightMap)}")
-    println("The answer to part 2 is ${getPart2Answer(heightMap)}")
+    println("The answer to part 1 is ${getPart1Answer(distances, start)}")
+    println("The answer to part 2 is ${getPart2Answer(heightMap, distances)}")
 }

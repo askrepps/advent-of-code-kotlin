@@ -39,9 +39,10 @@ abdefghi
 class Day12Test {
     @Test
     fun testDay12() {
-        val heightMap = TEST_DATA.getInputLines().toHeightMap()
+        val (heightMap, start, end) = TEST_DATA.getInputLines().toInputData()
+        val distances = findDistancesToEnd(heightMap, end)
 
-        assertEquals(31, getPart1Answer(heightMap))
-        assertEquals(29, getPart2Answer(heightMap))
+        assertEquals(31, getPart1Answer(distances, start))
+        assertEquals(29, getPart2Answer(heightMap, distances))
     }
 }
