@@ -57,7 +57,7 @@ private const val TEST_DATA = """
 class Day13Test {
     @Test
     fun testDay13() {
-        val packets = TEST_DATA.getInputLines().mapNotNull { it.toPacketData() }
+        val packets = TEST_DATA.getInputLines().map { it.toPacketData() }
 
         assertEquals(13, getPart1Answer(packets))
         assertEquals(140, getPart2Answer(packets))

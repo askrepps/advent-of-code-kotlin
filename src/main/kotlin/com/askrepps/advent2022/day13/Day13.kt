@@ -75,11 +75,7 @@ class PacketList : PacketData() {
     }
 }
 
-fun String.toPacketData(): PacketData? {
-    if (isBlank()) {
-        return null
-    }
-
+fun String.toPacketData(): PacketData {
     val listStack = Stack<PacketList>()
     var currentList = PacketList()
     var pendingValue: Int? = null
@@ -126,15 +122,15 @@ fun getPart1Answer(packets: List<PacketData>) =
         }.sum()
 
 fun getPart2Answer(packets: List<PacketData>): Int {
-    val divider1 = checkNotNull("[[2]]".toPacketData())
-    val divider2 = checkNotNull("[[6]]".toPacketData())
+    val divider1 = "[[2]]".toPacketData()
+    val divider2 = "[[6]]".toPacketData()
     val sortedPackets = (packets + listOf(divider1, divider2)).sorted()
     return (sortedPackets.indexOf(divider1) + 1) * (sortedPackets.indexOf(divider2) + 1)
 }
 
 fun main() {
     val packets = File("src/main/resources/2022/day13.txt")
-        .getInputLines().mapNotNull { it.toPacketData() }
+        .getInputLines().map { it.toPacketData() }
 
     println("The answer to part 1 is ${getPart1Answer(packets)}")
     println("The answer to part 2 is ${getPart2Answer(packets)}")
