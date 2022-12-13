@@ -24,6 +24,7 @@
 
 package com.askrepps.advent2022.day13
 
+import com.askrepps.advent2022.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
@@ -56,9 +57,9 @@ private const val TEST_DATA = """
 class Day13Test {
     @Test
     fun testDay13() {
-        val pairs = TEST_DATA.trim().split("\n\n").map { it.toPacketPair() }
+        val packets = TEST_DATA.getInputLines().mapNotNull { it.toPacketData() }
 
-        assertEquals(13, getPart1Answer(pairs))
-        assertEquals(140, getPart2Answer(pairs))
+        assertEquals(13, getPart1Answer(packets))
+        assertEquals(140, getPart2Answer(packets))
     }
 }

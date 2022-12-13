@@ -24,6 +24,7 @@
 
 package com.askrepps.advent2022.day13
 
+import com.askrepps.advent2022.util.getInputLines
 import java.io.File
 import java.util.Stack
 
@@ -74,22 +75,26 @@ class PacketList : PacketData() {
     }
 }
 
-fun String.toPacketData(): PacketData {
+fun String.toPacketData(): PacketData? {
+    if (isBlank()) {
+        return null
+    }
+
     val listStack = Stack<PacketList>()
     var currentList = PacketList()
-    var valueBuilder: Int? = null
+    var pendingValue: Int? = null
 
     fun storePendingValue() {
-        valueBuilder?.let {
+        pendingValue?.let {
             currentList.addData(PacketNumber(it))
-            valueBuilder = null
+            pendingValue = null
         }
     }
 
     for (c in this.subSequence(1, length - 1)) {
         when (c) {
             in '0'..'9' -> {
-                valueBuilder = (valueBuilder ?: 0) * 10 + c.digitToInt()
+                pendingValue = (pendingValue ?: 0) * 10 + c.digitToInt()
             }
             ',' -> {
                 storePendingValue()
@@ -110,31 +115,27 @@ fun String.toPacketData(): PacketData {
     return currentList
 }
 
-fun String.toPacketPair() =
-    split("\n").let { (s1, s2) ->
-        s1.trim().toPacketData() to s2.trim().toPacketData()
-    }
+fun getPart1Answer(packets: List<PacketData>) =
+    packets.chunked(2)
+        .mapIndexedNotNull { idx, (p1, p2) ->
+            if (p1 <= p2) {
+                idx + 1
+            } else {
+                null
+            }
+        }.sum()
 
-fun getPart1Answer(pairs: List<Pair<PacketData, PacketData>>) =
-    pairs.mapIndexedNotNull { idx, (p1, p2) ->
-        if (p1 <= p2) {
-            idx + 1
-        } else {
-            null
-        }
-    }.sum()
-
-fun getPart2Answer(pairs: List<Pair<PacketData, PacketData>>): Int {
-    val divider1 = "[[2]]".toPacketData()
-    val divider2 = "[[6]]".toPacketData()
-    val sortedPackets = (pairs.flatMap { (p1, p2) -> listOf(p1, p2) } + listOf(divider1, divider2)).sorted()
+fun getPart2Answer(packets: List<PacketData>): Int {
+    val divider1 = checkNotNull("[[2]]".toPacketData())
+    val divider2 = checkNotNull("[[6]]".toPacketData())
+    val sortedPackets = (packets + listOf(divider1, divider2)).sorted()
     return (sortedPackets.indexOf(divider1) + 1) * (sortedPackets.indexOf(divider2) + 1)
 }
 
 fun main() {
-    val pairs = File("src/main/resources/2022/day13.txt")
-        .readText().split("\n\n").map { it.toPacketPair() }
+    val packets = File("src/main/resources/2022/day13.txt")
+        .getInputLines().mapNotNull { it.toPacketData() }
 
-    println("The answer to part 1 is ${getPart1Answer(pairs)}")
-    println("The answer to part 2 is ${getPart2Answer(pairs)}")
+    println("The answer to part 1 is ${getPart1Answer(packets)}")
+    println("The answer to part 2 is ${getPart2Answer(packets)}")
 }
