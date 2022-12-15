@@ -68,11 +68,11 @@ fun List<String>.toRockPoints(): Set<GridCoordinates> {
 fun findSandSimulationSteadyState(
     rockPoints: Set<GridCoordinates>,
     sandSource: GridCoordinates,
-    hasFloor: Boolean
+    floorBuffer: Int? = null
 ): Int {
     val settledSand = mutableSetOf<GridCoordinates>()
     val abyssDepth = rockPoints.maxOf { it.y }
-    val floorDepth = abyssDepth + 2
+    val floorDepth = floorBuffer?.let { abyssDepth + it }
     var simulating = true
     while (simulating) {
         simulating = false
@@ -84,19 +84,19 @@ fun findSandSimulationSteadyState(
                 val nextSandPoint = currentSand.move(direction)
                 if (nextSandPoint !in rockPoints
                     && nextSandPoint !in settledSand
-                    && !(hasFloor && nextSandPoint.y >= floorDepth)
+                    && !(floorDepth != null && nextSandPoint.y >= floorDepth)
                 ) {
                     currentSand = nextSandPoint
                     falling = true
                     break
                 }
             }
-            if (!hasFloor && currentSand.y >= abyssDepth) {
+            if (floorDepth == null && currentSand.y >= abyssDepth) {
                 simulating = false
                 break
             } else if (!falling) {
                 settledSand.add(currentSand)
-                simulating = !(hasFloor && currentSand == sandSource)
+                simulating = !(floorDepth != null && currentSand == sandSource)
             }
         }
     }
@@ -104,10 +104,10 @@ fun findSandSimulationSteadyState(
 }
 
 fun getPart1Answer(rockPoints: Set<GridCoordinates>) =
-    findSandSimulationSteadyState(rockPoints, sandSource = GridCoordinates(500, 0), hasFloor = false)
+    findSandSimulationSteadyState(rockPoints, sandSource = GridCoordinates(500, 0))
 
 fun getPart2Answer(rockPoints: Set<GridCoordinates>) =
-    findSandSimulationSteadyState(rockPoints, sandSource = GridCoordinates(500, 0), hasFloor = true)
+    findSandSimulationSteadyState(rockPoints, sandSource = GridCoordinates(500, 0), floorBuffer = 2)
 
 fun main() {
     val rockPoints = File("src/main/resources/2022/day14.txt")
