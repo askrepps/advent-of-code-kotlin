@@ -60,7 +60,7 @@ fun getPart2Answer(initialState: List<Int>) =
 
 fun main() {
     val initialState = File("src/main/resources/2021/input-2021-day06.txt")
-        .readText().split(",").map { it.toInt() }
+        .readText().trim().split(",").map { it.toInt() }
 
     println("The answer to part 1 is ${getPart1Answer(initialState)}")
     println("The answer to part 2 is ${getPart2Answer(initialState)}")
