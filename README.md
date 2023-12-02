@@ -1,6 +1,6 @@
 # Advent of Code - Kotlin
 
-Solutions for the 2022 Advent of Code puzzles implemented in Kotlin.
+Solutions for 2021-2022 Advent of Code implemented in Kotlin.
 
 Advent of Code site: https://adventofcode.com
 

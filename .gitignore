@@ -195,3 +195,5 @@ gradle-app.setting
 
 local.properties
 src/main/resources/**/day*.txt
+
+.DS_Store

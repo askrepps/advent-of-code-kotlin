@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022 Andrew Krepps
+ * Copyright (c) 2022-2023 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,4 +22,4 @@
  * SOFTWARE.
  */
 
-rootProject.name = "advent-of-code-2022"
+rootProject.name = "advent-of-code-kotlin"

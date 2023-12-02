@@ -1,2 +1,0 @@
-Obtain input data for each day from the original source at https://adventofcode.com/2021
-and save it in a txt file named after the corresponding day (day01.txt, day02.txt, etc.).
