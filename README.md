@@ -1,6 +1,6 @@
 # Advent of Code - Kotlin
 
-Solutions for 2021-2022 Advent of Code implemented in Kotlin.
+Solutions for 2021-2023 Advent of Code implemented in Kotlin.
 
 Advent of Code site: https://adventofcode.com
 
@@ -11,14 +11,15 @@ To run the code for all days:
 - Obtain input data as shown below
 - Run `./gradlew run`
 
+To run the code for all days in a specific year:
+
+- Obtain input for the desired days as shown below
+- run `./gradlew run --args='<year #>'`
+
 To run the code for a specific day:
 
 - Obtain input for the desired day as shown below
-- Run `./gradlew run --args='<day #>'`
-
-To download the input file data for all days:
-
-- Run `./gradlew downloadInput [-PadventYear=<year #>]`
+- Run `./gradlew run --args='<year #> <day #>'`
 
 To download the input file data for a specific day:
 
