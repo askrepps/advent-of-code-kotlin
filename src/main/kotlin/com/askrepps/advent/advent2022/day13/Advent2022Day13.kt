@@ -129,7 +129,7 @@ fun getPart2Answer(packets: List<PacketData>): Int {
 }
 
 fun main() {
-    val packets = File("src/main/resources/2022/day13.txt")
+    val packets = File("src/main/resources/2022/input-2022-day13.txt")
         .getInputLines().map { it.toPacketData() }
 
     println("The answer to part 1 is ${getPart1Answer(packets)}")

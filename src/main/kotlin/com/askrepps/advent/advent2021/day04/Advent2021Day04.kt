@@ -101,7 +101,7 @@ fun getPart2Answer(calls: List<Int>, boards: List<BingoBoard>) =
     findWinningBoardResult(calls, boards, boardThreshold = -1)
 
 fun main() {
-    val lines = File("src/main/resources/day04.txt")
+    val lines = File("src/main/resources/2021/input-2021-day04.txt")
         .getInputLines(includeBlanks = true)
 
     val calls = lines.first().split(",").map { it.toInt() }

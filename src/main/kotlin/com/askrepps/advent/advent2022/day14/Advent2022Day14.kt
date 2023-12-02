@@ -110,7 +110,7 @@ fun getPart2Answer(rockPoints: Set<GridCoordinates>) =
     findSandSimulationSteadyState(rockPoints, sandSource = GridCoordinates(500, 0), floorBuffer = 2)
 
 fun main() {
-    val rockPoints = File("src/main/resources/2022/day14.txt")
+    val rockPoints = File("src/main/resources/2022/input-2022-day14.txt")
         .getInputLines().toRockPoints()
 
     println("The answer to part 1 is ${getPart1Answer(rockPoints)}")

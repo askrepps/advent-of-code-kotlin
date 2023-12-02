@@ -85,7 +85,7 @@ fun getPart2Answer(polymerState: MutableMap<String, Long>, rules: List<Insertion
     getResult(polymerState, rules, iterations = 30)  // additional iterations
 
 fun main() {
-    val (polymerState, rules) = File("src/main/resources/day14.txt")
+    val (polymerState, rules) = File("src/main/resources/2021/input-2021-day14.txt")
         .getInputLines().toPolymerDescription()
 
     println("The answer to part 1 is ${getPart1Answer(polymerState, rules)}")

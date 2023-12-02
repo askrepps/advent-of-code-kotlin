@@ -187,7 +187,7 @@ fun getPart2Answer(program: List<Instruction>) =
     findFirstValidModelNumber(program, reverseSearchSpace = false)
 
 fun main() {
-    val program = File("src/main/resources/day24.txt")
+    val program = File("src/main/resources/2021/input-2021-day24.txt")
         .getInputLines().toProgram()
 
     println("The answer to part 1 is ${getPart1Answer(program)}")

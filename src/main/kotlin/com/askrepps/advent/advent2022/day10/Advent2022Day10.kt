@@ -96,7 +96,7 @@ fun getPart2Answer(instructions: List<Instruction>) =
     getRenderedImage(instructions)
 
 fun main() {
-    val instructions = File("src/main/resources/2022/day10.txt")
+    val instructions = File("src/main/resources/2022/input-2022-day10.txt")
         .getInputLines().map { it.toInstruction() }
 
     println("The answer to part 1 is ${getPart1Answer(instructions)}")

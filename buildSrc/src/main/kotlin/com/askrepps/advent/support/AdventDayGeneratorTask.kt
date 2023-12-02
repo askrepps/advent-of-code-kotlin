@@ -50,10 +50,16 @@ abstract class AdventDayGeneratorTask : DefaultTask() {
         }
 
         val paddedDay = getZeroPaddedDay(day)
-        val packagePath = "${project.packagePrefixDirectoryPath}/advent${adventYear}/day${paddedDay}"
+        val packagePath = "${project.packagePrefixDirectoryPath}/advent/advent${adventYear}/day${paddedDay}"
 
-        val daySourceFile = File(project.rootDir, "src/main/kotlin/${packagePath}/Day${paddedDay}.kt")
-        val testSourceFile = File(project.rootDir, "src/test/kotlin/${packagePath}/Day${paddedDay}Test.kt")
+        val daySourceFile = File(
+            project.rootDir,
+            "src/main/kotlin/${packagePath}/Advent${adventYear}Day${paddedDay}.kt"
+        )
+        val testSourceFile = File(
+            project.rootDir,
+            "src/test/kotlin/${packagePath}/Advent${adventYear}Day${paddedDay}Test.kt"
+        )
         if (daySourceFile.exists() || testSourceFile.exists()) {
             logger.warn("One or more files for day $day already exist and will be skipped (use -Pforce to overwrite)")
         }

@@ -42,7 +42,7 @@ fun getPart2Answer(calorieLists: List<List<Int>>) =
         .sum()
 
 fun main() {
-    val calorieLists = File("src/main/resources/2022/day01.txt")
+    val calorieLists = File("src/main/resources/2022/input-2022-day01.txt")
         .readText().toCalorieLists()
 
     println("The answer to part 1 is ${getPart1Answer(calorieLists)}")

@@ -64,7 +64,7 @@ fun getPart2Answer(rucksacks: List<Rucksack>) =
         .sumOf { it.commonPriority }
 
 fun main() {
-    val rucksacks = File("src/main/resources/2022/day03.txt")
+    val rucksacks = File("src/main/resources/2022/input-2022-day03.txt")
         .getInputLines().map { it.toRucksack() }
 
     println("The answer to part 1 is ${getPart1Answer(rucksacks)}")

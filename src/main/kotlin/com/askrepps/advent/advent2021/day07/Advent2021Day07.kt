@@ -46,7 +46,7 @@ fun getPart2Answer(startingPositions: List<Int>) =
     }
 
 fun main() {
-    val startingPositions = File("src/main/resources/day07.txt")
+    val startingPositions = File("src/main/resources/2021/input-2021-day07.txt")
         .readText().split(",").map { it.toInt() }
 
     println("The answer to part 1 is ${getPart1Answer(startingPositions)}")

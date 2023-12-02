@@ -1,18 +1,22 @@
 ${license}
 
-package ${package_prefix}.advent${advent_year}
+package ${package_prefix}.advent
 
 import kotlin.system.measureTimeMillis
 ${runner_imports}
-private val runners = mapOf${runner_map_type}(
+private val RUNNERS = mapOf${runner_map_type}(
 ${runner_mappings}
 )
 
-fun runDay(dayNumber: Int): Long {
-    println("Day $dayNumber")
+fun runMultiple(predicate: (String) -> Boolean) =
+    RUNNERS.keys.sorted().filter(predicate)
+        .sumOf { run(it) }
+
+fun run(key: String): Long {
+    println("Running $key")
     val elapsedTime = measureTimeMillis {
-        runners[dayNumber]?.invoke()
-            ?: throw IllegalArgumentException("No runner found for day $dayNumber")
+        RUNNERS[key]?.invoke()
+            ?: throw IllegalArgumentException("No runner found for key $key")
     }
     println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
     return elapsedTime
@@ -21,18 +25,24 @@ fun runDay(dayNumber: Int): Long {
 fun Long.millisecondsToSeconds() =
     toDouble() / 1000.0
 
+fun timeMultipleRuns(predicate: (String) -> Boolean = { true }) {
+    val totalTime = runMultiple(predicate)
+    println("Total elapsed time: ${totalTime.millisecondsToSeconds()} s")
+}
+
 fun main(args: Array<String>) {
-    val day = args.firstOrNull()
-    if (day == null) {
-        println("Running all ${runners.size} days\n")
-        var totalTime = 0L
-        for (dayNumber in runners.keys.sorted()) {
-            totalTime += runDay(dayNumber)
-        }
-        println("Total elapsed time: ${totalTime.millisecondsToSeconds()} s")
+    val year = args.firstOrNull()
+    val day = args.getOrNull(1)
+    if (year == null) {
+        println("Running all days\n")
+        timeMultipleRuns()
+    } else if (day == null) {
+        println("Running year $year\n")
+        timeMultipleRuns { it.startsWith(year.toString()) }
     } else {
         val dayNumber = day.toIntOrNull()
             ?: throw IllegalArgumentException("Day must be a valid integer")
-        runDay(dayNumber)
+        val key = "$year-${String.format("%02d", dayNumber)}"
+        run(key)
     }
 }

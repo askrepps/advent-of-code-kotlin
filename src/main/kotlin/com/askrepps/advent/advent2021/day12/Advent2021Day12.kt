@@ -105,7 +105,7 @@ fun getPart2Answer(caves: Map<String, CaveNode>) =
     countPathsFrom(caves, "start", smallNodeVisitMax = 2)
 
 fun main() {
-    val caves = File("src/main/resources/day12.txt")
+    val caves = File("src/main/resources/2021/input-2021-day12.txt")
         .getInputLines().toCaves()
 
     println("The answer to part 1 is ${getPart1Answer(caves)}")

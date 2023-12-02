@@ -85,7 +85,7 @@ fun getPart2Answer(riskMap: List<List<Int>>) =
     findMinimumPathRisk(riskMap.expandMapBy(5))
 
 fun main() {
-    val riskMap = File("src/main/resources/day15.txt")
+    val riskMap = File("src/main/resources/2021/input-2021-day15.txt")
         .getInputLines().map { it.toRiskValues() }
 
     println("The answer to part 1 is ${getPart1Answer(riskMap)}")

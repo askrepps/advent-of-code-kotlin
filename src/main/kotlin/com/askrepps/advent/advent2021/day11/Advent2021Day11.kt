@@ -113,7 +113,7 @@ fun getPart2Answer(octopi: List<List<Octopus>>): Int {
 }
 
 fun main() {
-    val octopi = File("src/main/resources/day11.txt")
+    val octopi = File("src/main/resources/2021/input-2021-day11.txt")
         .getInputLines().toOctopi()
 
     println("The answer to part 1 is ${getPart1Answer(octopi)}")

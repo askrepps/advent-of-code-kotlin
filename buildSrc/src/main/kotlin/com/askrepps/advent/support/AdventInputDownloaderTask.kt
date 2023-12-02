@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022 Andrew Krepps
+ * Copyright (c) 2022-2023 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -52,14 +52,16 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
 
     @TaskAction
     fun downloadInput() {
-        if (day <= 0) {
-            allDays.forEach { downloadInputForDay(it) }
-        } else {
-            downloadInputForDay(day)
+        require(day != Int.MIN_VALUE) {
+            "Day must be provided as a property (i.e., -Pday=<day #>)"
         }
+        require(day > 0) {
+            "Day must be positive (provided $day)"
+        }
+        downloadInputForDay(adventYear, day)
     }
 
-    fun downloadInputForDay(inputDay: Int) {
+    private fun downloadInputForDay(adventYear: String, inputDay: Int) {
         val inputFile = getInputfile(adventYear, inputDay)
         inputFile.parentFile?.mkdirs()
         val propertiesFile = File(project.rootDir, PROPERTIES_FILENAME)
@@ -76,7 +78,7 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
                         inputFile.writeText(response.bodyAsText())
                         generated = true
                     } else {
-                        throw RuntimeException("Unsucessful response: ${response.status}")
+                        throw RuntimeException("Unsuccessful response: ${response.status}")
                     }
                 } catch (e: Exception) {
                     logger.error("Input data retrieval failed. Generating empty input file...", e)
@@ -103,7 +105,10 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
         }
 
     private fun getInputfile(adventYear: String, day: Int) =
-        File(project.rootDir, "src/main/resources/${adventYear}/day${getZeroPaddedDay(day)}.txt")
+        File(
+            project.rootDir,
+            "src/main/resources/${adventYear}/input-${adventYear}-day${getZeroPaddedDay(day)}.txt"
+        )
 
     private fun getInputUrl(adventYear: String, day: Int) =
         "https://adventofcode.com/${adventYear}/day/${day}/input"

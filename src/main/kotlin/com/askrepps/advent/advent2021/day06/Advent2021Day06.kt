@@ -59,7 +59,7 @@ fun getPart2Answer(initialState: List<Int>) =
     countFish(initialState, numDays = 256)
 
 fun main() {
-    val initialState = File("src/main/resources/day06.txt")
+    val initialState = File("src/main/resources/2021/input-2021-day06.txt")
         .readText().split(",").map { it.toInt() }
 
     println("The answer to part 1 is ${getPart1Answer(initialState)}")

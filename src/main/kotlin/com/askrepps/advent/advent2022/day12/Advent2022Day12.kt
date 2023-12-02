@@ -109,7 +109,7 @@ fun getPart2Answer(heightMap: List<List<Char>>, distances: List<List<Int>>) =
     }.min()
 
 fun main() {
-    val (heightMap, start, end) = File("src/main/resources/2022/day12.txt")
+    val (heightMap, start, end) = File("src/main/resources/2022/input-2022-day12.txt")
         .getInputLines().toInputData()
     val distances = findDistancesToEnd(heightMap, end)
 

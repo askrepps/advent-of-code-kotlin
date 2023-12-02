@@ -376,7 +376,7 @@ fun getPart2Answer(initialState: BurrowState): Long? {
 }
 
 fun main() {
-    val initialState = File("src/main/resources/day23.txt")
+    val initialState = File("src/main/resources/2021/input-2021-day23.txt")
         .getInputLines().toInitialState()
 
     println("The answer to part 1 is ${getPart1Answer(initialState)}")

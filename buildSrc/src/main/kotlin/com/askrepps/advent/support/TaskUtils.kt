@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022 Andrew Krepps
+ * Copyright (c) 2022-2023 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,10 +33,7 @@ private const val PROPERTY_FORCE = "force"
 private const val PROPERTY_PACKAGE_PREFIX = "packagePrefix"
 
 private const val DEFAULT_DAY = Int.MIN_VALUE
-private const val DEFAULT_ADVENT_YEAR = "2022"
-
-private const val FIRST_DAY = 1
-private const val LAST_DAY = 25
+private const val DEFAULT_ADVENT_YEAR = "2023"
 
 val Project.dayProperty: Int
     get() = findProperty(PROPERTY_DAY)?.toString()?.toIntOrNull() ?: DEFAULT_DAY
@@ -53,13 +50,8 @@ val Project.packagePrefixProperty: String
 val Project.packagePrefixDirectoryPath: String
     get() = packagePrefixProperty.replace('.', '/')
 
-val allDays = FIRST_DAY..LAST_DAY
-
 fun getZeroPaddedDay(day: Int) =
     String.format("%02d", day)
-
-fun getSpacePaddedDay(day: Int) =
-    String.format("%2d", day)
 
 fun <T> readResourceFileContents(filename: String, javaClass: Class<T>) =
     requireNotNull(javaClass.getResourceAsStream(filename)).bufferedReader().use { it.readText() }

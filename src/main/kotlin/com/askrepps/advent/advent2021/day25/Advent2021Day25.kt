@@ -88,7 +88,7 @@ fun getPart1Answer(initialState: CucumberState) =
     awaitCucumberStillness(initialState)
 
 fun main() {
-    val initialState = File("src/main/resources/day25.txt")
+    val initialState = File("src/main/resources/2021/input-2021-day25.txt")
         .getInputLines().toCucumberState()
 
     println("The answer to part 1 is ${getPart1Answer(initialState)}")

@@ -119,7 +119,7 @@ fun getPart2Answer(bitStrings: List<String>, bitCounts: BitCounts): Int {
 }
 
 fun main() {
-    val bitStrings = File("src/main/resources/day03.txt").getInputLines()
+    val bitStrings = File("src/main/resources/2021/input-2021-day03.txt").getInputLines()
     val bitCounts = bitStrings.getBitCounts()
 
     println("The answer to part 1 is ${getPart1Answer(bitCounts)}")

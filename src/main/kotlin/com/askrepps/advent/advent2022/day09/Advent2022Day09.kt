@@ -98,7 +98,7 @@ fun getPart2Answer(commands: List<Command>) =
     simulateTailMovement(commands, length = 10)
 
 fun main() {
-    val commands = File("src/main/resources/2022/day09.txt")
+    val commands = File("src/main/resources/2022/input-2022-day09.txt")
         .getInputLines().map { it.toCommand() }
 
     println("The answer to part 1 is ${getPart1Answer(commands)}")

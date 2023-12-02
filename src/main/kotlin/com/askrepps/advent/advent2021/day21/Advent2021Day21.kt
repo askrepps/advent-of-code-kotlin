@@ -150,7 +150,7 @@ fun getPart2Answer(startingPositions: List<Int>): Long {
 }
 
 fun main() {
-    val startingPositions = File("src/main/resources/day21.txt")
+    val startingPositions = File("src/main/resources/2021/input-2021-day21.txt")
         .getInputLines().map { it.toStartingPosition() }
 
     println("The answer to part 1 is ${getPart1Answer(startingPositions)}")

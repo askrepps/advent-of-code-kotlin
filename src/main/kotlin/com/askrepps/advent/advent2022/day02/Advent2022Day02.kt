@@ -105,7 +105,7 @@ fun getPart2Answer(lines: List<String>) =
     }
 
 fun main() {
-    val lines = File("src/main/resources/2022/day02.txt")
+    val lines = File("src/main/resources/2022/input-2022-day02.txt")
         .getInputLines()
 
     println("The answer to part 1 is ${getPart1Answer(lines)}")

@@ -40,7 +40,7 @@ fun getPart2Answer(depths: List<Int>) =
     depths.getWindowSums(windowSize = 3).countIncreases()
 
 fun main() {
-    val depths = File("src/main/resources/day01.txt")
+    val depths = File("src/main/resources/2021/input-2021-day01.txt")
         .getInputLines().map { it.toInt() }
 
     println("The answer to part 1 is ${getPart1Answer(depths)}")

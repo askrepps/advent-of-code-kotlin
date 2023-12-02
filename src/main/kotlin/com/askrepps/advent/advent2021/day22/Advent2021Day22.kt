@@ -168,7 +168,7 @@ fun getPart2Answer(regions: List<CuboidRegion>) =
     countActiveCubes(regions)
 
 fun main() {
-    val regions = File("src/main/resources/day22.txt")
+    val regions = File("src/main/resources/2021/input-2021-day22.txt")
         .getInputLines().map { it.toCuboidRegion() }
 
     println("The answer to part 1 is ${getPart1Answer(regions)}")

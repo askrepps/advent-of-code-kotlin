@@ -92,7 +92,7 @@ fun getPart2Answer(heightMap: HeightMap) =
         .fold(1, Int::times)
 
 fun main() {
-    val heightMap = File("src/main/resources/day09.txt")
+    val heightMap = File("src/main/resources/2021/input-2021-day09.txt")
         .getInputLines().toHeightMap()
 
     println("The answer to part 1 is ${getPart1Answer(heightMap)}")

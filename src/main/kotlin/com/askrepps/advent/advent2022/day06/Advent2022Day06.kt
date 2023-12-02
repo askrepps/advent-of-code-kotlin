@@ -49,7 +49,7 @@ fun getPart2Answer(input: String) =
     findPostMarkerIndex(input, markerLength = 14)
 
 fun main() {
-    val input = File("src/main/resources/2022/day06.txt")
+    val input = File("src/main/resources/2022/input-2022-day06.txt")
         .readText()
 
     println("The answer to part 1 is ${getPart1Answer(input)}")

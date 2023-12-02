@@ -82,7 +82,7 @@ fun getPart2Answer(commands: List<MovementCommand>) =
     }
 
 fun main() {
-    val commands = File("src/main/resources/day02.txt")
+    val commands = File("src/main/resources/2021/input-2021-day02.txt")
         .getInputLines().map { it.toMovementCommand() }
 
     println("The answer to part 1 is ${getPart1Answer(commands)}")

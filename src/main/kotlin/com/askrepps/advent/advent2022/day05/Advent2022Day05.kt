@@ -97,7 +97,7 @@ fun getPart2Answer(input: Input) =
     runCommands(input, ::applyCommandsWithMultiGrab)
 
 fun main() {
-    val input = File("src/main/resources/2022/day05.txt")
+    val input = File("src/main/resources/2022/input-2022-day05.txt")
         .readText().toInputData()
 
     println("The answer to part 1 is ${getPart1Answer(input)}")

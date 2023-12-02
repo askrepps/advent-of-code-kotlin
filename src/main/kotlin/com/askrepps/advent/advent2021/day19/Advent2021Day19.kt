@@ -186,7 +186,7 @@ fun getPart2Answer(scannerStates: Map<Int, ScannerState>): Int =
     }
 
 fun main() {
-    val scannerReports = File("src/main/resources/day19.txt")
+    val scannerReports = File("src/main/resources/2021/input-2021-day19.txt")
         .getInputLines().toScannerReports()
     val scannerStates = findScannerStates(scannerReports)
 

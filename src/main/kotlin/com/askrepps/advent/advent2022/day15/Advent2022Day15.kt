@@ -103,7 +103,7 @@ fun getPart2Answer(sensorReports: List<SensorReport>, searchRange: IntRange): Lo
 }
 
 fun main() {
-    val sensorReports = File("src/main/resources/2022/day15.txt")
+    val sensorReports = File("src/main/resources/2022/input-2022-day15.txt")
         .getInputLines().map { it.toSensorReport() }
 
     println("The answer to part 1 is ${getPart1Answer(sensorReports, searchY = 2000000)}")

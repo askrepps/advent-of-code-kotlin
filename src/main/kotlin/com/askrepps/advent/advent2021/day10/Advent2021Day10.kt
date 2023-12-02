@@ -91,7 +91,7 @@ fun getPart2Answer(incompleteResults: List<LineResult>) =
         .let { it[it.size / 2].score }
 
 fun main() {
-    val (corruptResults, incompleteResults) = File("src/main/resources/day10.txt")
+    val (corruptResults, incompleteResults) = File("src/main/resources/2021/input-2021-day10.txt")
         .getInputLines()
         .partitionResults()
 

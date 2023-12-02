@@ -109,7 +109,7 @@ fun getPart2Answer(root: DirectoryNode) =
     findSmallestDirectoryToDelete(root, diskSize = 70000000L, spaceNeeded = 30000000L)
 
 fun main() {
-    val root = File("src/main/resources/2022/day07.txt")
+    val root = File("src/main/resources/2022/input-2022-day07.txt")
         .getInputLines().toFileTree()
 
     println("The answer to part 1 is ${getPart1Answer(root)}")

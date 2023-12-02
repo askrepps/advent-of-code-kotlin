@@ -99,7 +99,7 @@ fun getPart2Answer(enhancementData: List<Char>, image: Set<GridCoordinates>) =
     image.enhance(enhancementData, iterations = 50).size
 
 fun main() {
-    val (enhancementData, image) = File("src/main/resources/day20.txt")
+    val (enhancementData, image) = File("src/main/resources/2021/input-2021-day20.txt")
         .getInputLines().toImageData()
 
     println("The answer to part 1 is ${getPart1Answer(enhancementData, image)}")

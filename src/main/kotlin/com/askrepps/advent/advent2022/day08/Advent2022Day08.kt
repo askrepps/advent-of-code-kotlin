@@ -83,7 +83,7 @@ fun getPart2Answer(heightMap: List<List<Int>>) =
     }
 
 fun main() {
-    val heightMap = File("src/main/resources/2022/day08.txt")
+    val heightMap = File("src/main/resources/2022/input-2022-day08.txt")
         .getInputLines().toHeightMap()
 
     println("The answer to part 1 is ${getPart1Answer(heightMap)}")

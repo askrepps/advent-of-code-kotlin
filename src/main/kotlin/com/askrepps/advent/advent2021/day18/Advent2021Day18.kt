@@ -221,7 +221,7 @@ fun getPart2Answer(numbers: List<SnailfishNode>) =
     }
 
 fun main() {
-    val numbers = File("src/main/resources/day18.txt")
+    val numbers = File("src/main/resources/2021/input-2021-day18.txt")
         .getInputLines().map { it.toSnailfishNumber() }
 
     println("The answer to part 1 is ${getPart1Answer(numbers)}")

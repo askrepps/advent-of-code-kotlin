@@ -88,7 +88,7 @@ fun getPart2Answer(validTrajectories: List<List<GraphCoordinates>>) =
     validTrajectories.size
 
 fun main() {
-    val targetArea = File("src/main/resources/day17.txt")
+    val targetArea = File("src/main/resources/2021/input-2021-day17.txt")
         .readText().toTargetArea()
     val trajectories = generateValidTrajectories(targetArea)
 

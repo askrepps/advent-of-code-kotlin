@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2022 Andrew Krepps
+ * Copyright (c) 2022-2023 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,60 +25,60 @@
 package com.askrepps.advent.support
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.time.ZonedDateTime
 
 abstract class AdventMainGeneratorTask : DefaultTask() {
-    @get:Input
-    abstract var adventYear: String
-
     @TaskAction
     fun generateMain() {
         val packagePrefix = project.packagePrefixProperty
         val packagePrefixPath = project.packagePrefixDirectoryPath
 
-        val sourceDirectory = File(project.rootDir, "src/main/kotlin/${packagePrefixPath}/advent${adventYear}")
+        val sourceDirectory = File(project.rootDir, "src/main/kotlin/${packagePrefixPath}/advent")
         sourceDirectory.mkdirs()
 
-        val days = sourceDirectory.listFiles()
-            ?.filter { it.name.startsWith("day") }
-            ?.sortedBy { it.name }
-            ?.mapNotNull { it.name.takeLast(2).toIntOrNull() }
-            ?: emptyList()
+        val years = sourceDirectory.getPackageNumbers(prefix = "advent", numberLength = 4)
 
-        val dayRunnerImports =
-            if (days.isEmpty()) {
+        val daysByYear = years.associateWith { year ->
+            File(sourceDirectory, "advent$year").getPackageNumbers(prefix = "day", numberLength = 2)
+        }
+
+        val runnerKeys = daysByYear.entries.flatMap { (year, days) ->
+            days.map { day -> year to day }
+        }
+
+        val runnerImports =
+            if (runnerKeys.isEmpty()) {
                 ""
             } else {
-                days.joinToString(separator = "\n", prefix = "\n", postfix = "\n") {
-                    val paddedDay = getZeroPaddedDay(it)
-                    "import ${packagePrefix}.advent${adventYear}.day${paddedDay}.main as runDay${paddedDay}"
+                runnerKeys.joinToString(separator = "\n", prefix = "\n", postfix = "\n") { (year, day) ->
+                    val paddedDay = getZeroPaddedDay(day)
+                    "import ${packagePrefix}.advent.advent${year}.day${paddedDay}.main as run${year}Day${paddedDay}"
                 }
             }
 
-        val dayRunnerMapType =
-            if (days.isEmpty()) {
-                "<Int, () -> Unit>"
+        val runnerMapType =
+            if (runnerKeys.isEmpty()) {
+                "<String, () -> Unit>"
             } else {
                 ""
             }
 
-        val dayRunnerMappings = days.chunked(5)
+        val runnerMappings = runnerKeys.chunked(4)
             .joinToString(separator = ",\n") { subList ->
-                subList.joinToString(prefix = "    ") {
-                    "${getSpacePaddedDay(it)} to ::runDay${getZeroPaddedDay(it)}"
+                subList.joinToString(prefix = "    ") { (year, day) ->
+                    val paddedDay = getZeroPaddedDay(day)
+                    "\"${year}-${paddedDay}\" to ::run${year}Day${paddedDay}"
                 }
             }
 
-        val substitutionMap = mutableMapOf<String, String>(
-            "advent_year" to adventYear,
+        val substitutionMap = mutableMapOf(
             "date_year" to ZonedDateTime.now().year.toString(),
             "package_prefix" to packagePrefix,
-            "runner_imports" to dayRunnerImports,
-            "runner_map_type" to dayRunnerMapType,
-            "runner_mappings" to dayRunnerMappings
+            "runner_imports" to runnerImports,
+            "runner_map_type" to runnerMapType,
+            "runner_mappings" to runnerMappings
         )
 
         val licenseTemplate = readResourceFileContents("/license.template", javaClass)
@@ -89,4 +89,11 @@ abstract class AdventMainGeneratorTask : DefaultTask() {
         mainSourceFile.writeFileFromTemplate(mainTemplate, substitutionMap)
         logger.lifecycle("${mainSourceFile.name} generated")
     }
+
+    private fun File.getPackageNumbers(prefix: String, numberLength: Int) =
+        listFiles()
+            ?.filter { it.name.startsWith(prefix) }
+            ?.sortedBy { it.name }
+            ?.mapNotNull { it.name.takeLast(numberLength).toIntOrNull() }
+            ?: emptyList()
 }

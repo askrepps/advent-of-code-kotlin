@@ -108,7 +108,7 @@ fun getPart2Answer(initialDots: Set<GraphCoordinates>, folds: List<FoldCommand>)
     folds.fold(initialDots) { dots, fold -> foldDots(dots, fold) }.toGraphString()
 
 fun main() {
-    val (dots, folds) = File("src/main/resources/day13.txt")
+    val (dots, folds) = File("src/main/resources/2021/input-2021-day13.txt")
         .getInputLines().toInstructions()
 
     println("The answer to part 1 is ${getPart1Answer(dots, folds)}")

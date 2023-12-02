@@ -117,7 +117,7 @@ fun getPart2Answer(monkeys: List<Monkey>) =
     getMonkeyBusiness(monkeys, numRounds = 10000)
 
 fun main() {
-    val monkeys = File("src/main/resources/2022/day11.txt")
+    val monkeys = File("src/main/resources/2022/input-2022-day11.txt")
         .readText().split("\n\n").map { it.trim().toMonkey() }
 
     println("The answer to part 1 is ${getPart1Answer(monkeys)}")

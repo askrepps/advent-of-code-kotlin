@@ -112,7 +112,7 @@ fun getPart2Answer(topLevelPacket: Packet) =
     topLevelPacket.evaluate()
 
 fun main() {
-    val topLevelPacket = File("src/main/resources/day16.txt")
+    val topLevelPacket = File("src/main/resources/2021/input-2021-day16.txt")
         .readText().hexToBits().decodePacket()
 
     println("The answer to part 1 is ${getPart1Answer(topLevelPacket)}")

@@ -62,7 +62,6 @@ val downloadTask = task<AdventInputDownloaderTask>("downloadInput") {
 
 val updateMainTask = task<AdventMainGeneratorTask>("generateMain") {
     group = "advent"
-    adventYear = project.adventYearProperty
 }
 
 task<AdventDayGeneratorTask>("generateDay") {
@@ -74,5 +73,5 @@ task<AdventDayGeneratorTask>("generateDay") {
 }
 
 application {
-    mainClass.set("${project.packagePrefixProperty}.advent${project.adventYearProperty}.MainKt")
+    mainClass.set("${project.packagePrefixProperty}.advent.MainKt")
 }

@@ -86,7 +86,7 @@ fun getPart2Answer(ventLines: List<VentLine>) =
     ventLines.countOverlappingPoints(includeDiagonals = true)
 
 fun main() {
-    val ventLines = File("src/main/resources/day05.txt")
+    val ventLines = File("src/main/resources/2021/input-2021-day05.txt")
         .getInputLines().map { it.toVentLine() }
 
     println("The answer to part 1 is ${getPart1Answer(ventLines)}")

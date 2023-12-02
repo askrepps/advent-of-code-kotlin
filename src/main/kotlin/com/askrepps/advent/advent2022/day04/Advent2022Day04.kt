@@ -50,7 +50,7 @@ fun getPart2Answer(pairs: List<Pair<IntRange, IntRange>>) =
     pairs.count { it.first.overlaps(it.second) }
 
 fun main() {
-    val pairs = File("src/main/resources/2022/day04.txt")
+    val pairs = File("src/main/resources/2022/input-2022-day04.txt")
         .getInputLines().map { it.toRangePairs() }
 
     println("The answer to part 1 is ${getPart1Answer(pairs)}")

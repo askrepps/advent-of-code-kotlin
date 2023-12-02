@@ -128,7 +128,7 @@ fun getPart2Answer(entries: List<NoteEntry>) =
     entries.sumOf { decodeOutputValue(it, getWireMapping(it)) }
 
 fun main() {
-    val entries = File("src/main/resources/day08.txt")
+    val entries = File("src/main/resources/2021/input-2021-day08.txt")
         .getInputLines().map { it.toNoteEntry() }
 
     println("The answer to part 1 is ${getPart1Answer(entries)}")
