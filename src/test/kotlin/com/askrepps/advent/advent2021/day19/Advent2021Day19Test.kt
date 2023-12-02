@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 --- scanner 0 ---
 404,-588,-901
 528,-643,409
@@ -170,7 +170,7 @@ private const val testData = """
 class Advent2021Day19Test {
     @Test
     fun test2021Day19() {
-        val scannerReports = testData.getInputLines().toScannerReports()
+        val scannerReports = TEST_DATA.getInputLines().toScannerReports()
         val scannerStates = findScannerStates(scannerReports)
 
         assertEquals(79, getPart1Answer(scannerStates))

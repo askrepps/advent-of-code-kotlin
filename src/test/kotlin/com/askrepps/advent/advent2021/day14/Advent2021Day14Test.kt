@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 NNCB
 
 CH -> B
@@ -52,7 +52,7 @@ CN -> C
 class Advent2021Day14Test {
     @Test
     fun test2021Day14() {
-        val (initialState, rules) = testData.getInputLines().toPolymerDescription()
+        val (initialState, rules) = TEST_DATA.getInputLines().toPolymerDescription()
 
         assertEquals(1588L, getPart1Answer(initialState, rules))
         assertEquals(2188189693529L, getPart2Answer(initialState, rules))

@@ -43,13 +43,13 @@ enum class Move(val score: Int) {
 
 enum class Outcome { Win, Lose, Draw }
 
-private val winsAgainst = mapOf(
+private val WINS_AGAINST = mapOf(
     Move.Rock to Move.Paper,
     Move.Paper to Move.Scissors,
     Move.Scissors to Move.Rock
 )
 
-private val losesAgainst = mapOf(
+private val LOSES_AGAINST = mapOf(
     Move.Rock to Move.Scissors,
     Move.Paper to Move.Rock,
     Move.Scissors to Move.Paper
@@ -58,15 +58,15 @@ private val losesAgainst = mapOf(
 fun Move.getScoreAgainst(other: Move) =
     score + when (this) {
         other -> DRAW_SCORE
-        winsAgainst[other] -> WIN_SCORE
-        losesAgainst[other] -> LOSE_SCORE
+        WINS_AGAINST[other] -> WIN_SCORE
+        LOSES_AGAINST[other] -> LOSE_SCORE
         else -> error("No outcome found for $this and $other")
     }
 
 fun Move.getCounterMoveForOutcome(outcome: Outcome) =
     when (outcome) {
-        Outcome.Win -> winsAgainst[this]
-        Outcome.Lose -> losesAgainst[this]
+        Outcome.Win -> WINS_AGAINST[this]
+        Outcome.Lose -> LOSES_AGAINST[this]
         Outcome.Draw -> this
     } ?: error("No counter move found for $this and outcome $outcome")
 

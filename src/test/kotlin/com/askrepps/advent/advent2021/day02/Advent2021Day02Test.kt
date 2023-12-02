@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 forward 5
 down 5
 forward 8
@@ -40,7 +40,7 @@ forward 2
 class Advent2021Day02Test {
     @Test
     fun test2021Day02() {
-        val commands = testData.getInputLines().map { it.toMovementCommand() }
+        val commands = TEST_DATA.getInputLines().map { it.toMovementCommand() }
 
         assertEquals(150, getPart1Answer(commands))
         assertEquals(900, getPart2Answer(commands))

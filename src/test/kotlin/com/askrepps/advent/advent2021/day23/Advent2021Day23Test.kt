@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 #############
 #...........#
 ###B#C#B#D###
@@ -39,7 +39,7 @@ private const val testData = """
 class Advent2021Day23Test {
     @Test
     fun test2021Day23() {
-        val initialState = testData.getInputLines().toInitialState()
+        val initialState = TEST_DATA.getInputLines().toInitialState()
 
         assertEquals(12521, getPart1Answer(initialState))
         assertEquals(44169, getPart2Answer(initialState))

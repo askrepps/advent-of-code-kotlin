@@ -177,7 +177,7 @@ noop
 noop
 """
 
-private val testImageOutput = """
+private val TEST_IMAGE_OUTPUT = """
 ##..##..##..##..##..##..##..##..##..##..
 ###...###...###...###...###...###...###.
 ####....####....####....####....####....
@@ -192,6 +192,6 @@ class Advent2022Day10Test {
         val instructions = TEST_DATA.getInputLines().map { it.toInstruction() }
 
         assertEquals(13140, getPart1Answer(instructions))
-        assertEquals(testImageOutput, getPart2Answer(instructions))
+        assertEquals(TEST_IMAGE_OUTPUT, getPart2Answer(instructions))
     }
 }

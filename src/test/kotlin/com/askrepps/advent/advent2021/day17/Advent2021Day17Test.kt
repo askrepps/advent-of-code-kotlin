@@ -27,12 +27,12 @@ package com.askrepps.advent.advent2021.day17
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private const val testData = "target area: x=20..30, y=-10..-5"
+private const val TEST_DATA = "target area: x=20..30, y=-10..-5"
 
 class Advent2021Day17Test {
     @Test
     fun test2021Day17() {
-        val targetArea = testData.toTargetArea()
+        val targetArea = TEST_DATA.toTargetArea()
         val trajectories = generateValidTrajectories(targetArea)
 
         assertEquals(45, getPart1Answer(trajectories))

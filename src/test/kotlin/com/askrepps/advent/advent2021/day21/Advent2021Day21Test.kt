@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 Player 1 starting position: 4
 Player 2 starting position: 8
 """
@@ -36,7 +36,7 @@ Player 2 starting position: 8
 class Advent2021Day21Test {
     @Test
     fun test2021Day21() {
-        val startingPositions = testData.getInputLines().map { it.toStartingPosition() }
+        val startingPositions = TEST_DATA.getInputLines().map { it.toStartingPosition() }
 
         assertEquals(739785, getPart1Answer(startingPositions))
         assertEquals(444356092776315L, getPart2Answer(startingPositions))

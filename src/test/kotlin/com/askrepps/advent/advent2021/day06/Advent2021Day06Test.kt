@@ -27,12 +27,12 @@ package com.askrepps.advent.advent2021.day06
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private const val testData = "3,4,3,1,2"
+private const val TEST_DATA = "3,4,3,1,2"
 
 class Advent2021Day06Test {
     @Test
     fun test2021Day06() {
-        val initialState = testData.split(",").map { it.toInt() }
+        val initialState = TEST_DATA.split(",").map { it.toInt() }
 
         assertEquals(5934L, getPart1Answer(initialState))
         assertEquals(26984457539L, getPart2Answer(initialState))

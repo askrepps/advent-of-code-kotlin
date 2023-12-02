@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 0,9 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
@@ -44,7 +44,7 @@ private const val testData = """
 class Advent2021Day05Test {
     @Test
     fun test2021Day05() {
-        val lines = testData.getInputLines().map { it.toVentLine() }
+        val lines = TEST_DATA.getInputLines().map { it.toVentLine() }
 
         assertEquals(5, getPart1Answer(lines))
         assertEquals(12, getPart2Answer(lines))

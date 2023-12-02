@@ -28,9 +28,9 @@ import com.askrepps.advent.util.getInputLines
 import java.io.File
 
 enum class Direction(val deltaX: Int, val deltaY: Int) {
-    DOWN(0, 1),
-    DOWN_LEFT(-1, 1),
-    DOWN_RIGHT(1, 1)
+    Down(0, 1),
+    DownLeft(-1, 1),
+    DownRight(1, 1)
 }
 
 data class GridCoordinates(val x: Int, val y: Int) {
@@ -80,7 +80,7 @@ fun findSandSimulationSteadyState(
         var falling = true
         while (falling) {
             falling = false
-            for (direction in Direction.values()) {
+            for (direction in Direction.entries) {
                 val nextSandPoint = currentSand.move(direction)
                 if (nextSandPoint !in rockPoints
                     && nextSandPoint !in settledSand

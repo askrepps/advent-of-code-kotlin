@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
 fgaebd cg bdaec gdafb agbcfd gdcbef bgcad gfac gcb cdgabef | cg cg fdcagb cbg
@@ -44,7 +44,7 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 class Advent2021Day08Test {
     @Test
     fun test2021Day08() {
-        val entries = testData.getInputLines().map { it.toNoteEntry() }
+        val entries = TEST_DATA.getInputLines().map { it.toNoteEntry() }
 
         assertEquals(26, getPart1Answer(entries))
         assertEquals(61229, getPart2Answer(entries))

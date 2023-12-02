@@ -41,11 +41,11 @@ val Char.priority: Int
         else -> error("Invalid character $this")
     }
 
-val allTypes = ('a'..'z').toSet() + ('A'..'Z').toSet()
+val ALL_TYPES = ('a'..'z').toSet() + ('A'..'Z').toSet()
 
 val List<Rucksack>.commonPriority: Int
     get() {
-        val commonType = fold(allTypes) { acc, rucksack ->
+        val commonType = fold(ALL_TYPES) { acc, rucksack ->
             acc.intersect(rucksack.items.toSet())
         }
         check(commonType.size == 1)

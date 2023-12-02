@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 [({(<(())[]>[[{[]{<()<>>
 [(()[<>])]({[<{<<[]>>(
 {([(<{}[<>[]}>{[]{[(<()>
@@ -44,7 +44,7 @@ private const val testData = """
 class Advent2021Day10Test {
     @Test
     fun test2021Day10() {
-        val (corruptResults, incompleteResults) = testData.getInputLines().partitionResults()
+        val (corruptResults, incompleteResults) = TEST_DATA.getInputLines().partitionResults()
 
         assertEquals(26397, getPart1Answer(corruptResults))
         assertEquals(288957, getPart2Answer(incompleteResults))

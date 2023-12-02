@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 v...>>.vv>
 .vv>>.vv..
 >>.>v>...v
@@ -43,7 +43,7 @@ v.v..>>v.v
 class Advent2021Day25Test {
     @Test
     fun test2021Day25() {
-        val initialState = testData.getInputLines().toCucumberState()
+        val initialState = TEST_DATA.getInputLines().toCucumberState()
 
         assertEquals(58L, getPart1Answer(initialState))
     }

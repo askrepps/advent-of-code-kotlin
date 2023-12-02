@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData1 = """
+private const val TEST_DATA_1 = """
 start-A
 start-b
 A-c
@@ -38,7 +38,7 @@ A-end
 b-end
 """
 
-private const val testData2 = """
+private const val TEST_DATA_2 = """
 dc-end
 HN-start
 start-kj
@@ -51,7 +51,7 @@ kj-HN
 kj-dc
 """
 
-private const val testData3 = """
+private const val TEST_DATA_3 = """
 fs-end
 he-DX
 fs-he
@@ -75,9 +75,9 @@ start-RW
 class Advent2021Day12Test {
     @Test
     fun test2021Day12() {
-        runTest(testData1, expectedPart1 = 10, expectedPart2 = 36)
-        runTest(testData2, expectedPart1 = 19, expectedPart2 = 103)
-        runTest(testData3, expectedPart1 = 226, expectedPart2 = 3509)
+        runTest(TEST_DATA_1, expectedPart1 = 10, expectedPart2 = 36)
+        runTest(TEST_DATA_2, expectedPart1 = 19, expectedPart2 = 103)
+        runTest(TEST_DATA_3, expectedPart1 = 226, expectedPart2 = 3509)
     }
 
     private fun runTest(data: String, expectedPart1: Int, expectedPart2: Int) {

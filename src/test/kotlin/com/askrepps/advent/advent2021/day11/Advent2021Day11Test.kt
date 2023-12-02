@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 5483143223
 2745854711
 5264556173
@@ -44,7 +44,7 @@ private const val testData = """
 class Advent2021Day11Test {
     @Test
     fun test2021Day11() {
-        val octopi = testData.getInputLines().toOctopi()
+        val octopi = TEST_DATA.getInputLines().toOctopi()
 
         assertEquals(1656, getPart1Answer(octopi))
         assertEquals(195, getPart2Answer(octopi))

@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 1163751742
 1381373672
 2136511328
@@ -44,7 +44,7 @@ private const val testData = """
 class Advent2021Day15Test {
     @Test
     fun test2021Day15() {
-        val riskMap = testData.getInputLines().map { it.toRiskValues() }
+        val riskMap = TEST_DATA.getInputLines().map { it.toRiskValues() }
 
         assertEquals(40, getPart1Answer(riskMap))
         assertEquals(315, getPart2Answer(riskMap))

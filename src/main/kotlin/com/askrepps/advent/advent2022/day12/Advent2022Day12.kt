@@ -29,10 +29,10 @@ import java.io.File
 import java.util.PriorityQueue
 
 enum class Direction(val deltaRow: Int, val deltaColumn: Int) {
-    UP(-1, 0),
-    DOWN(1, 0),
-    LEFT(0, -1),
-    RIGHT(0, 1)
+    Up(-1, 0),
+    Down(1, 0),
+    Left(0, -1),
+    Right(0, 1)
 }
 
 data class GridCoordinates(val row: Int, val column: Int)
@@ -76,7 +76,7 @@ fun findDistancesToEnd(heightMap: List<List<Char>>, end: GridCoordinates): List<
     searchQueue.add(GridSearchPoint(end, heightMap[end.row][end.column], 0))
     while (searchQueue.isNotEmpty()) {
         val (currentCoordinates, currentHeight, currentDistance) = searchQueue.remove()
-        for (direction in Direction.values()) {
+        for (direction in Direction.entries) {
             val neighborRow = currentCoordinates.row + direction.deltaRow
             val neighborColumn = currentCoordinates.column + direction.deltaColumn
             val neighborDistance = currentDistance + 1

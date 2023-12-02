@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 6,10
 0,14
 9,10
@@ -52,7 +52,7 @@ fold along y=7
 fold along x=5
 """
 
-val expectedPart2 = """
+private val EXPECTED_PART_2 = """
 #####
 #...#
 #...#
@@ -63,9 +63,9 @@ val expectedPart2 = """
 class Advent2021Day13Test {
     @Test
     fun test2021Day13() {
-        val (dots, folds) = testData.getInputLines().toInstructions()
+        val (dots, folds) = TEST_DATA.getInputLines().toInstructions()
 
         assertEquals(17, getPart1Answer(dots, folds))
-        assertEquals(expectedPart2, getPart2Answer(dots, folds))
+        assertEquals(EXPECTED_PART_2, getPart2Answer(dots, folds))
     }
 }

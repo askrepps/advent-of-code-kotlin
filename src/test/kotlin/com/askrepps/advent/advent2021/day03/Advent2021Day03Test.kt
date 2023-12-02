@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 00100
 11110
 10110
@@ -46,7 +46,7 @@ private const val testData = """
 class Advent2021Day03Test {
     @Test
     fun test2021Day03() {
-        val bitStrings = testData.getInputLines()
+        val bitStrings = TEST_DATA.getInputLines()
         val bitCounts = bitStrings.getBitCounts()
 
         assertEquals(198, getPart1Answer(bitCounts))

@@ -28,7 +28,7 @@ import com.askrepps.advent.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 ..#.#..#####.#.#.#.###.##.....###.##.#..###.####..#####..#....#..#..##..###..######.###...####..#..#####..##..#.#####...##.#.#..#.##..#.#......#.###.######.###.####...#.##.##..#..#..#####.....#.#....###..#.##......#.....#..#..#..##..#...##.######.####.####.#.#...#.......#..#.#.#...####.##.#......#..#...##.#.##..#...##.#.##..###.#......#.#.......#.#.#.####.###.##...#.....####.#..#..#.##.#....##..#.####....##...##..#...#......#.#.......#.......##..####..#...#.#.#...##..#.#..###..#####........#..####......#..#
 
 #..#.
@@ -41,7 +41,7 @@ private const val testData = """
 class Advent2021Day20Test {
     @Test
     fun test2021Day20() {
-        val (enhancementData, image) = testData.getInputLines().toImageData()
+        val (enhancementData, image) = TEST_DATA.getInputLines().toImageData()
 
         assertEquals(35, getPart1Answer(enhancementData, image))
         assertEquals(3351, getPart2Answer(enhancementData, image))

@@ -42,7 +42,7 @@ import com.askrepps.advent.advent2022.day13.main as runDay13
 import com.askrepps.advent.advent2022.day14.main as runDay14
 import com.askrepps.advent.advent2022.day15.main as runDay15
 
-private val runners = mapOf(
+private val RUNNERS = mapOf(
      1 to ::runDay01,  2 to ::runDay02,  3 to ::runDay03,  4 to ::runDay04,  5 to ::runDay05,
      6 to ::runDay06,  7 to ::runDay07,  8 to ::runDay08,  9 to ::runDay09, 10 to ::runDay10,
     11 to ::runDay11, 12 to ::runDay12, 13 to ::runDay13, 14 to ::runDay14, 15 to ::runDay15
@@ -51,7 +51,7 @@ private val runners = mapOf(
 fun runDay(dayNumber: Int): Long {
     println("Day $dayNumber")
     val elapsedTime = measureTimeMillis {
-        runners[dayNumber]?.invoke()
+        RUNNERS[dayNumber]?.invoke()
             ?: throw IllegalArgumentException("No runner found for day $dayNumber")
     }
     println("Elapsed time: ${elapsedTime.millisecondsToSeconds()} s\n")
@@ -64,9 +64,9 @@ fun Long.millisecondsToSeconds() =
 fun main(args: Array<String>) {
     val day = args.firstOrNull()
     if (day == null) {
-        println("Running all ${runners.size} days\n")
+        println("Running all ${RUNNERS.size} days\n")
         var totalTime = 0L
-        for (dayNumber in runners.keys.sorted()) {
+        for (dayNumber in RUNNERS.keys.sorted()) {
             totalTime += runDay(dayNumber)
         }
         println("Total elapsed time: ${totalTime.millisecondsToSeconds()} s")

@@ -232,10 +232,7 @@ data class PodState(val type: PodType, val locationId: Int) {
             val pod = allPods.find { it.locationId == homeId }
             pod != null && pod.type != type
         }
-        if (hasMismatchedNeighbors) {
-            return false
-        }
-        return true
+        return !hasMismatchedNeighbors
     }
 }
 

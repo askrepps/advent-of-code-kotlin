@@ -30,10 +30,10 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 enum class Direction(val deltaX: Int, val deltaY: Int) {
-    UP(0, 1),
-    DOWN(0, -1),
-    LEFT(-1, 0),
-    RIGHT(1, 0)
+    Up(0, 1),
+    Down(0, -1),
+    Left(-1, 0),
+    Right(1, 0)
 }
 
 data class Command(val direction: Direction, val count: Int)
@@ -42,10 +42,10 @@ data class Coordinates(val x: Int, val y: Int)
 
 fun String.toDirection() =
     when (this) {
-        "U" -> Direction.UP
-        "D" -> Direction.DOWN
-        "L" -> Direction.LEFT
-        "R" -> Direction.RIGHT
+        "U" -> Direction.Up
+        "D" -> Direction.Down
+        "L" -> Direction.Left
+        "R" -> Direction.Right
         else -> error("Unrecognized direction: $this")
     }
 

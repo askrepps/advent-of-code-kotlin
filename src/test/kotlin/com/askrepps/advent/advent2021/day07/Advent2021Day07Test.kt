@@ -27,12 +27,12 @@ package com.askrepps.advent.advent2021.day07
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-private const val testData = "16,1,2,0,4,2,7,1,2,14"
+private const val TEST_DATA = "16,1,2,0,4,2,7,1,2,14"
 
 class Advent2021Day07Test {
     @Test
     fun test2021Day07() {
-        val lines = testData.split(",").map { it.toInt() }
+        val lines = TEST_DATA.split(",").map { it.toInt() }
 
         assertEquals(37, getPart1Answer(lines))
         assertEquals(168, getPart2Answer(lines))

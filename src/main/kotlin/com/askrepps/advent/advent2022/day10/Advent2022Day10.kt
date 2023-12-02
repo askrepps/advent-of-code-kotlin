@@ -38,7 +38,7 @@ private const val DISPLAY_WIDTH = 40
 
 sealed class Instruction(val cycles: Int, val value: Int)
 
-object NoOp : Instruction(cycles = NOOP_CYCLES, value = 0)
+data object NoOp : Instruction(cycles = NOOP_CYCLES, value = 0)
 
 class AddX(value: Int) : Instruction(cycles = ADDX_CYCLES, value)
 

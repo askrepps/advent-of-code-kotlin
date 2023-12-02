@@ -27,15 +27,15 @@ package com.askrepps.advent.advent2021.day12
 import com.askrepps.advent.util.getInputLines
 import java.io.File
 
-enum class NodeType { START, END, BIG, SMALL }
+enum class NodeType { Start, End, Big, Small }
 
 class CaveNode(val label: String) {
     val type: NodeType =
         when {
-            label == "start" -> NodeType.START
-            label == "end" -> NodeType.END
-            label.all { it.isUpperCase() } -> NodeType.BIG
-            else -> NodeType.SMALL
+            label == "start" -> NodeType.Start
+            label == "end" -> NodeType.End
+            label.all { it.isUpperCase() } -> NodeType.Big
+            else -> NodeType.Small
         }
 
     private val _connectedNodes = mutableSetOf<CaveNode>()
@@ -68,21 +68,21 @@ fun countPathsFrom(
     val startNode = caves[startLabel]
         ?: throw RuntimeException("Node $startLabel not found")
 
-    if (startNode.type == NodeType.END) {
+    if (startNode.type == NodeType.End) {
         return 1
     }
 
-    if (startNode.type == NodeType.SMALL) {
+    if (startNode.type == NodeType.Small) {
         smallNodeVisitCounts[startLabel] = (smallNodeVisitCounts[startLabel] ?: 0) + 1
     }
 
     // Note: this assumes no two big caves are directly connected to each other, which would cause infinite recursion
     var count = 0
     for (node in startNode.connectedNodes) {
-        if (node.type == NodeType.START) {
+        if (node.type == NodeType.Start) {
             continue
         }
-        if (node.type == NodeType.SMALL) {
+        if (node.type == NodeType.Small) {
             val currentNodeVisitCount = smallNodeVisitCounts[node.label] ?: 0
             if (currentNodeVisitCount >= smallNodeVisitMax) {
                 continue

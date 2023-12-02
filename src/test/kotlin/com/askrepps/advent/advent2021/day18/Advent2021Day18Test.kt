@@ -29,7 +29,7 @@ import kotlin.test.assertEquals
 import kotlin.test.Test
 import kotlin.test.assertTrue
 
-private const val testData = """
+private const val TEST_DATA = """
 [[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
 [[[5,[2,8]],4],[5,[[9,9],0]]]
 [6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
@@ -45,7 +45,7 @@ private const val testData = """
 class Advent2021Day18Test {
     @Test
     fun test2021Day18() {
-        val numbers = testData.getInputLines().map { it.toSnailfishNumber() }
+        val numbers = TEST_DATA.getInputLines().map { it.toSnailfishNumber() }
         assertEquals(4140L, getPart1Answer(numbers))
         assertEquals(3993L, getPart2Answer(numbers))
     }
