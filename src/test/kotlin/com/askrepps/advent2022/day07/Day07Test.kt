@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,44 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day07
 
-repositories {
-    mavenCentral()
-}
+import com.askrepps.advent2022.util.getInputLines
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+private const val TEST_DATA = """
+$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
+$ ls
+584 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k
+"""
+
+class Day07Test {
+    @Test
+    fun testDay07() {
+        val root = TEST_DATA.getInputLines().toFileTree()
+
+        assertEquals(95437L, getPart1Answer(root))
+        assertEquals(24933642L, getPart2Answer(root))
+    }
 }

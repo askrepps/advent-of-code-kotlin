@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,29 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day01
 
-repositories {
-    mavenCentral()
-}
+import java.io.File
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+fun String.toCalorieLists() =
+    split("\n\n").map { group ->
+        group.split("\n")
+            .mapNotNull { line -> line.toIntOrNull() }
+    }
+
+fun getPart1Answer(calorieLists: List<List<Int>>) =
+    calorieLists.maxOf { it.sum() }
+
+fun getPart2Answer(calorieLists: List<List<Int>>) =
+    calorieLists.map { it.sum() }
+        .sortedDescending()
+        .take(3)
+        .sum()
+
+fun main() {
+    val calorieLists = File("src/main/resources/2022/day01.txt")
+        .readText().toCalorieLists()
+
+    println("The answer to part 1 is ${getPart1Answer(calorieLists)}")
+    println("The answer to part 2 is ${getPart2Answer(calorieLists)}")
 }

@@ -1,19 +1,19 @@
 ${license}
 
-package com.askrepps.advent${advent_year}.day${day}
+package ${package_prefix}.advent${advent_year}.day${day}
 
-import com.askrepps.advent2021.util.getInputLines
+import ${package_prefix}.advent${advent_year}.util.getInputLines
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-private const val testData = """
+private const val TEST_DATA = """
 
 """
 
 class Day${day}Test {
     @Test
     fun testDay${day}() {
-        val lines = testData.getInputLines().map { it.toThing() }
+        val lines = TEST_DATA.getInputLines().map { it.toThing() }
 
         assertEquals(null, getPart1Answer(lines))
         assertEquals(null, getPart2Answer(lines))

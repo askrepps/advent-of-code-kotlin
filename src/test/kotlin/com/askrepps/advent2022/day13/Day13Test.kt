@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,44 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day13
 
-repositories {
-    mavenCentral()
-}
+import com.askrepps.advent2022.util.getInputLines
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+private const val TEST_DATA = """
+[1,1,3,1,1]
+[1,1,5,1,1]
+
+[[1],[2,3,4]]
+[[1],4]
+
+[9]
+[[8,7,6]]
+
+[[4,4],4,4]
+[[4,4],4,4,4]
+
+[7,7,7,7]
+[7,7,7]
+
+[]
+[3]
+
+[[[]]]
+[[]]
+
+[1,[2,[3,[4,[5,6,7]]]],8,9]
+[1,[2,[3,[4,[5,6,0]]]],8,9]
+"""
+
+class Day13Test {
+    @Test
+    fun testDay13() {
+        val packets = TEST_DATA.getInputLines().map { it.toPacketData() }
+
+        assertEquals(13, getPart1Answer(packets))
+        assertEquals(140, getPart2Answer(packets))
+    }
 }

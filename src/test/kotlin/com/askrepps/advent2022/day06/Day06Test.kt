@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,23 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day06
 
-repositories {
-    mavenCentral()
-}
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+class Day06Test {
+    @Test
+    fun testDay06() {
+        assertEquals(5, getPart1Answer("bvwbjplbgvbhsrlpgdmjqwftvncz"))
+        assertEquals(6, getPart1Answer("nppdvjthqldpwncqszvftbrmjlhg"))
+        assertEquals(10, getPart1Answer("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"))
+        assertEquals(11, getPart1Answer("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"))
+
+        assertEquals(19, getPart2Answer("mjqjpqmgbljsphdztnvjfqwrcgsmlb"))
+        assertEquals(23, getPart2Answer("bvwbjplbgvbhsrlpgdmjqwftvncz"))
+        assertEquals(23, getPart2Answer("nppdvjthqldpwncqszvftbrmjlhg"))
+        assertEquals(29, getPart2Answer("nznrnfrfntjfmvfwmzdfjlvtqnbhcprsg"))
+        assertEquals(26, getPart2Answer("zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"))
+    }
 }

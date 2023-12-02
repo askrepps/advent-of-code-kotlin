@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,47 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day11
 
-repositories {
-    mavenCentral()
-}
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+private const val TEST_DATA = """
+Monkey 0:
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
+
+Monkey 1:
+  Starting items: 54, 65, 75, 74
+  Operation: new = old + 6
+  Test: divisible by 19
+    If true: throw to monkey 2
+    If false: throw to monkey 0
+
+Monkey 2:
+  Starting items: 79, 60, 97
+  Operation: new = old * old
+  Test: divisible by 13
+    If true: throw to monkey 1
+    If false: throw to monkey 3
+
+Monkey 3:
+  Starting items: 74
+  Operation: new = old + 3
+  Test: divisible by 17
+    If true: throw to monkey 0
+    If false: throw to monkey 1
+"""
+
+class Day11Test {
+    @Test
+    fun testDay11() {
+        val monkeys = TEST_DATA.split("\n\n").map { it.trim().toMonkey() }
+
+        assertEquals(10605L, getPart1Answer(monkeys))
+        assertEquals(2713310158L, getPart2Answer(monkeys))
+    }
 }

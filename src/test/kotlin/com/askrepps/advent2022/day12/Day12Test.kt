@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,27 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day12
 
-repositories {
-    mavenCentral()
-}
+import com.askrepps.advent2022.util.getInputLines
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+private const val TEST_DATA = """
+Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi
+"""
+
+class Day12Test {
+    @Test
+    fun testDay12() {
+        val (heightMap, start, end) = TEST_DATA.getInputLines().toInputData()
+        val distances = findDistancesToEnd(heightMap, end)
+
+        assertEquals(31, getPart1Answer(distances, start))
+        assertEquals(29, getPart2Answer(heightMap, distances))
+    }
 }

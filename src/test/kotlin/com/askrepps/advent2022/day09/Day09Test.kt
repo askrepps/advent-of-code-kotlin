@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021-2022 Andrew Krepps
+ * Copyright (c) 2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,16 +22,42 @@
  * SOFTWARE.
  */
 
-plugins {
-    kotlin("jvm") version "1.7.21"
-}
+package com.askrepps.advent2022.day09
 
-repositories {
-    mavenCentral()
-}
+import com.askrepps.advent2022.util.getInputLines
+import kotlin.test.assertEquals
+import kotlin.test.Test
 
-dependencies {
-    val ktorVersion = "2.1.3"
-    implementation("io.ktor:ktor-client-core:$ktorVersion")
-    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+private const val TEST_DATA_1 = """
+R 4
+U 4
+L 3
+D 1
+R 4
+D 1
+L 5
+R 2
+"""
+
+private const val TEST_DATA_2 = """
+R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20
+"""
+
+class Day09Test {
+    @Test
+    fun testDay09() {
+        val commands1 = TEST_DATA_1.getInputLines().map { it.toCommand() }
+        assertEquals(13, getPart1Answer(commands1))
+        assertEquals(1, getPart2Answer(commands1))
+
+        val commands2 = TEST_DATA_2.getInputLines().map { it.toCommand() }
+        assertEquals(36, getPart2Answer(commands2))
+    }
 }

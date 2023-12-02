@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2021 Andrew Krepps
+ * Copyright (c) 2021-2022 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,10 +22,17 @@
  * SOFTWARE.
  */
 
-import com.askrepps.advent2021.support.AdventDayGeneratorTask
+import com.askrepps.advent.support.AdventDayGeneratorTask
+import com.askrepps.advent.support.AdventInputDownloaderTask
+import com.askrepps.advent.support.AdventMainGeneratorTask
+import com.askrepps.advent.support.adventYearProperty
+import com.askrepps.advent.support.dayProperty
+import com.askrepps.advent.support.forceProperty
+import com.askrepps.advent.support.packagePrefixProperty
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.0"
+    kotlin("jvm") version "1.7.21"
     application
 }
 
@@ -37,18 +44,36 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+val downloadTask = task<AdventInputDownloaderTask>("downloadInput") {
+    group = "advent"
+    day = project.dayProperty
+    adventYear = project.adventYearProperty
+}
+
+val updateMainTask = task<AdventMainGeneratorTask>("generateMain") {
+    group = "advent"
+    adventYear = project.adventYearProperty
+}
+
 task<AdventDayGeneratorTask>("generateDay") {
     group = "advent"
+    day = project.dayProperty
+    adventYear = project.adventYearProperty
+    force = project.forceProperty
+    finalizedBy(downloadTask, updateMainTask)
 }
 
 application {
-    mainClass.set("com.askrepps.advent2021.MainKt")
+    mainClass.set("${project.packagePrefixProperty}.advent${project.adventYearProperty}.MainKt")
 }

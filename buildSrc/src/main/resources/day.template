@@ -1,0 +1,20 @@
+${license}
+
+package ${package_prefix}.advent${advent_year}.day${day}
+
+import ${package_prefix}.advent${advent_year}.util.getInputLines
+import java.io.File
+
+fun String.toThing() = this
+
+fun getPart1Answer(lines: Any?) = null
+
+fun getPart2Answer(lines: Any?) = null
+
+fun main() {
+    val lines = File("src/main/resources/${advent_year}/day${day}.txt")
+        .getInputLines().map { it.toThing() }
+
+    println("The answer to part 1 is ${getPart1Answer(lines)}")
+    println("The answer to part 2 is ${getPart2Answer(lines)}")
+}
