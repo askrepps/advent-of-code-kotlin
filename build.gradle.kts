@@ -29,10 +29,9 @@ import com.askrepps.advent.support.adventYearProperty
 import com.askrepps.advent.support.dayProperty
 import com.askrepps.advent.support.forceProperty
 import com.askrepps.advent.support.packagePrefixProperty
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.9.21"
     application
 }
 
@@ -47,12 +46,12 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-tasks.test {
-    useJUnitPlatform()
+kotlin {
+    jvmToolchain(17)
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.test {
+    useJUnitPlatform()
 }
 
 val downloadTask = task<AdventInputDownloaderTask>("downloadInput") {
