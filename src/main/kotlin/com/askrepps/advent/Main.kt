@@ -66,6 +66,7 @@ import com.askrepps.advent.advent2022.day12.main as run2022Day12
 import com.askrepps.advent.advent2022.day13.main as run2022Day13
 import com.askrepps.advent.advent2022.day14.main as run2022Day14
 import com.askrepps.advent.advent2022.day15.main as run2022Day15
+import com.askrepps.advent.advent2023.day01.main as run2023Day01
 
 private val RUNNERS = mapOf(
     "2021-01" to ::run2021Day01, "2021-02" to ::run2021Day02, "2021-03" to ::run2021Day03, "2021-04" to ::run2021Day04,
@@ -77,7 +78,8 @@ private val RUNNERS = mapOf(
     "2021-25" to ::run2021Day25, "2022-01" to ::run2022Day01, "2022-02" to ::run2022Day02, "2022-03" to ::run2022Day03,
     "2022-04" to ::run2022Day04, "2022-05" to ::run2022Day05, "2022-06" to ::run2022Day06, "2022-07" to ::run2022Day07,
     "2022-08" to ::run2022Day08, "2022-09" to ::run2022Day09, "2022-10" to ::run2022Day10, "2022-11" to ::run2022Day11,
-    "2022-12" to ::run2022Day12, "2022-13" to ::run2022Day13, "2022-14" to ::run2022Day14, "2022-15" to ::run2022Day15
+    "2022-12" to ::run2022Day12, "2022-13" to ::run2022Day13, "2022-14" to ::run2022Day14, "2022-15" to ::run2022Day15,
+    "2023-01" to ::run2023Day01
 )
 
 fun runMultiple(predicate: (String) -> Boolean) =
