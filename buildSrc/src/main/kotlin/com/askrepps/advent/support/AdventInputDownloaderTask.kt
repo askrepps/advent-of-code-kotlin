@@ -52,13 +52,16 @@ abstract class AdventInputDownloaderTask : DefaultTask() {
 
     @TaskAction
     fun downloadInput() {
-        require(day != Int.MIN_VALUE) {
-            "Day must be provided as a property (i.e., -Pday=<day #>)"
+        if (day == Int.MIN_VALUE) {
+            for (day in FIRST_DAY..LAST_DAY) {
+                downloadInputForDay(adventYear, day)
+            }
+        } else {
+            require(day > 0) {
+                "Day must be positive (provided $day)"
+            }
+            downloadInputForDay(adventYear, day)
         }
-        require(day > 0) {
-            "Day must be positive (provided $day)"
-        }
-        downloadInputForDay(adventYear, day)
     }
 
     private fun downloadInputForDay(adventYear: String, inputDay: Int) {

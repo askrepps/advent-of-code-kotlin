@@ -35,6 +35,9 @@ private const val PROPERTY_PACKAGE_PREFIX = "packagePrefix"
 private const val DEFAULT_DAY = Int.MIN_VALUE
 private const val DEFAULT_ADVENT_YEAR = "2023"
 
+internal const val FIRST_DAY = 1
+internal const val LAST_DAY = 25
+
 val Project.dayProperty: Int
     get() = findProperty(PROPERTY_DAY)?.toString()?.toIntOrNull() ?: DEFAULT_DAY
 

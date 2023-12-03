@@ -21,6 +21,10 @@ To run the code for a specific day:
 - Obtain input for the desired day as shown below
 - Run `./gradlew run --args='<year #> <day #>'`
 
+To download all 25 input files for a specific year:
+
+- Run `./gradlew downloadInput [-PadventYear=<year #>]`
+
 To download the input file data for a specific day:
 
 - Run `./gradlew downloadInput -Pday=<day #> [-PadventYear=<year #>]`
