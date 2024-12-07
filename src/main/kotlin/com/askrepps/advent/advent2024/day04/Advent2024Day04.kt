@@ -31,7 +31,6 @@ private const val SEARCH_WORD = "XMAS"
 
 private const val SEARCH_SPEC_START = 'A'
 
-
 // possible arrangements
 //
 // M   S
