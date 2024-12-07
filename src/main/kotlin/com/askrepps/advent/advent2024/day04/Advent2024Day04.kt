@@ -132,7 +132,7 @@ fun getPart2Answer(grid: List<List<Char>>) =
             when {
                 grid[rowIndex][columnIndex] != SEARCH_SPEC_START -> 0L
                 SEARCH_SPECS.any { spec ->
-                    spec.all {  (word, direction) ->
+                    spec.all { (word, direction) ->
                         gridPointStartsWordInDirection(grid, word, rowIndex, columnIndex, direction)
                     }
                 } -> 1L
