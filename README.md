@@ -1,6 +1,6 @@
 # Advent of Code - Kotlin
 
-Solutions for Advent of Code 2021-2023 implemented in Kotlin
+Solutions for Advent of Code 2021-2025 implemented in Kotlin
 
 Advent of Code site: https://adventofcode.com
 
