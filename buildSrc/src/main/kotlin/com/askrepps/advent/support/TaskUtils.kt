@@ -33,7 +33,7 @@ private const val PROPERTY_FORCE = "force"
 private const val PROPERTY_PACKAGE_PREFIX = "packagePrefix"
 
 private const val DEFAULT_DAY = Int.MIN_VALUE
-private const val DEFAULT_ADVENT_YEAR = "2024"
+private const val DEFAULT_ADVENT_YEAR = "2025"
 
 internal const val FIRST_DAY = 1
 internal const val LAST_DAY = 25
