@@ -59,8 +59,8 @@ fun getPart1Answer(rotations: List<Rotation>): Long {
 
 fun getPart2Answer(rotations: List<Rotation>): Long {
     val numValues = 100L
-    var password = 0L
     var value = 50L
+    var password = 0L
     for (rotation in rotations) {
         for (click in 0L until rotation.distance) {
             value = (value + rotation.direction.factor) % numValues
