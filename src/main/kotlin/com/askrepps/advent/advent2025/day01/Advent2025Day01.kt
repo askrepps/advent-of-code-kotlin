@@ -27,6 +27,9 @@ package com.askrepps.advent.advent2025.day01
 import com.askrepps.advent.util.getInputLines
 import java.io.File
 
+private const val INITIAL_VALUE = 50L
+private const val DIAL_SIZE = 100L
+
 enum class Direction(val factor: Long) {
     Left(-1L),
     Right(1L)
@@ -44,32 +47,24 @@ fun String.toRotation(): Rotation {
     return Rotation(distance, direction)
 }
 
+fun Long.countIfZero() = if (this == 0L) 1L else 0L
+
 fun getPart1Answer(rotations: List<Rotation>): Long {
-    val numValues = 100L
-    var value = 50L
-    var password = 0L
-    for (rotation in rotations) {
-        value = (value + rotation.distance * rotation.direction.factor) % numValues
-        if (value == 0L) {
-            password++
-        }
+    var value = INITIAL_VALUE
+    return rotations.sumOf { rotation ->
+        value = (value + rotation.distance * rotation.direction.factor) % DIAL_SIZE
+        value.countIfZero()
     }
-    return password
 }
 
 fun getPart2Answer(rotations: List<Rotation>): Long {
-    val numValues = 100L
-    var value = 50L
-    var password = 0L
-    for (rotation in rotations) {
-        for (click in 0L until rotation.distance) {
-            value = (value + rotation.direction.factor) % numValues
-            if (value == 0L) {
-                password++
-            }
+    var value = INITIAL_VALUE
+    return rotations.sumOf { rotation ->
+        (0L until rotation.distance).sumOf {
+            value = (value + rotation.direction.factor) % DIAL_SIZE
+            value.countIfZero()
         }
     }
-    return password
 }
 
 fun main() {
