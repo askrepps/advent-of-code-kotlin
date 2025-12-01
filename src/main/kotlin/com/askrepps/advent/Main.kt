@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 Andrew Krepps
+ * Copyright (c) 2025 Andrew Krepps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -73,6 +73,7 @@ import com.askrepps.advent.advent2024.day01.main as run2024Day01
 import com.askrepps.advent.advent2024.day02.main as run2024Day02
 import com.askrepps.advent.advent2024.day03.main as run2024Day03
 import com.askrepps.advent.advent2024.day04.main as run2024Day04
+import com.askrepps.advent.advent2025.day01.main as run2025Day01
 
 private val RUNNERS = mapOf(
     "2021-01" to ::run2021Day01, "2021-02" to ::run2021Day02, "2021-03" to ::run2021Day03, "2021-04" to ::run2021Day04,
@@ -86,7 +87,7 @@ private val RUNNERS = mapOf(
     "2022-08" to ::run2022Day08, "2022-09" to ::run2022Day09, "2022-10" to ::run2022Day10, "2022-11" to ::run2022Day11,
     "2022-12" to ::run2022Day12, "2022-13" to ::run2022Day13, "2022-14" to ::run2022Day14, "2022-15" to ::run2022Day15,
     "2023-01" to ::run2023Day01, "2023-02" to ::run2023Day02, "2023-03" to ::run2023Day03, "2024-01" to ::run2024Day01,
-    "2024-02" to ::run2024Day02, "2024-03" to ::run2024Day03, "2024-04" to ::run2024Day04
+    "2024-02" to ::run2024Day02, "2024-03" to ::run2024Day03, "2024-04" to ::run2024Day04, "2025-01" to ::run2025Day01
 )
 
 fun runMultiple(predicate: (String) -> Boolean) =
